@@ -1,0 +1,549 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ᴄʏᴀɴx | Portfolio - AI Neural Network</title>
+
+<style>
+
+body{
+margin:0;
+overflow:hidden;
+background:#020617;
+font-family:Arial;
+}
+
+/* GLASS PANEL */
+
+.panel{
+position:absolute;
+top:30px;
+left:40px;
+padding:20px 30px;
+background:rgba(255,255,255,0.05);
+border:1px solid rgba(255,255,255,0.1);
+backdrop-filter:blur(15px);
+border-radius:12px;
+color:white;
+box-shadow:0 0 40px rgba(117,148,250,0.25);
+}
+
+.panel h2{
+margin:0 0 10px 0;
+font-weight:600;
+letter-spacing:1px;
+}
+
+.panel p{
+font-size:14px;
+color:#cbd5e1;
+}
+
+
+.navbar{
+position:fixed;
+top:20px;
+left:50%;
+transform:translateX(-50%);
+
+width:40%;
+padding:12px 3%;
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+background:rgba(0,0,0,0.6);
+backdrop-filter:blur(12px);
+
+border-radius:35px;
+border:1px solid rgba(255, 255, 255, 0.3);
+
+box-shadow:0 10px 30px rgba(255, 255, 255, 0.25);
+
+z-index:1000;
+
+/* Keep your existing positioning (absolute/fixed, top, etc.) */
+  position: fixed; /* or absolute */
+  left: 50%;
+  
+  /* Initial state: Centered horizontally, shifted down vertically */
+  opacity: 0;
+  transform: translateX(-50%) translateY(30px) scale(0.9);
+  filter: blur(10px);
+
+  animation: navEntrance 1s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
+}
+
+@keyframes navEntrance {
+  from {
+    opacity: 0;
+    filter: blur(10px);
+    /* We MUST keep translateX(-50%) here so it stays centered */
+    transform: translateX(-50%) translateY(30px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    /* Ends at the perfect center */
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
+
+/* LOGO */
+
+.logo img{
+width:30px;
+height:auto;
+object-fit:contain;
+}
+
+/* NAV LINKS */
+
+.nav-links{
+display:flex;
+gap:20px;
+border: 2px solid white;
+padding: 5px 10px;
+border-radius: 20px;
+}
+
+/* BUTTON STYLE */
+
+.nav-links a{
+color:#cbd5e1;
+padding:8px 18px;
+text-decoration:none;
+font-size:15px;
+font-weight:600;
+letter-spacing:0.5px;
+
+border-radius:20px;
+
+transition:all 0.3s ease;
+}
+
+/* HOVER */
+
+.nav-links a:hover{
+background: #525252;
+color:white;
+}
+
+/* ACTIVE TAB */
+
+.nav-links a.active{
+background:linear-gradient(45deg,#7594fa,#9d75fa);
+color:white;
+}
+
+/* CTA BUTTON */
+
+.nav-links a.cta{
+background:#1f2937;
+color:white;
+}
+
+.nav-links a.cta:hover{
+background:linear-gradient(45deg,#7594fa,#9d75fa);
+}
+
+    /* BUTTON */
+
+    .resume-btn{
+      padding:10px 22px;
+      border:1px solid rgba(117,148,250,0.5);
+      border-radius:30px;
+      color:#7594fa;
+      text-decoration:none;
+      transition:0.3s;
+      box-shadow:0 0 20px rgba(117,148,250,0.15);
+    }
+
+    .resume-btn:hover{
+      background:#7594fa;
+      color:#000;
+    }
+
+    /* MOBILE MENU */
+
+    .menu-btn{
+      display:none;
+      flex-direction:column;
+      gap:5px;
+      cursor:pointer;
+    }
+
+    .menu-btn span{
+      width:25px;
+      height:3px;
+      background:#fff;
+      border-radius:5px;
+    }
+
+    /* RESPONSIVE */
+
+    @media(max-width:900px){
+
+      .nav-links,
+      .resume-btn{
+        display:none;
+      }
+
+      .menu-btn{
+        display:flex;
+      }
+
+    }
+
+
+    #loadingOverlay{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.5);
+backdrop-filter:blur(12px);
+display:flex;
+justify-content:center;
+align-items:center;
+opacity:0;
+visibility:hidden;
+transition:0.3s;
+z-index:9999;
+}
+
+#loadingOverlay.active{
+opacity:1;
+visibility:visible;
+}
+
+.loader{
+width:60px;
+height:60px;
+border:5px solid rgba(255,255,255,0.2);
+border-top:5px solid #7594fa;
+border-radius:50%;
+animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+0%{transform:rotate(0deg);}
+100%{transform:rotate(360deg);}
+}
+</style>
+
+</head>
+
+<body>
+
+
+    <nav class="navbar">
+
+<div class="logo">
+<img src="ChatGPT_Image_May_13__2026__01_24_47_PM-removebg-preview.png">
+</div>
+<b style="color: whitesmoke; font-family: 'Courier New', Courier, monospace; animation:pulse 1.5s infinite; font-size: 21px; letter-spacing: 1px;" >AI NEURAL NETWORK</b>
+
+<div class="nav-links">
+<a class="#" href="index.html">HOME</a>
+<!--<a href="#">Capabilities</a>
+<a href="#">Projects</a>
+<a href="#">Contact</a>-->
+<a class="active" href="rcb.html">NEURAL VISION</a>
+</div>
+
+
+
+
+    <!-- MOBILE MENU ICON -->
+
+    <div class="menu-btn">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+  </nav>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/controls/OrbitControls.js"></script>
+<script>
+
+const scene = new THREE.Scene()
+
+const camera = new THREE.PerspectiveCamera(
+75,
+window.innerWidth/window.innerHeight,
+0.1,
+3000
+)
+
+camera.position.z = 180
+
+const renderer = new THREE.WebGLRenderer({antialias:true})
+renderer.setSize(window.innerWidth,window.innerHeight)
+document.body.appendChild(renderer.domElement)
+
+const controls = new THREE.OrbitControls(camera,renderer.domElement)
+controls.enableDamping=true
+
+/* LIGHT */
+
+const light=new THREE.PointLight(0xffffff,1.4)
+light.position.set(100,100,100)
+scene.add(light)
+
+/* LABEL CREATION FUNCTION */
+
+function createLabel(text){
+
+const canvas=document.createElement("canvas")
+const context=canvas.getContext("2d")
+
+canvas.width=256
+canvas.height=128
+
+context.fillStyle="white"
+context.font="28px Arial"
+context.textAlign="center"
+context.fillText(text,128,64)
+
+const texture=new THREE.CanvasTexture(canvas)
+
+const material=new THREE.SpriteMaterial({map:texture})
+
+const sprite=new THREE.Sprite(material)
+
+sprite.scale.set(10,5,1)
+
+return sprite
+
+}
+
+/* NODE STYLE */
+
+const nodeGeometry=new THREE.SphereGeometry(1.4,32,32)
+
+const nodeMaterial=new THREE.MeshStandardMaterial({
+color:0x7594fa,
+emissive:0x7594fa,
+emissiveIntensity:0.9
+})
+
+const labels=[
+"AI","ML","DL","CNN","RNN","LLM","NLP","CV","GPT",
+"BERT","Tensor","CUDA","PyTorch","API","Agent",
+"VectorDB","Embedding","Inference","Training",
+"Dataset","Token","Attention","Transformer",
+"GPU","TPU","Model","Prediction","Automation",
+"Pipeline","Gradient","Backprop","Prompt",
+"FineTune","Search","Speech","Vision"
+]
+
+const nodes=[]
+
+/* CREATE BRAIN SHAPE */
+
+for(let i=0;i<80;i++){
+
+const node=new THREE.Mesh(nodeGeometry,nodeMaterial)
+
+const angle=i*0.3
+const radius=70+Math.sin(i*0.5)*20
+
+node.position.set(
+Math.cos(angle)*radius,
+Math.sin(angle*1.3)*40,
+(Math.random()-0.5)*40
+)
+
+node.userData.label=labels[Math.floor(Math.random()*labels.length)]
+
+const label=createLabel(node.userData.label)
+label.position.set(0,3,0)
+
+node.add(label)
+
+scene.add(node)
+nodes.push(node)
+
+}
+
+/* CONNECTIONS */
+
+function connect(a,b){
+
+const material=new THREE.LineBasicMaterial({
+color:0x9d75fa,
+transparent:true,
+opacity:0.6
+})
+
+const points=[]
+
+points.push(nodes[a].position)
+points.push(nodes[b].position)
+
+const geometry=new THREE.BufferGeometry().setFromPoints(points)
+
+const line=new THREE.Line(geometry,material)
+
+scene.add(line)
+
+/* FLOW PARTICLE */
+
+const particleGeometry=new THREE.SphereGeometry(0.5,16,16)
+const particleMaterial=new THREE.MeshBasicMaterial({color:0xffffff})
+
+const particle=new THREE.Mesh(particleGeometry,particleMaterial)
+
+particle.start=nodes[a].position
+particle.end=nodes[b].position
+particle.t=Math.random()
+
+scene.add(particle)
+
+flowParticles.push(particle)
+
+}
+
+const flowParticles=[]
+
+for(let i=0;i<200;i++){
+
+const a=Math.floor(Math.random()*nodes.length)
+const b=Math.floor(Math.random()*nodes.length)
+
+connect(a,b)
+
+}
+
+/* STAR BACKGROUND */
+
+const starsGeometry=new THREE.BufferGeometry()
+const starVertices=[]
+
+for(let i=0;i<6000;i++){
+
+starVertices.push(
+(Math.random()-0.5)*4000,
+(Math.random()-0.5)*4000,
+(Math.random()-0.5)*4000
+)
+
+}
+
+starsGeometry.setAttribute(
+'position',
+new THREE.Float32BufferAttribute(starVertices,3)
+)
+
+const starsMaterial=new THREE.PointsMaterial({
+color:0xffffff,
+size:0.8
+})
+
+const starField=new THREE.Points(starsGeometry,starsMaterial)
+scene.add(starField)
+
+/* SCROLL SPEED CONTROL */
+
+let speed=1
+
+window.addEventListener("wheel",(e)=>{
+
+speed+=e.deltaY*-0.0005
+
+if(speed<0.2) speed=0.2
+if(speed>5) speed=5
+
+})
+
+/* ANIMATION */
+
+function animate(){
+
+requestAnimationFrame(animate)
+
+controls.update()
+
+scene.rotation.y+=0.0006*speed
+
+flowParticles.forEach(p=>{
+
+p.t+=0.01*speed
+
+if(p.t>1) p.t=0
+
+p.position.lerpVectors(p.start,p.end,p.t)
+
+})
+
+nodes.forEach(n=>{
+
+n.material.emissiveIntensity=
+0.7+Math.sin(Date.now()*0.003+n.position.x)*0.4
+
+})
+
+/* BILLBOARD LABELS (always face camera) */
+
+nodes.forEach(node=>{
+node.children.forEach(label=>{
+label.quaternion.copy(camera.quaternion)
+})
+})
+
+starField.rotation.y+=0.0002
+
+renderer.render(scene,camera)
+
+}
+
+animate()
+
+window.addEventListener("resize",()=>{
+
+camera.aspect=window.innerWidth/window.innerHeight
+camera.updateProjectionMatrix()
+renderer.setSize(window.innerWidth,window.innerHeight)
+
+})
+
+
+
+document.querySelectorAll("a").forEach(link => {
+
+link.addEventListener("click", function(e){
+
+const target = this.getAttribute("href")
+
+if(target.endsWith(".html")){
+
+e.preventDefault()
+
+const overlay = document.getElementById("loadingOverlay")
+overlay.classList.add("active")
+
+setTimeout(()=>{
+window.location.href = target
+},1000)
+
+}
+
+})
+
+})
+
+
+</script>
+<div id="loadingOverlay">
+  <div class="loader"></div>
+</div>
+
+</body>
+</html>
+```

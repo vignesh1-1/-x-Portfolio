@@ -6,7 +6,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>ᴄʏᴀɴx | Portfolio</title>
@@ -27,6 +26,7 @@ width:100%;
 height:100%;
 z-index:-2;
 background:#020617;
+transition: background 0.5s ease;
 }
 
    body{
@@ -138,7 +138,7 @@ top:20px;
 left:50%;
 transform:translateX(-50%);
 
-width:70%;
+width:75%;
 padding:12px 3%;
 
 display:flex;
@@ -164,6 +164,7 @@ z-index:1000;
   filter: blur(10px);
 
   animation: navEntrance 1s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
+  transition: background 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
 }
 
 @keyframes navEntrance {
@@ -199,6 +200,8 @@ padding: 5px 10px;
 border-radius: 20px;
 opacity: 0;
   animation: fadeIn 0.5s ease forwards;
+  align-items: center;
+  transition: border-color 0.5s ease;
 }
 
 .nav-links li:nth-child(1) { animation-delay: 0.6s; }
@@ -356,6 +359,7 @@ margin-top: 0px;
   display:flex;
   align-items:center;
   gap:8px;
+  transition: border-color 0.5s ease;
 }
 
 .home-content h1{
@@ -368,6 +372,7 @@ margin-top: 0px;
   font-family:'Space Grotesk',sans-serif;
 
   margin-bottom:25px;
+  transition: color 0.5s ease;
 }
 
 .home-content h1 span{
@@ -388,6 +393,7 @@ margin-top: 0px;
   opacity: 0;
   animation: contentPop 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.7s forwards;
   font-family:'Inter',sans-serif;
+  transition: color 0.5s ease;
 }
 
 /* BUTTONS */
@@ -478,7 +484,7 @@ margin-top: 0px;
   width:420px;
   height:420px;
 
-  background:linear-gradient(135deg,#7594fa,#9d75fa,);
+  background:linear-gradient(135deg,#7594fa,#9d75fa);
 
   border-radius:50%;
 
@@ -588,6 +594,7 @@ margin-top: 0px;
     padding:100px 15%;
     /*background:#0b0f19;*/
     color:white;
+    transition: color 0.5s ease;
 }
 
 .about-container{
@@ -613,6 +620,7 @@ margin-top: 0px;
      padding: 40px;
      border: 2px solid white;
      border-radius: 20px;
+     transition: background-color 0.5s ease, border-color 0.5s ease;
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap');
@@ -623,6 +631,7 @@ margin-top: 0px;
   color:#fff;
   font-family:'Space Grotesk',sans-serif;
   margin-bottom:25px;
+  transition: color 0.5s ease;
 }
 
 .about-content b{
@@ -631,6 +640,7 @@ margin-top: 0px;
     margin-bottom:20px;
     font-weight: 500px;
     letter-spacing: 0.5px;
+    transition: color 0.5s ease;
 }
 
 .about-content span{
@@ -714,6 +724,7 @@ margin-top: 0px;
     gap: 40px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
     border: 1px solid white;
+    transition: background-color 0.5s ease, border-color 0.5s ease;
 }
 
 /* Left Side Styling */
@@ -735,6 +746,7 @@ margin-top: 0px;
     line-height: 1.6;
     margin-bottom: 40px;
     max-width: 450px;
+    transition: color 0.5s ease;
 }
 
 .btn-resume {
@@ -773,6 +785,7 @@ margin-top: 0px;
     border-radius: 16px;
     color: white;
     font-size: 0.95rem;
+    transition: border-color 0.5s ease;
 }
 
 .contact-item i {
@@ -801,6 +814,7 @@ margin-top: 0px;
 .contact-item a{
 color: white;        /* same as your normal text */
 text-decoration: none;
+transition: color 0.5s ease;
 }
 
 .contact-item a:hover{
@@ -948,6 +962,7 @@ body {
   color: white;
   z-index: 3;
   font-family:'Space Grotesk',sans-serif;
+  transition: color 0.5s ease;
 }
 
 @keyframes slideUp{
@@ -969,6 +984,7 @@ font-size:36px;
 margin-bottom:40px;
 color:white;
 font-weight:700;
+transition: color 0.5s ease;
 }
 
 .project-card{
@@ -980,7 +996,7 @@ padding:30px;
 border-radius:18px;
 margin-bottom:25px;
 border:1px solid #ffffff;
-transition:0.3s;
+transition: 0.3s, background-color 0.5s ease, border-color 0.5s ease;
 }
 
 .project-card:hover{
@@ -1005,6 +1021,7 @@ margin-bottom:10px;
 color:white;
 font-size:15px;
 line-height:1.6;
+transition: color 0.5s ease;
 }
 
 .project-tags{
@@ -1039,11 +1056,13 @@ margin-bottom:40px;
 font-size:40px;
 color:white;
  font-family:'Space Grotesk',sans-serif;
+ transition: color 0.5s ease;
 }
 
 .section-header p{
 color:white;
 font-size:15px;
+transition: color 0.5s ease;
 }
 
 .cards{
@@ -1057,7 +1076,7 @@ background:linear-gradient(65deg, black, black, black,black,black, #c9d6ff,#7594
 border-radius:18px;
 padding:30px;
 box-shadow:0 10px 25px rgba(0,0,0,0.08);
-transition:0.3s;
+transition: 0.3s, border-color 0.5s ease;
 border:1px solid #c9d5ff;
 }
 
@@ -1080,6 +1099,7 @@ color:#7594fa;
 color:#ffffff;
 line-height:1.6;
 font-size:14px;
+transition: color 0.5s ease;
 }
 
 
@@ -1104,6 +1124,7 @@ font-size:14px;
 
 .focus{
     margin-top: 20px;
+    transition: color 0.5s ease;
 }
 
 
@@ -1204,68 +1225,114 @@ margin-top:15px;
 }
 
 
-.project-links a{
-text-decoration:none;
-padding:8px 18px;
-min-width: 106px;
-border-radius:25px;
-font-size:14px;
-font-weight:500;
-color:#fff;
-margin-left: 20px;
-
-background:rgba(255,255,255,0.05);
-border:1px solid rgba(255,255,255,0.2);
-
-backdrop-filter:blur(10px);
-transition:all 0.3s ease;
+.project-links a {
+    text-decoration: none;
+    padding: 8px 18px;
+    min-width: 106px;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #fff; /* White text for dark mode */
+    margin-left: 20px;
+    background: rgba(255, 255, 255, 0.05); /* Faint white bg */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Faint white border */
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    display: inline-block; /* Ensures padding and min-width apply perfectly to <a> tags */
 }
 
-/* Hover effect */
-.project-links a:hover{
-    background:linear-gradient(135deg,#7f5af0,#9f7aea);
-border-color:transparent;
-box-shadow:0 0 12px rgba(127,90,240,0.6);
-transform:translateY(-2px);
+/* Your existing hover effects work fine as they have strong colors */
+.project-links a:hover {
+    background: linear-gradient(135deg, #7f5af0, #9f7aea);
+    border-color: transparent;
+    box-shadow: 0 0 12px rgba(127, 90, 240, 0.6);
+    transform: translateY(-2px);
+    color: #fff; /* Ensures text stays white on hover */
 }
 
-.project-links a:last-child:hover{
-background:linear-gradient(135deg,#4facfe,#00f2fe);
+.project-links a:last-child:hover {
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
 }
 
-.project-links a:first-child:hover{
-background:#00d9ff;
+.project-links a:first-child:hover {
+    background: #00d9ff;
+    color: #000; /* Dark text for high contrast on bright cyan hover */
 }
 
+/* Light Mode Visibility Fix */
+body.light-mode .project-links a {
+    color: #2e7d32; /* A dark green to match your tags */
+    background: rgba(76, 175, 80, 0.1); /* Very light green tint */
+    border: 1px solid rgba(76, 175, 80, 0.3); /* Soft green border */
+    backdrop-filter: blur(10px);
+}
+
+/* Ensure 'Live Now' text is readable */
+body.light-mode .project-links a.acti {
+    color: #1b5e20; /* Slightly darker green for the active link */
+    font-weight: 600;
+}
+
+/* Maintain your hover gradients in light mode */
+body.light-mode .project-links a:hover {
+  background: #00d9ff;
+    color: #fff; /* Switch text back to white when the colorful gradient appears */
+}
+
+@media (prefers-color-scheme: light) {
+    .project-links a {
+        color: #1a1a1a;
+        background: #00d9ff;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+    }
+    
+    .project-links a:hover {
+        color: #fff;
+        background: #00d9ff;
+    }
+    .project-links a:first-child:hover {
+        color: #000;
+        background: #00d9ff;
+    }
+}
 .acti{
     background:linear-gradient(135deg,#7f5af0,#9f7aea);
 }
 
 
-.glass-popup{
-position:fixed;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%) scale(0.8);
-background:rgba(255,255,255,0.08);
-border:1px solid rgba(255,255,255,0.2);
-backdrop-filter:blur(10px);
-color:#fff;
-padding:20px 35px;
-border-radius:12px;
-font-size:16px;
-opacity:0;
-transition:0.4s ease;
-box-shadow:0 0 20px rgba(0,255,255,0.4);
-z-index:999;
-
+/* 1. Define your theme colors */
+:root {
+    --popup-bg: rgba(255, 255, 255, 0.08); /* Default White Glass */
+    --popup-text: #ffffff;
+    --btn-bg: rgba(255, 255, 255, 0.05);
+    --btn-text: #ffffff;
 }
 
-.glass-popup.show{
-opacity:1;
-transform:translate(-50%,-50%) scale(1);
+/* 2. When Light Mode is active, swap the variables */
+body.light-mode {
+    --popup-bg: rgba(0, 0, 0, 0.9); /* Pure Black Glass for Light Mode */
+    --popup-text: #ffffff;
+    --btn-bg: rgba(0, 0, 0, 0.1);  /* Darker buttons for visibility */
+    --btn-text: #1a1a1a;           /* Dark text for the buttons */
 }
 
+/* This version uses high-contrast borders and shadows so they work on ANY background */
+
+.project-links a {
+    color: #fff !important; /* Keep text white */
+    background: #1a1a1a !important; /* Force background to dark charcoal */
+    border: 1px solid #444 !important;
+    padding: 8px 18px;
+    border-radius: 25px;
+    display: inline-block;
+}
+
+.glass-popup {
+    background: rgba(0, 0, 0, 0.95) !important; /* Solid dark glass */
+    color: #ffffff !important;
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.5) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
 
 /* Container Background */
 .stack-section {
@@ -1310,6 +1377,216 @@ transform:translate(-50%,-50%) scale(1);
   background-color: #d1e2d5;
   border-color: #4a8a65;
 }
+
+/* ==========================================================================
+   THEME TOGGLE SYSTEM (Swipe Switch Styles)
+   ========================================================================== */
+.theme-switch-wrapper {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.theme-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+}
+
+.theme-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider-toggle {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: .4s;
+  border-radius: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 5px;
+}
+
+.slider-toggle:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #7594fa;
+  transition: .4s;
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.slider-toggle .fa-sun {
+  color: #f59e0b;
+  font-size: 11px;
+}
+
+.slider-toggle .fa-moon {
+  color: #f1f5f9;
+  font-size: 11px;
+}
+
+input:checked + .slider-toggle {
+  background-color: #e2e8f0;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+input:checked + .slider-toggle:before {
+  transform: translateX(24px);
+  background-color: #475569;
+}
+
+/* ==========================================================================
+   LIGHT MODE OVERRIDES (.light-mode)
+   ========================================================================== */
+.light-mode #neural-network {
+  background: #f8fafc;
+}
+
+.light-mode body::before {
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+}
+
+.light-mode .navbar {
+  background: rgba(255, 255, 255, 0.75);
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.light-mode .nav-links {
+  border-color: #cbd5e1;
+}
+
+.light-mode .nav-links a {
+  color: #475569;
+}
+
+.light-mode .nav-links a:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.light-mode .subtitle {
+  border-color: #cbd5e1;
+}
+
+.light-mode .home-content h1 {
+  color: #0f172a;
+}
+
+.light-mode .description {
+  color: #334155;
+}
+
+.light-mode .secondary-btn {
+  border-color: rgba(0, 0, 0, 0.15);
+  color: #475569;
+}
+
+.light-mode .secondary-btn:hover {
+  border-color: #7594fa;
+  color: #7594fa;
+}
+
+.light-mode .numbers span {
+  color: #334155;
+}
+
+.light-mode .about-content {
+  background-color: #ffffff;
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.light-mode .about-content h2,
+.light-mode .about-content b,
+.light-mode .focus {
+  color: #0f172a;
+}
+
+.light-mode .section-header h1,
+.light-mode .section-header p,
+.light-mode .project-title,
+.light-mode center h1 {
+  color: #0f172a !important;
+}
+
+.light-mode .card {
+  background: linear-gradient(65deg, #ffffff, #ffffff, #f1f5f9, #f1f5f9, #e2e8f0);
+  border-color: #cbd5e1;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
+}
+
+.light-mode .card p {
+  color: #475569;
+}
+
+.light-mode .project-card {
+  background: #ffffff;
+  border-color: #cbd5e1;
+}
+
+.light-mode .project-left p {
+  color: #475569;
+}
+
+.light-mode .contact-card {
+  background-color: #ffffff;
+  border-color: #cbd5e1;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.light-mode .content-left p {
+  color: #334155;
+}
+
+.light-mode .contact-item {
+  border-color: #cbd5e1;
+}
+
+.light-mode .contact-item a {
+  color: #334155;
+}
+
+.light-mode .contact-item a:hover {
+  color: #7594fa;
+}
+
+.light-mode .mouse-light {
+  background: radial-gradient(circle, rgba(117,148,250,0.15), rgba(117,148,250,0.05), transparent 70%);
+}
+
+/* Light Mode Fix for Contact Info */
+body.light-mode .contact-item span, 
+body.light-mode .contact-item i {
+    color: #1a1a1a !important; /* Dark charcoal for the text and icon */
+}
+
+/* Optional: If you want the icon to have a specific color like blue or green */
+body.light-mode .contact-item i {
+    color: #7f5af0; /* Matches your purple theme */
+}
+
+.light-mode .cta{
+  background: #00d9ff;
+}
+
   </style>
 </head>
 <body>
@@ -1328,6 +1605,17 @@ transform:translate(-50%,-50%) scale(1);
 <a href="#projects">PROJECTS</a>
 <a href="#contact">CONTACT</a>
 <a class="cta" href="rcb.html">NEURAL VISION</a>
+
+<!-- SWIPE TYPE THEME SWITCH BUTTON -->
+<div class="theme-switch-wrapper">
+  <label class="theme-switch" for="themeCheckbox">
+    <input type="checkbox" id="themeCheckbox" />
+    <div class="slider-toggle">
+      <i class="fas fa-moon"></i>
+      <i class="fas fa-sun"></i>
+    </div>
+  </label>
+</div>
 </div>
 
 <!-- MOBILE MENU ICON -->
@@ -1434,23 +1722,6 @@ transform:translate(-50%,-50%) scale(1);
     <span class="stack-tag" style="color: #4a8a65;">Editing</span>
   </div>
 </div>
-<!--<div class="about-info">
-                <div class="info-box">
-                    <h3>Experience</h3>
-                    <b>Full Stack Projects<br>
-                        Database Management System<br>
-                    Data Structure</b>
-                </div>
-
-                <div class="info-box">
-                    <h3>Technical Interests</h3>
-                    <b>Software Design Specs<br>
-                    Video Production<br>
-                    Photo Manipulation</b>
-                    
-                </div>
-                
-            </div>-->
             <p class="focus">
 Focus: Building scalable web applications and solving real-world problems using software systems.
 </p>
@@ -1540,7 +1811,7 @@ A personal portfolio website built to showcase the site features
         <span>Portfolio</span>
     </div>
     <div class="project-links">
-<a div class="acti">&emsp13;Live Now</a>
+<a class="acti">&emsp13;Live Now</a>
     </div>
    
 </div>
@@ -1578,28 +1849,6 @@ Built using PHP and MySQL with a secure admin management panel.
 
 </div>
 
-
-<!--<div class="project-card">
-
-<div class="project-left">
-<h3 style="font-family:'Space Grotesk',sans-serif;">HR Management System</h3>
-<p>
-A software system designed to manage employee records,
-departments, promotions, and reports within an organization.
-Includes an interactive dashboard and employee analytics.
-</p>
-</div>
-
-<div class="project-tags">
-<span>JavaScript</span>
-<span>HTML</span>
-<span>CSS</span>
-<span>MySQL</span>
-<span>Dashboard</span>
-</div>
-
-</div>-->
-
 </section>
 <center><h1 style="background: transparent; color: white; font-size: 55px; font-family:'Space Grotesk',sans-serif;">Contact</h1></center>
 
@@ -1624,10 +1873,13 @@ Includes an interactive dashboard and employee analytics.
                     <span>vigneshpremkumar1.com</span></a>
                 </div>
 
-                <div class="contact-item">
-                    <i class="fa-solid fa-phone"></i>
-                    <span>+91 9380356694</span>
-                </div>
+                
+               <div class="contact-item">
+    <a href="#" target="_blank">
+        <i class="fa-solid fa-phone"></i>
+        <span>+91 9380356694</span>
+    </a>
+</div>
 
                <div class="contact-item">
     <a href="https://linkedin.com/in/vigneshp05" target="_blank">
@@ -1946,10 +2198,46 @@ function showPopuppp(event, popupId) {
     }
 }
 
+  const themeCheckbox = document.getElementById('themeCheckbox');
+  
+  // Check for saved theme preferences
+  const currentTheme = localStorage.getItem('theme') ? localStorage.getItem('theme') : null;
+  if (currentTheme) {
+      document.documentElement.classList.add(currentTheme);
+      if (currentTheme === 'light-mode') {
+          themeCheckbox.checked = true;
+          updateCanvasTheme(true);
+      }
+  }
 
+  themeCheckbox.addEventListener('change', function() {
+      if (this.checked) {
+          document.documentElement.classList.add('light-mode');
+          localStorage.setItem('theme', 'light-mode');
+          updateCanvasTheme(true);
+      } else {
+          document.documentElement.classList.remove('light-mode');
+          localStorage.setItem('theme', 'dark-mode');
+          updateCanvasTheme(false);
+      }
+  });
+
+  // Dynamic canvas check helper
+  function updateCanvasTheme(isLight) {
+      const canvas = document.getElementById('neural-network');
+      if(canvas && window.updateNeuralNetworkColor) {
+          window.updateNeuralNetworkColor(isLight);
+      }
+  }
+
+  // Example toggle logic
+const btn = document.querySelector(".theme-btn"); // Change to your toggle class
+
+btn.onclick = function() {
+    document.body.classList.toggle("light-mode");
+}
 </script>
 <div id="loadingOverlay">
   <div class="loader"></div>
-</div>
 </body>
 </html>

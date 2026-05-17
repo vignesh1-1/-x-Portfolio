@@ -913,9 +913,9 @@ body {
 .wrapper .icon:hover .tooltip {
   text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.4);
 }
-.wrapper .facebook:hover span,
-.wrapper .facebook:hover .tooltip {
-  background: #3B5999;
+.wrapper .vsco:hover span,
+.wrapper .vsco:hover .tooltip {
+  background: #333;
 }
 .wrapper .twitter:hover span,
 .wrapper .twitter:hover .tooltip {
@@ -1453,6 +1453,11 @@ input:checked + .slider-toggle:before {
 /* ==========================================================================
    LIGHT MODE OVERRIDES (.light-mode)
    ========================================================================== */
+.light-mode .ff{
+  color: black;
+}
+
+
 .light-mode #neural-network {
   background: #f8fafc;
 }
@@ -1480,10 +1485,6 @@ input:checked + .slider-toggle:before {
 .light-mode .nav-links a:hover {
   background: #e2e8f0;
   color: #0f172a;
-}
-
-   .light-mode .ff{
-  color: black;
 }
 
 .light-mode .subtitle {
@@ -1589,6 +1590,22 @@ body.light-mode .contact-item i {
 
 .light-mode .cta{
   background: #00d9ff;
+}
+/* Forces the VSCO SVG to match the size of your other icons */
+.icon.vsco span svg {
+    width: 1em;   /* Dynamically scales with your existing font size */
+    height: 1em;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+/* Optional: Sets the color behavior on hover if needed */
+
+
+.icon.vsco span {
+    display: flex;
+    align-items: center;     /* Centers it vertically (moves it up) */
+    justify-content: center;  /* Centers it horizontally */
 }
 
   </style>
@@ -1815,7 +1832,7 @@ A personal portfolio website built to showcase the site features
         <span>Portfolio</span>
     </div>
     <div class="project-links">
-<a class="acti">&emsp13;Live Now</a>
+<a href="#" target="_blank" class="acti">&emsp13;Live Now</a>
     </div>
    
 </div>
@@ -1899,15 +1916,20 @@ Built using PHP and MySQL with a secure admin management panel.
 </div>--><br>
             
       <div class="wrapper">
-         <a href="#" class="icon facebook" onclick="showPopuppp(event, 'facePopup')">
-            <div class="tooltip">
-               Facebook
-            </div>
-            <span><i class="fab fa-facebook-f"></i></span>
-         </a>
-         <div id="facePopup" class="glass-popup">
-    <p>❌ Error: 404</p>
-</div>
+      <a href="https://vsco.co/vcenzo1" target="_blank" class="icon-link">
+   <div class="icon vsco">
+      <div class="tooltip">
+          VSCO
+      </div>
+      <span>
+   <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/>
+      <path d="M12 5.5a6.5 6.5 0 1 0 6.5 6.5A6.5 6.5 0 0 0 12 5.5zm0 11a4.5 4.5 0 1 1 4.5-4.5 4.5 4.5 0 0 1-4.5 4.5z"/>
+      <circle cx="12" cy="12" r="2.5"/>
+   </svg>
+</span>
+   </div>
+</a>
 
 
 

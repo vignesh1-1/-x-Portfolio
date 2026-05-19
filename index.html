@@ -29,12 +29,6 @@ background:#020617;
 transition: background 0.5s ease;
 }
 
-   body{
-/*background:linear-gradient(270deg,#020617,#0a1026,#020617);
-background-size:600% 600%;
-animation:bgmove 15s ease infinite;*/
-}
-
 @keyframes bgmove{
 0%{background-position:0% 50%;}
 50%{background-position:100% 50%;}
@@ -126,11 +120,6 @@ transition:0.3s;
 .nav-btn:hover{
 background:#9d75fa;
 }
-
-
-
-
-
 
 .navbar{
 position:fixed;
@@ -245,9 +234,9 @@ color:white;
 
 /* CTA BUTTON */
 
-.nav-links a.cta{
-background:#1f2937;
-color:white;
+.nav-links .cta {
+  background: #aec1ff;;
+  color: white;
 }
 
 .nav-links a.cta:hover{
@@ -324,7 +313,7 @@ background:linear-gradient(45deg,#7594fa,#9d75fa);
 }
 
 .home{
-  min-height:100vh;
+  min-height:70vh;
   width:100%;
 margin-top: 0px;
   display:flex;
@@ -376,9 +365,7 @@ margin-top: 0px;
 }
 
 .home-content h1 span{
-
   background:linear-gradient(135deg,#bdcdff,#7539ff);
-
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
 }
@@ -591,10 +578,12 @@ margin-top: 0px;
 
 
 .about{
-    padding:100px 15%;
+    padding:0px 15%;
     /*background:#0b0f19;*/
     color:white;
     transition: color 0.5s ease;
+   opacity: 0;
+  animation: contentPop 0.8s cubic-bezier(0.22, 1, 0.36, 1) 1.0s forwards;
 }
 
 .about-container{
@@ -607,7 +596,7 @@ margin-top: 0px;
 
 .about-imagee img{
     width:450px;
-    padding-top: 30px;
+    padding-top: 0px;
     padding-right: 30px;
     padding-left: 30px;
     border-radius:20px;
@@ -702,13 +691,15 @@ margin-top: 0px;
     justify-content: center;
     align-items: center;
     min-height: 50vh;
+    opacity: 0;
+  animation: contentPop 0.8s cubic-bezier(0.22, 1, 0.36, 1) 1.0s forwards;
 }
 
 .contact {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-     font-family:'Inter',sans-serif;
+     font-family:'Inter',sans-serif;  
 }
 
 
@@ -786,6 +777,11 @@ margin-top: 0px;
     color: white;
     font-size: 0.95rem;
     transition: border-color 0.5s ease;
+    text-decoration: none;
+}
+
+.contact-item:hover{
+   color: #7594fa;
 }
 
 .contact-item i {
@@ -794,6 +790,7 @@ margin-top: 0px;
     margin-right: 15px;
     width: 24px;
     text-align: center;
+    text-decoration: none;
 }
 
 /* Responsive adjustments */
@@ -817,7 +814,7 @@ text-decoration: none;
 transition: color 0.5s ease;
 }
 
-.contact-item a:hover{
+.contact-item :hover{
 color: #7594fa; 
 cursor: pointer;     /* optional hover color */
 }
@@ -977,6 +974,8 @@ body {
 
 .projects-section{
 padding:80px 15%;
+opacity: 0;
+  animation: contentPop 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.9s forwards;
 }
 
 .project-title{
@@ -1043,6 +1042,8 @@ background: #eaf6ea;
 
 .section{
 padding:80px 10%;
+opacity: 0;
+  animation: contentPop 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.9s forwards;
 }
 
 .section-header{
@@ -1120,6 +1121,8 @@ transition: color 0.5s ease;
 .conn{
     margin-bottom: 30px;
     color: white;
+    opacity: 0;
+  animation: contentPop 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.9s forwards;
 }
 
 .focus{
@@ -1234,7 +1237,7 @@ margin-top:15px;
     font-weight: 500;
     color: #fff; /* White text for dark mode */
     margin-left: 20px;
-    background: rgba(255, 255, 255, 0.05); /* Faint white bg */
+    /*background: rgba(255, 255, 255, 0.05);  Faint white bg */
     border: 1px solid rgba(255, 255, 255, 0.2); /* Faint white border */
     backdrop-filter: blur(10px);
     transition: all 0.3s ease;
@@ -1243,6 +1246,7 @@ margin-top:15px;
 
 /* Your existing hover effects work fine as they have strong colors */
 .project-links a:hover {
+  z-index: 2;
     background: linear-gradient(135deg, #7f5af0, #9f7aea);
     border-color: transparent;
     box-shadow: 0 0 12px rgba(127, 90, 240, 0.6);
@@ -1262,14 +1266,14 @@ margin-top:15px;
 /* Light Mode Visibility Fix */
 body.light-mode .project-links a {
     color: #2e7d32; /* A dark green to match your tags */
-    background: rgba(76, 175, 80, 0.1); /* Very light green tint */
+   background: #00d9ff; /* Very light green tint */
     border: 1px solid rgba(76, 175, 80, 0.3); /* Soft green border */
     backdrop-filter: blur(10px);
 }
 
 /* Ensure 'Live Now' text is readable */
 body.light-mode .project-links a.acti {
-    color: #1b5e20; /* Slightly darker green for the active link */
+    color:#00d9ff; /* Slightly darker green for the active link */
     font-weight: 600;
 }
 
@@ -1295,8 +1299,9 @@ body.light-mode .project-links a:hover {
         background: #00d9ff;
     }
 }
-.acti{
-    background:linear-gradient(135deg,#7f5af0,#9f7aea);
+.project-links .acti{
+    /*background:linear-gradient(135deg,#7f5af0,#9f7aea);*/
+    background: #00d9ff;
 }
 
 
@@ -1450,6 +1455,11 @@ input:checked + .slider-toggle:before {
   background-color: #475569;
 }
 
+.nav-links .cta {
+  background: #aec1ff;;
+  color: white;
+}
+
 /* ==========================================================================
    LIGHT MODE OVERRIDES (.light-mode)
    ========================================================================== */
@@ -1485,6 +1495,11 @@ input:checked + .slider-toggle:before {
 .light-mode .nav-links a:hover {
   background: #e2e8f0;
   color: #0f172a;
+}
+
+.light-mode .nav-links .cta {
+  background: #aec1ff;;
+  color: white;
 }
 
 .light-mode .subtitle {
@@ -1565,13 +1580,14 @@ input:checked + .slider-toggle:before {
   border-color: #cbd5e1;
 }
 
-.light-mode .contact-item a {
-  color: #334155;
+.light-mode .contact-item {
+  color: #000000;
 }
 
-.light-mode .contact-item a:hover {
+.light-mode .contact-item:hover {
   color: #7594fa;
 }
+
 
 .light-mode .mouse-light {
   background: radial-gradient(circle, rgba(117,148,250,0.15), rgba(117,148,250,0.05), transparent 70%);
@@ -1608,6 +1624,10 @@ body.light-mode .contact-item i {
     justify-content: center;  /* Centers it horizontally */
 }
 
+.project-links .acti {
+background-color: #00f2fe;
+}
+
   </style>
 </head>
 <body>
@@ -1632,7 +1652,7 @@ body.light-mode .contact-item i {
   <label class="theme-switch" for="themeCheckbox">
     <input type="checkbox" id="themeCheckbox" />
     <div class="slider-toggle">
-      <i class="fas fa-moon"></i>
+      <i style="color: #666666;" class="fas fa-moon"></i>
       <i class="fas fa-sun"></i>
     </div>
   </label>
@@ -1719,6 +1739,10 @@ body.light-mode .contact-item i {
 </section>
 
 <section id="about" class="about">
+   <div class="section-header">
+<h1 style="font-family: 'Space Grotesk',sans-serif;">Capabilities</h1>
+<p>Technical and problem-solving skills developed as a BCA student.</p>
+</div>
     <div class="about-container" id="about">
 
         <div class="about-content">
@@ -1751,15 +1775,15 @@ Focus: Building scalable web applications and solving real-world problems using 
 
         </div>
          <div class="about-imagee">
-            <img src="final.png" alt="Vignesh Profile">
+            <img src="lapimage-removebg-preview.png" alt="Vignesh Profile">
         </div>
 
     </div>
     <div class="sectiondec">
 
     <div class="section-header">
-<h1 style="font-family: 'Space Grotesk',sans-serif;">Capabilities</h1>
-<p>Technical and problem-solving skills developed as a BCA student.</p>
+<h1 style="font-family: 'Space Grotesk',sans-serif;"></h1>
+<p><!--Technical and problem-solving skills developed as a BCA student.--></p>
 </div>
 
 <div class="cards">
@@ -1832,7 +1856,7 @@ A personal portfolio website built to showcase the site features
         <span>Portfolio</span>
     </div>
     <div class="project-links">
-<a class="acti">&emsp13;Live Now</a>
+<a href="https://vignesh1-1.github.io/-x-Portfolio/index.html" target="_blank" class="acti">&emsp13;Live Now</a>
     </div>
    
 </div>
@@ -1883,31 +1907,29 @@ Built using PHP and MySQL with a secure admin management panel.
             <div class="content-left">
                 <h1 style=" font-family:'Space Grotesk',sans-serif;">Let's Build<br> Something <strong>Great</strong></h1>
                 <p>Open to AI implementation, Full-Stack architecture, and scalable software systems, where strong technical thinking can create real-world impact.<br><br>If you’re creating something interesting, <strong>let’s connect</strong>.</p>
-                <a href="Vignesh P Resume.pdf" target="_blank" class="btn-resume">View Resume</a>
+                <a href="resume.html" target="_blank" class="btn-resume">View Resume</a>
             </div>
 
             <!-- Right Section: Contact Links -->
             <div class="content-right">
+               <a style="text-decoration: none;" href="mailto:vigneshpremkumar1@gmail.com" target="_blank">
                 <div class="contact-item">
-                    <a href="mailto:vigneshpremkumar1@gmail.com" target="_blank">
                         <i class="fa-regular fa-envelope"></i>
-                    <span>vigneshpremkumar1.com</span></a>
-                </div>
+                    <span style="text-decoration: none;">vigneshpremkumar1.com</span>
+                </div></a>
 
-                
+              <a style="text-decoration: none;" href="tel:+919380356694" target="_blank">
                <div class="contact-item">
-    <a href="#" target="_blank">
         <i class="fa-solid fa-phone"></i>
         <span>+91 9380356694</span>
-    </a>
-</div>
+</div></a>
 
+
+<a style="text-decoration: none;" href="https://linkedin.com/in/vigneshp05" target="_blank">
                <div class="contact-item">
-    <a href="https://linkedin.com/in/vigneshp05" target="_blank">
         <i class="fa-brands fa-linkedin-in"></i>
         <span>linkedin.com/in/vigneshp05</span>
-    </a>
-</div>
+</div></a>
 <!--<div class="contact-item">
     <i class="fab fa-github"></i>
 <a href="https://github.com/yourusername" target="_blank">

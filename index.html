@@ -1856,7 +1856,10 @@ A personal portfolio website built to showcase the site features
         <span>Portfolio</span>
     </div>
     <div class="project-links">
-<span class="acti">&emsp13;Live Now</span>
+        <a href="#" class="icon live" onclick="showLivePopups()">&emsp13;Live Now</a>
+        <div id="livePopups" class="glass-popup">
+    <p>🖥️ The project is Live in the Window</p>
+</div>
     </div>
    
 </div>
@@ -2188,6 +2191,18 @@ function showLivePopup(){
 event.preventDefault();
 
 let popup = document.getElementById("livePopup");
+
+popup.classList.add("show");
+
+setTimeout(() => {
+popup.classList.remove("show");
+}, 5000);
+}
+
+function showLivePopups(){
+event.preventDefault();
+
+let popup = document.getElementById("livePopups");
 
 popup.classList.add("show");
 

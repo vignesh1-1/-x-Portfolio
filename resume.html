@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vignesh P – Resume</title>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;800&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #1565C0;
+      --text: #1a1a1a;
+      --muted: #444;
+      --border: #c8d6e8;
+    }
+
+    body {
+      font-family:'Poppins', sans-serif;
+      background: #dde3eb;
+      display: flex;
+      justify-content: center;
+      padding: 40px 16px;
+      min-height: 100vh;
+      color: var(--text);
+    }
+
+    .resume {
+      background: #fff;
+      width: 920px;
+      max-width: 100%;
+      padding: 38px 44px 48px;
+      box-shadow: 0 4px 40px rgba(0,0,0,0.13);
+    }
+
+    /* ─────────────────────────────
+       HEADER
+    ───────────────────────────── */
+    .header { text-align: center; margin-bottom: 14px; }
+
+    .header h1 {
+      font-family: 'Raleway', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    /* ── Contact bar ──────────────────────────────────────────────────────
+       HOW TO EDIT:
+         • Change email  → find <a href="mailto:..."> and update href + text
+         • Change phone  → find "9380356694" and replace
+         • Change LinkedIn → find the LinkedIn <a href="..."> and update
+         • Change GitHub → find the GitHub <a href="..."> and update
+         • Change city   → find "Bangalore" text and replace
+       Layout: Row 1 = email + linkedin  |  Row 2 = phone + github + city
+    ───────────────────────────────────────────────────────────────────── */
+    .contact-bar { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .contact-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 24px; font-size: 0.88rem; }
+    .contact-item { display: flex; align-items: center; gap: 5px; color: var(--muted); }
+    .contact-item .icon { width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .contact-item a { color: var(--blue); text-decoration: none; }
+    .contact-item a:hover { text-decoration: underline; }
+
+    /* ─────────────────────────────
+       DIVIDER
+    ───────────────────────────── */
+    hr { border: none; border-top: 1.5px solid var(--border); margin: 13px 0; }
+
+    /* ─────────────────────────────
+       SECTION TITLE
+    ───────────────────────────── */
+    .section-title {
+      font-family: 'Raleway', sans-serif;
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--blue);
+      border-bottom: 2px solid var(--blue);
+      padding-bottom: 3px;
+      margin-bottom: 12px;
+    }
+
+    /* ─────────────────────────────
+       OBJECTIVE
+    ───────────────────────────── */
+    .section { margin-top: 16px; }
+    .objective p { font-size: 0.92rem; line-height: 1.65; color: var(--muted); }
+
+    /* ─────────────────────────────
+       PROJECTS
+    ───────────────────────────── */
+    .project { margin-bottom: 14px; }
+    .project-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+    .project-title {
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.97rem;
+      font-weight: 700;
+      color: var(--blue);
+      text-transform: uppercase;
+      text-decoration: underline;
+      letter-spacing: 0.4px;
+    }
+    .project-year { font-size: 0.85rem; color: var(--muted); white-space: nowrap; }
+    .project p { font-size: 0.9rem; line-height: 1.6; color: var(--muted); margin-bottom: 5px; }
+    .tools-label { font-size: 0.88rem; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+    .tools-detail { padding-left: 14px; font-size: 0.87rem; color: var(--muted); line-height: 1.75; }
+    .tools-detail .row { display: flex; gap: 4px; }
+    .tools-detail .tkey { font-weight: 600; color: var(--text); min-width: 135px; flex-shrink: 0; }
+
+    /* ─────────────────────────────
+       BOTTOM TWO-COLUMN GRID
+       Left  → Skill-Set (Technical Skills + Soft Skills side by side)
+       Right → Education + Certificates
+    ───────────────────────────── */
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 36px;
+      margin-top: 16px;
+    }
+
+    /* Technical + Soft side-by-side inside left column */
+    .skills-inner-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 18px;
+    }
+
+    .skill-block { margin-bottom: 14px; }
+    .skill-block h4 {
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 700;
+      text-align: center;
+      border-bottom: 1.5px solid var(--border);
+      padding-bottom: 4px;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    .skill-list { list-style: disc; padding-left: 16px; font-size: 0.86rem; color: var(--muted); line-height: 1.85; width: 800px; }
+    .skill-list li .key { font-weight: 700; color: var(--text); }
+
+    /* Education */
+    .edu-block { margin-bottom: 14px; }
+    .edu-block h4 {
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.91rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+    .edu-row { display: flex; justify-content: space-between; align-items: flex-start; }
+    .edu-info .degree { font-size: 0.87rem; color: var(--muted); }
+    .edu-info .inst   { font-size: 0.87rem; font-weight: 700; color: var(--text); }
+    .edu-year { font-size: 0.82rem; color: var(--muted); white-space: nowrap; padding-top: 2px; }
+
+    /* Certificates */
+    .cert-name {
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .cert-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.55; margin-bottom: 7px; }
+    .cert-list { list-style: disc; padding-left: 16px; font-size: 0.86rem; color: var(--muted); line-height: 1.85; }
+
+    /* ─────────────────────────────
+       RESPONSIVE
+    ───────────────────────────── */
+    @media (max-width: 660px) {
+      .resume { padding: 24px 18px 32px; }
+      .header h1 { font-size: 1.7rem; }
+      .bottom-grid { grid-template-columns: 1fr; }
+      .skills-inner-grid { grid-template-columns: 1fr; }
+      .project-header { flex-direction: column; gap: 2px; }
+    }
+
+    .btn-center {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.btn-wrapper button {
+  background:linear-gradient(135deg,#7594fa,#9d75fa);
+color:white;
+  border: none;
+  padding: 10px 30px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 4px;
+   font-family:'Poppins', sans-serif;
+}
+
+.btn-wrapper button:hover {
+  background-color: #0d47a1;
+}
+
+/* Overlay */
+
+#loadingOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(12px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.3s;
+  z-index: 9999;
+}
+
+#loadingOverlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.loader {
+  width: 60px;
+  height: 60px;
+  border: 5px solid rgba(255,255,255,0.2);
+  border-top: 5px solid #7594fa;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+  </style>
+</head>
+<body>
+  <div class="back">
+<div class="resume">
+
+  <!-- ══════════════ HEADER ══════════════ -->
+  <div class="header">
+    <h1>Vignesh P</h1>
+
+    <div class="contact-bar">
+
+      <!-- ROW 1: Email | LinkedIn -->
+      <div class="contact-row">
+
+        <span class="contact-item">
+          <span class="icon">
+            <svg width="15" height="15" fill="none" stroke="#1565C0" stroke-width="2" viewBox="0 0 24 24">
+              <rect x="2" y="4" width="20" height="16" rx="2"/>
+              <path d="m2 7 10 7 10-7"/>
+            </svg>
+          </span>
+          <!-- EDIT EMAIL: change href and text below -->
+          <a href="mailto:vigneshpremkumar1@gmail.com">vigneshpremkumar1@gmail.com</a>
+        </span>
+
+        <span class="contact-item">
+          <span class="icon">
+            <svg width="15" height="15" fill="#1565C0" viewBox="0 0 24 24">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/>
+              <rect x="2" y="9" width="4" height="12"/>
+              <circle cx="4" cy="4" r="2"/>
+            </svg>
+          </span>
+          <!-- EDIT LINKEDIN: change href and text below -->
+          <a href="https://www.linkedin.com/in/vigneshp05" target="_blank">www.linkedin.com/in/vigneshp05</a>
+        </span>
+
+        <span class="contact-item">
+          <span class="icon">
+            <svg width="15" height="15" fill="#1565C0" viewBox="0 0 24 24">
+              <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+            </svg>
+          </span>
+          <!-- EDIT GITHUB: change href and text below -->
+          <a href="https://github.com/vignesh1-1" target="_blank">https://github.com/in/vignesh1-1</a>
+        </span>
+
+      </div><!-- end row 1 -->
+
+      <!-- ROW 2: Phone | GitHub | City -->
+      <div class="contact-row">
+
+        <span class="contact-item">
+          <span class="icon">
+            <svg width="15" height="15" fill="none" stroke="#1565C0" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.38 2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+          </span>
+          <!-- EDIT PHONE: change number below -->
+          9380356694
+        </span>
+
+        
+        <span class="contact-item">
+          <span class="icon">
+            <svg width="15" height="15" fill="none" stroke="#1565C0" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+          </span>
+          <!-- EDIT CITY: change text below -->
+          Bangalore
+        </span>
+
+      </div><!-- end row 2 -->
+
+    </div><!-- end contact-bar -->
+  </div><!-- end header -->
+
+  <hr/>
+
+  <!-- ══════════════ OBJECTIVE ══════════════ -->
+  <div class="section objective">
+    <div class="section-title">Objective</div>
+    <p>"Ambitious BCA student and aspiring Full-Stack Developer proficient in Python, Java, C++ with practical experience building web systems using PHP, MySQL, and Scripts. I combine this with my strong communication skills, understand their needs, work toward a mutually satisfying outcome and I maintain an unbiased perspective in all situations. Seeking an internship to apply my technical problem-solving skills and contribute to impactful software projects."</p>
+  </div>
+
+  <hr/>
+
+  <!-- ══════════════ PROJECTS ══════════════ -->
+  <div class="section">
+    <div class="section-title">Projects</div>
+
+    <div class="project">
+      <div class="project-header">
+        <span class="project-title">Passport Automation System</span>
+        <span class="project-year">Year:- 2026</span>
+      </div>
+      <p>Developed a web-based Passport Automation System that allows users to submit applications, track status, and manage documents digitally, reducing manual paperwork and improving administrative efficiency.</p>
+      <div class="tools-label">Tools :-</div>
+      <div class="tools-detail">
+        <div class="row"><span class="tkey">ID Environment:-</span> Visual Studio Code.</div>
+        <div class="row"><span class="tkey">Languages:-</span> HTML, CSS, JavaScript and PHP</div>
+        <div class="row"><span class="tkey">Database:-</span> XAMPP- MySQL-Secure data management.</div>
+      </div>
+    </div>
+
+    <div class="project">
+      <div class="project-header">
+        <span class="project-title">Web Responsive UI Portfolio</span>
+        <span class="project-year">Year:- 2025</span>
+      </div>
+      <p>Designed and developed a responsive, multi-page professional portfolio website to showcase technical projects and skills.</p>
+      <div class="tools-label">Tools :-</div>
+      <div class="tools-detail">
+        <div class="row"><span class="tkey">ID Environment:-</span> Visual Studio Code.</div>
+        <div class="row"><span class="tkey">Languages:-</span> HTML, CSS, JavaScript.</div>
+        <div class="row"><span class="tkey">Framework:-</span> Bootstrap &nbsp;|&nbsp; VCS: GitHub.</div>
+      </div>
+    </div>
+
+    <div class="project">
+      <div class="project-header">
+        <span class="project-title">Student Database</span>
+        <span class="project-year">Year:- 2024</span>
+      </div>
+      <p>This mini-project involves designing, implementing, and querying a relational database to manage student academic records and demographic information.</p>
+      <div class="tools-label">Tools :-</div>
+      <div class="tools-detail">
+        <div class="row"><span class="tkey">MySQL:-</span> <span style="margin-left: -75px;">Structured Query Language, open-source relational database.</span></div>
+      </div>
+    </div>
+
+  </div><!-- end projects -->
+
+  <hr/>
+
+  <!-- ══════════════ BOTTOM GRID ══════════════
+       LEFT  → Skill-Set (Technical + Soft side by side)
+       RIGHT → Education + Certificates
+  ══════════════════════════════════════════ -->
+  <div class="bottom-grid">
+
+    <!-- ── LEFT: SKILL-SET ── -->
+    <div>
+      <div class="section-title">Skill-Set</div>
+
+      <div class="skills-inner-grid">
+
+        <!-- Technical Skills -->
+        <div class="skill-block">
+          <h4>Technical Skills</h4>
+          <ul class="skill-list">
+            <li><span class="key">Programming Language:-</span> Python, SQL, Java, C, C++, Linux.</li>
+            <li><span class="key">Web Technologies:-</span> HTML, CSS, JavaScript, PHP.</li>
+            <li><span class="key">Developer Tools:-</span> Visual Studio Code, XAMPP, GitHub, phpMyAdmin, MySQL.</li>
+            <li><span class="key">Design software Tools:-</span> Excel, Photo and video editing tools. (Pixel Lab, Capcut, Kinemaster, Canva, Excel sheet).</li>
+          </ul>
+        </div></div>
+
+        <!-- Soft Skills -->
+       
+
+      </div><!-- end skills-inner-grid -->
+    </div><!-- end left col -->
+
+    <!-- ── RIGHT: EDUCATION + CERTIFICATES ── -->
+  <div>
+
+      <div class="section-title">Education</div>
+
+      <div class="edu-block">
+        <h4>Degree</h4>
+        <div class="edu-row">
+          <div class="edu-info">
+            <div class="degree">BCA-Bachelor in Computer Application</div>
+            <div class="inst">CMR University-<span style="font-weight:400">Bengaluru, Karnataka.</span></div>
+          </div>
+          <div class="edu-year">Year:- 2024-2027</div>
+        </div>
+      </div>
+
+      <div class="edu-block">
+        <h4>PU College</h4>
+        <div class="edu-row">
+          <div class="edu-info">
+            <div class="degree">CEBA-Computer science</div>
+            <div class="inst">Seshadripuram Composite PU College-<span style="font-weight:400">Bengaluru, Karnataka.</span></div>
+          </div>
+          <div class="edu-year">Year:- 2022-2024</div>
+        </div>
+      </div>
+
+      <div style="margin-top:16px;">
+        <div class="section-title">Certificates</div>
+        <div class="cert-name">Joy of computing using python</div>
+        <div class="cert-desc">focusing on algorithmic thinking, data structure, and hands-on problem-solving using python.</div>
+        <ul class="cert-list">
+          <li>OOPs Concepts</li>
+          <li>Exception Handling</li>
+          <li>Data Visualization using python</li>
+          <li>Modules and Packages</li>
+          <li>File Handling</li>
+        </ul>
+      </div>
+      
+
+    </div><!-- end right col -->
+
+  </div><!-- end bottom-grid -->
+  <div class="btn-center">
+  <div class="btn-wrapper">
+    <button><a style="text-decoration: none; color: white; " href="index.html">Back</a></button>
+  </div>
+</div>
+</div><!-- end resume -->
+</div>
+<script>
+  document.querySelectorAll("a").forEach(link => {
+  link.addEventListener("click", function(e) {
+    const target = this.getAttribute("href")
+    if (target.endsWith(".html")) {
+      e.preventDefault()
+      const overlay = document.getElementById("loadingOverlay")
+      overlay.classList.add("active")
+      setTimeout(() => {
+        window.location.href = target
+      }, 500)
+    }
+  })
+})
+</script>
+<div id="loadingOverlay">
+  <div class="loader"></div>
+</div>
+</body>
+</html>

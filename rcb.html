@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AI Neural Network Dashboard</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
     
     <style>
         /* =========================================
-           2. GLOBAL VARIABLES
+           1. GLOBAL VARIABLES & SCROLLBAR HIDING
            ========================================= */
         :root {
             --bg-color: #02040a;          
@@ -23,19 +23,25 @@
             --text-muted: #8b9bb4;        
         }
 
-        body, html {
+        /* Hide scrollbar globally but allow scrolling */
+        ::-webkit-scrollbar { display: none; }
+        html, body {
+            -ms-overflow-style: none;
+            scrollbar-width: none; 
             margin: 0; padding: 0; width: 100%; height: 100%;
             background-color: var(--bg-color); 
             font-family: 'Exo 2', sans-serif; 
-            color: var(--text-main); overflow: hidden; user-select: none;
+            color: var(--text-main); 
+            overflow-x: hidden; 
+            user-select: none;
         }
 
-        #webgl-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        #webgl-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
 
         /* =========================================
-           3. HUD ELEMENTS & BADGES
+           2. HUD ELEMENTS & BADGES
            ========================================= */
-        .hud-frame { position: absolute; top: 18%; left: 360px; right: 360px; bottom: 18%; pointer-events: none; z-index: 5; }
+        .hud-frame { position: fixed; top: 18%; left: 360px; right: 360px; bottom: 18%; pointer-events: none; z-index: 5; transition: opacity 0.4s ease, visibility 0.4s ease; }
         .hud-corner { position: absolute; width: 40px; height: 40px; border: 2px solid rgba(0, 229, 255, 0.3); }
         .hud-tl { top: 0; left: 0; border-right: none; border-bottom: none; }
         .hud-tr { top: 0; right: 0; border-left: none; border-bottom: none; }
@@ -43,56 +49,35 @@
         .hud-br { bottom: 0; right: 0; border-left: none; border-top: none; }
         
         .core-badge {
-            position: absolute; top: 22%; left: 58%;
+            position: fixed; top: 22%; left: 58%;
             border: 1px solid rgba(0, 150, 255, 0.5);
             background: rgba(2, 5, 12, 0.85);
             padding: 8px 20px; border-radius: 4px;
             z-index: 20; backdrop-filter: blur(5px);
             box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            transition: opacity 0.4s ease, visibility 0.4s ease;
         }
         .core-text { color: #fff; font-size: 16px; font-weight: 700; letter-spacing: 1px; }
         .core-sub { color: var(--green); font-size: 14px; font-weight: 700; letter-spacing: 1px; text-shadow: 0 0 5px var(--green);}
-        .core-line {
-            position: absolute; bottom: -60px; left: -10px; width: 1px; height: 65px;
-            background: var(--primary); transform: rotate(45deg); transform-origin: top left;
-            box-shadow: 0 0 5px var(--primary);
-        }
+        .core-line { position: absolute; bottom: -60px; left: -10px; width: 1px; height: 65px; background: var(--primary); transform: rotate(45deg); transform-origin: top left; box-shadow: 0 0 5px var(--primary); }
 
         /* =========================================
-           4. NAVIGATION BAR (IMPORTED FROM RCB.HTML)
+           3. NAVIGATION BAR & TOGGLE SWITCH
            ========================================= */
         .navbar {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            width: 40%;
-            padding: 12px 3%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(12px);
-            border-radius: 35px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.25);
-            z-index: 1000;
-            
-            /* Entrance Animation */
-            opacity: 0;
-            transform: translateX(-50%) translateY(30px) scale(0.9);
+            position: fixed; top: 20px; left: 50%; width: 40%; padding: 12px 3%;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(12px);
+            border-radius: 35px; border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.25); z-index: 1000;
+            opacity: 0; transform: translateX(-50%) translateY(30px) scale(0.9);
             animation: navEntrance 1s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
             pointer-events: auto;
         }
 
         @keyframes navEntrance {
-            from {
-                opacity: 0; filter: blur(10px);
-                transform: translateX(-50%) translateY(30px) scale(0.9);
-            }
-            to {
-                opacity: 1; filter: blur(0);
-                transform: translateX(-50%) translateY(0) scale(1);
-            }
+            from { opacity: 0; filter: blur(10px); transform: translateX(-50%) translateY(30px) scale(0.9); }
+            to { opacity: 1; filter: blur(0); transform: translateX(-50%) translateY(0) scale(1); }
         }
 
         @keyframes textPulse {
@@ -100,56 +85,75 @@
             50% { opacity: 0.6; text-shadow: 0 0 2px rgba(255,255,255,0.2); }
         }
 
-        .logo img {
-            width: 30px; height: auto; object-fit: contain;
+        .logo img { width: 30px; height: auto; object-fit: contain; }
+        
+        .nav-title {
+            color: whitesmoke; font-family: 'Courier New', Courier, monospace; 
+            animation: textPulse 1.5s infinite; font-size: 18px; letter-spacing: 1px; text-align: center;
         }
 
-        .nav-links {
-            display: flex; gap: 20px; border: 2px solid white; padding: 5px 10px; border-radius: 20px;
-        }
-
+        .nav-links { display: flex; gap: 20px; border: 2px solid white; padding: 5px 10px; border-radius: 20px; }
         .nav-links a {
             color: #cbd5e1; padding: 8px 18px; text-decoration: none; font-size: 15px; 
             font-weight: 600; letter-spacing: 0.5px; border-radius: 20px; transition: all 0.3s ease;
         }
+        .nav-links a:hover { background: #525252; color: white; }
+        .nav-links a.active { background: linear-gradient(45deg, #7594fa, #9d75fa); color: white; }
 
-        .nav-links a:hover {
-            background: #525252; color: white;
-        }
+        /* Controls Section (Toggle + Menu Button) */
+        .nav-controls { display: flex; align-items: center; gap: 15px; }
 
-        .nav-links a.active {
-            background: linear-gradient(45deg, #7594fa, #9d75fa); color: white;
+        /* Custom Toggle Switch styling */
+        .ui-toggle {
+            position: relative; width: 68px; height: 30px; cursor: pointer; display: inline-block;
         }
+        .ui-toggle input { display: none; }
+        .toggle-slider {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #e5e7eb; border-radius: 30px; transition: 0.4s;
+            display: flex; align-items: center; justify-content: space-between;
+            box-sizing: border-box; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .toggle-knob {
+            position: absolute; left: 3px; bottom: 3px; width: 24px; height: 24px;
+            background-color: #ffffff; border-radius: 50%; transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 2;
+        }
+        .toggle-label {
+            font-size: 10px; font-weight: 700; font-family: 'Exo 2', sans-serif;
+            pointer-events: none; z-index: 1; letter-spacing: 1px;
+        }
+        .text-hide { color: #374151; margin-left: 30px; transition: 0.4s; opacity: 1; }
+        .text-show { color: #ffffff; position: absolute; left: 8px; transition: 0.4s; opacity: 0; }
+        
+        /* Toggle checked state (ON) */
+        .ui-toggle input:checked + .toggle-slider { background-color: var(--purple); }
+        .ui-toggle input:checked + .toggle-slider .toggle-knob { transform: translateX(38px); }
+        .ui-toggle input:checked + .toggle-slider .text-hide { opacity: 0; }
+        .ui-toggle input:checked + .toggle-slider .text-show { opacity: 1; }
 
-        /* Mobile Menu */
-        .menu-btn {
-            display: none; flex-direction: column; gap: 5px; cursor: pointer;
-        }
-        .menu-btn span {
-            width: 25px; height: 3px; background: #fff; border-radius: 5px;
-        }
-        @media(max-width:900px){
-            .nav-links { display: none; }
-            .menu-btn { display: flex; }
-            .navbar { width: 80%; }
-        }
+        /* Mobile Menu Button */
+        .menu-btn { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 5px;}
+        .menu-btn span { width: 25px; height: 3px; background: #fff; border-radius: 5px; transition: 0.3s;}
 
         /* =========================================
-           5. UI LAYOUT GRID
+           4. UI LAYOUT GRID
            ========================================= */
         .ui-layer {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;
-            pointer-events: none; 
-            display: flex; justify-content: space-between;
-            padding: 80px 25px 25px 25px; box-sizing: border-box;
+            position: absolute; top: 0; left: 0; width: 100%; min-height: 100%; z-index: 10;
+            pointer-events: none; display: flex; justify-content: space-between;
+            padding: 100px 25px 25px 25px; box-sizing: border-box;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
         }
         
-        .col-side-left { width: 360px; display: flex; flex-direction: column; gap: 20px; height: 100%; pointer-events: none; }
-        .col-side-right { width: 460px; display: flex; flex-direction: column; gap: 20px; height: 100%; pointer-events: none; align-items: flex-end; }
+        .ui-layer.hidden { opacity: 0; visibility: hidden; }
+
+        .col-side-left { width: 360px; display: flex; flex-direction: column; gap: 20px; pointer-events: none; }
+        .col-side-right { width: 460px; display: flex; flex-direction: column; gap: 20px; pointer-events: none; align-items: flex-end; }
         .col-center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 5px; pointer-events: none; }
 
         /* =========================================
-           6. CARD BORDERS & STYLING
+           5. CARD BORDERS & STYLING
            ========================================= */
         .card {
             background: linear-gradient(135deg, rgba(6, 12, 28, 0.85) 0%, rgba(2, 5, 12, 0.95) 100%);
@@ -169,14 +173,11 @@
             margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; text-shadow: 0 0 8px var(--primary);
         }
         .card-title::before { content: '■'; margin-right: 8px; color: var(--primary); font-size: 12px; text-shadow: 0 0 5px var(--primary); }
-        
         .mono-text { font-family: 'Fira Code', monospace; } 
 
-        /* --- SPECIFIC CARD DIMENSIONS --- */
         .card-neural { width: 240px; }
         .card-neural .card-title { justify-content: center; margin-bottom: 5px;}
         .card-neural .card-title::before { display: none; }
-        
         .card-env { width: 420px; }       
         .card-status { width: 360px; }    
         .card-logs { width: 460px; height: 240px; } 
@@ -228,12 +229,7 @@
         /* ---------------- SYSTEM LOGS ---------------- */
         .logs-wrapper { display: flex; gap: 15px; height: 100%; align-items: center; justify-content: space-between;} 
         .logs-container { flex: 1; font-family: 'Fira Code', monospace; font-size: 12px; color: var(--text-muted); overflow: hidden; line-height: 1.6; height: 100%; display: flex; flex-direction: column; padding-top: 5px;}
-        
-        .log-graphic { 
-            width: 75px; height: 75px; position: relative; border-radius: 50%; 
-            border: 1px solid rgba(0, 229, 255, 0.2); box-shadow: inset 0 0 15px rgba(0, 229, 255, 0.1);
-            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-        }
+        .log-graphic { width: 75px; height: 75px; position: relative; border-radius: 50%; border: 1px solid rgba(0, 229, 255, 0.2); box-shadow: inset 0 0 15px rgba(0, 229, 255, 0.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .log-graphic::before { content: ''; position: absolute; top: 4px; left: 4px; right: 4px; bottom: 4px; border-radius: 50%; border: 2px dashed rgba(176,82,255,0.7); animation: spin 8s linear infinite reverse; }
         .log-graphic::after { content: ''; position: absolute; top: 12px; left: 12px; right: 12px; bottom: 12px; border-radius: 50%; border: 2px dotted rgba(0, 229, 255, 0.8); animation: spin 5s linear infinite; }
         .log-radar { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(from 0deg, transparent 70%, rgba(0, 229, 255, 0.4) 100%); animation: spin 3s linear infinite; }
@@ -247,9 +243,9 @@
             background: rgba(4, 10, 22, 0.9); border: 1px solid rgba(0, 150, 255, 0.4); border-radius: 8px;
             display: flex; box-shadow: 0 10px 30px rgba(0,0,0,0.8); backdrop-filter: blur(10px); pointer-events: auto;
             clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
-            position: relative; z-index: 10; font-family: 'Fira Code', monospace;
+            position: relative; z-index: 10; font-family: 'Fira Code', monospace; width: 100%; justify-content: center;
         }
-        .stat-panel { padding: 15px 30px; border-right: 1px solid rgba(0,229,255,0.15); display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 140px;}
+        .stat-panel { padding: 15px 30px; border-right: 1px solid rgba(0,229,255,0.15); display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 140px; flex: 1;}
         .stat-panel:last-child { border-right: none; }
         .stat-panel-title { font-family: 'Exo 2', sans-serif; font-size: 11px; color: var(--text-main); text-transform: uppercase; margin-bottom: 12px; font-weight: 600; letter-spacing: 2px;}
         
@@ -264,72 +260,111 @@
         .b-bar { width: 5px; background: var(--primary); transition: height 0.2s ease; box-shadow: 0 0 8px var(--primary);}
 
         .sync-pill-container { width: 100%; display: flex; justify-content: center; margin-top: -12px; z-index: 20; position: relative; pointer-events: auto;}
-        .sync-wrapper {
-            background: rgba(0, 150, 255, 0.6);
-            clip-path: polygon(15px 0, calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 15px 100%, 0 50%);
-            padding: 1px; display: inline-block;
+        .sync-wrapper { background: rgba(0, 150, 255, 0.6); clip-path: polygon(15px 0, calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 15px 100%, 0 50%); padding: 1px; display: inline-block; }
+        .sync-content { background: rgba(2, 5, 12, 0.98); clip-path: polygon(14px 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 14px 100%, 0 50%); padding: 6px 40px; font-family: 'Fira Code', monospace; font-size: 12px; color: var(--primary); display: flex; align-items: center; gap: 15px; font-weight: 500; }
+
+        /* ---------------- LOADING OVERLAY ---------------- */
+        #loadingOverlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(12px);
+            display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: 0.3s; z-index: 9999;
         }
-        .sync-content {
-            background: rgba(2, 5, 12, 0.98);
-            clip-path: polygon(14px 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 14px 100%, 0 50%);
-            padding: 6px 40px; font-family: 'Fira Code', monospace; font-size: 12px; color: var(--primary); 
-            display: flex; align-items: center; gap: 15px; font-weight: 500;
-        }
+        #loadingOverlay.active { opacity: 1; visibility: visible; }
+        .loader { width: 60px; height: 60px; border: 5px solid rgba(255,255,255,0.2); border-top: 5px solid #7594fa; border-radius: 50%; animation: spin 1s linear infinite; }
 
         /* =========================================
-           7. LOADING OVERLAY (IMPORTED FROM RCB.HTML)
+           6. MOBILE RESPONSIVENESS OVERRIDES
            ========================================= */
-        #loadingOverlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); backdrop-filter: blur(12px);
-            display: flex; justify-content: center; align-items: center;
-            opacity: 0; visibility: hidden; transition: 0.3s; z-index: 9999;
-        }
-        #loadingOverlay.active {
-            opacity: 1; visibility: visible;
-        }
-        .loader {
-            width: 60px; height: 60px;
-            border: 5px solid rgba(255,255,255,0.2);
-            border-top: 5px solid #7594fa; border-radius: 50%;
-            animation: spin 1s linear infinite;
+        @media (max-width: 1100px) {
+            .navbar { width: 90%; }
+            .nav-title { font-size: 15px; }
+            
+            /* Responsive Dropdown Menu Fix */
+            .nav-links { 
+                position: absolute; top: 65px; right: 0px; 
+                flex-direction: column; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px); 
+                padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);
+                opacity: 0; visibility: hidden; transform: translateY(-10px); transition: 0.3s ease;
+                pointer-events: none;
+            }
+            .nav-links.active { opacity: 1; visibility: visible; transform: translateY(0); pointer-events: auto;}
+            .menu-btn { display: flex; }
+
+            .ui-layer {
+                position: relative; flex-direction: column; align-items: center; justify-content: flex-start;
+                padding: 110px 15px 40px 15px; gap: 25px; height: auto; min-height: 100vh;
+            }
+            .col-side-left, .col-side-right, .col-center { width: 100%; height: auto; align-items: center; gap: 20px; }
+            .card, .card-neural, .card-env, .card-status, .card-logs { width: 100% !important; max-width: 100%; height: auto !important; }
+            .card-logs { min-height: 240px; }
+            
+            .hud-frame, .core-badge { display: none; }
+            
+            .bottom-dashboard { flex-direction: column; clip-path: none; border-radius: 12px; }
+            .stat-panel { width: 100%; border-right: none; border-bottom: 1px solid rgba(0,229,255,0.15); padding: 20px; box-sizing: border-box; }
+            .stat-panel:last-child { border-bottom: none; }
+            .sync-pill-container { margin-top: 15px; }
+            .sync-content { padding: 6px 15px; font-size: 10px; }
         }
 
+        /* Extra adjustments for very small screens */
+        @media (max-width: 450px) {
+            .nav-title { display: none; } /* Hide title if space is too tight */
+            
+            /* Even smaller toggle switch for tiny screens */
+            .ui-toggle { width: 60px; height: 26px; }
+            .toggle-knob { width: 20px; height: 20px; }
+            .ui-toggle input:checked + .toggle-slider .toggle-knob { transform: translateX(34px); }
+            .text-hide { margin-left: 26px; }
+        }
     </style>
 </head>
 <body>
 
     <div id="webgl-container"></div>
 
-    <div class="hud-frame">
+    <!-- Navigation sits outside the UI layer so it never disappears -->
+    <nav class="navbar">
+        <div class="logo">
+            <img src="ChatGPT_Image_May_13__2026__01_24_47_PM-removebg-preview.png" alt="Logo">
+        </div>
+        
+        <b class="nav-title">AI NEURAL NETWORK</b>
+        
+        <div class="nav-controls">
+            <!-- New Resized UI Toggle Switch -->
+            <label class="ui-toggle">
+                <input type="checkbox" id="uiToggle" checked>
+                <div class="toggle-slider">
+                    <span class="toggle-label text-show">SHOW</span>
+                    <span class="toggle-label text-hide">HIDE</span>
+                    <div class="toggle-knob"></div>
+                </div>
+            </label>
+            
+            <div class="menu-btn" id="mobileMenuBtn">
+                <span></span><span></span><span></span>
+            </div>
+            
+            <div class="nav-links" id="navLinks">
+                <a href="index.html">HOME</a>
+                <a class="active" href="rcb.html">NEURAL VISION</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="hud-frame" id="hudElement">
         <div class="hud-corner hud-tl"></div><div class="hud-corner hud-tr"></div>
         <div class="hud-corner hud-bl"></div><div class="hud-corner hud-br"></div>
     </div>
 
-    <div class="core-badge">
+    <div class="core-badge" id="badgeElement">
         <div class="core-text">NEURAL CORE</div>
         <div class="core-sub">ACTIVE</div>
         <div class="core-line"></div>
     </div>
 
-    <div class="ui-layer">
+    <div class="ui-layer" id="uiLayer">
         
-        <nav class="navbar">
-            <div class="logo">
-                <img src="ChatGPT_Image_May_13__2026__01_24_47_PM-removebg-preview.png" alt="Logo">
-            </div>
-            <b style="color: whitesmoke; font-family: 'Courier New', Courier, monospace; animation: textPulse 1.5s infinite; font-size: 21px; letter-spacing: 1px;">AI NEURAL NETWORK</b>
-            
-            <div class="nav-links">
-                <a href="index.html">HOME</a>
-                <a class="active" href="rcb.html">NEURAL VISION</a>
-            </div>
-            
-            <div class="menu-btn">
-                <span></span><span></span><span></span>
-            </div>
-        </nav>
-
         <div class="col-side-left">
             <div class="card">
                 <div class="card-bracket-tl"></div><div class="card-bracket-br"></div>
@@ -439,7 +474,7 @@
                         <span id="success-val">98.7%</span>
                     </div>
                 </div>
-                <div class="stat-panel" style="padding-right: 30px;">
+                <div class="stat-panel">
                     <div class="stat-panel-title">REQUESTS / SEC</div>
                     <div class="bar-chart-bottom" id="req-bars"></div>
                     <div class="mono-text" style="margin-top: 10px; color: #fff; font-size: 16px; font-weight: 600;" id="req-val">14.53K</div>
@@ -536,10 +571,10 @@
     
     <script>
         /* =====================================
-           PART 1: HTML INTERACTIONS & TRANSITIONS
+           PART 1: HTML INTERACTIONS & MENU
            ===================================== */
-        // Loading Screen Transition logic imported from rcb.html
-        document.querySelectorAll("a").forEach(link => {
+        // Loading Transition
+        document.querySelectorAll(".nav-links a").forEach(link => {
             link.addEventListener("click", function(e){
                 const target = this.getAttribute("href")
                 if(target.endsWith(".html")){
@@ -553,17 +588,52 @@
             })
         });
 
+        // Mobile Menu Toggle
+        const menuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinks');
+        menuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // UI Toggle Logic
+        const uiToggle = document.getElementById('uiToggle');
+        const uiLayer = document.getElementById('uiLayer');
+        const hudElement = document.getElementById('hudElement');
+        const badgeElement = document.getElementById('badgeElement');
+
+        uiToggle.addEventListener('change', (e) => {
+            if(e.target.checked) {
+                // Toggled ON: Show the UI
+                uiLayer.classList.remove('hidden');
+                if (window.innerWidth > 1100) {
+                    hudElement.style.opacity = '1';
+                    hudElement.style.visibility = 'visible';
+                    badgeElement.style.opacity = '1';
+                    badgeElement.style.visibility = 'visible';
+                }
+            } else {
+                // Toggled OFF: Hide the UI to display only the Brain
+                uiLayer.classList.add('hidden');
+                hudElement.style.opacity = '0';
+                hudElement.style.visibility = 'hidden';
+                badgeElement.style.opacity = '0';
+                badgeElement.style.visibility = 'hidden';
+                
+                // If mobile menu is open, shut it
+                if(navLinks.classList.contains('active')){
+                    navLinks.classList.remove('active');
+                }
+            }
+        });
+
         /* =====================================
            PART 2: UI DATA FLUCTUATION LOGIC
-           This updates numbers & charts realistically
            ===================================== */
-
         const randInt = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
         const randFloat = (min, max) => (Math.random() * (max - min) + min).toFixed(2);
         
         const memSegs = document.getElementById('mem-segments'), stoSegs = document.getElementById('sto-segments'), reqBars = document.getElementById('req-bars');
         
-        // Generate tiny HTML segmented bars
         for(let i=0; i<18; i++) {
             let s1 = document.createElement('div'); s1.className = 'seg'; memSegs.appendChild(s1);
             let s2 = document.createElement('div'); s2.className = 'seg'; stoSegs.appendChild(s2);
@@ -572,7 +642,6 @@
             let b = document.createElement('div'); b.className = 'b-bar'; reqBars.appendChild(b);
         }
 
-        // Helper: Generates SVG paths for area graphs
         function getSvgPath(dataArr, width, height) {
             let lineD = `M 0,${height - dataArr[0]} `;
             for(let i=1; i<dataArr.length; i++) lineD += `L ${(i/(dataArr.length-1))*width},${height - dataArr[i]} `;
@@ -585,7 +654,6 @@
             return pts.join(' ');
         }
 
-        // Initialize tracking arrays for charting history
         const perfData = Array.from({length: 20}, () => randInt(20, 80));
         const perfDotsGroup = document.getElementById('perf-dots');
         for(let i=0; i<20; i++) {
@@ -599,7 +667,6 @@
         let pwrData = Array.from({length: 15}, () => randInt(15, 35));
         let netData = Array.from({length: 15}, () => randInt(10, 35));
 
-        // MASTER UI UPDATE LOOP (Fires every 1.5 seconds)
         setInterval(() => {
             document.getElementById('cpu-val').innerText = `${randInt(85, 95)}%`;
             document.getElementById('cpu-spark').setAttribute('points', getSparkline(10, 60, 100, 100, 15));
@@ -647,7 +714,6 @@
             document.getElementById('binary-stream').innerText = bin;
         }, 1500);
 
-        // SYSTEM LOGS GENERATOR WITH RANDOM TEXT COLORS
         const logsBox = document.getElementById('sys-logs');
         const logMsgs = [ 
             "> Compiling latent space...", "> Resolving tensors...", "> Allocating buffer memory...", "> Quantum coherence verified.", 
@@ -655,21 +721,16 @@
             "> Synchronizing neural pathways...", "> GPU Node cluster optimized.", "> Backpropagation complete.", "> Filtering noise layers..."
         ];
         
-        // Colors specific to user request (Light blue and Green)
         const logColors = ['var(--primary)', 'var(--green)'];
 
         setInterval(() => {
             let logLine = document.createElement('div');
             logLine.innerHTML = logMsgs[randInt(0, logMsgs.length-1)];
-            logLine.style.color = logColors[randInt(0, 1)]; // Random color assignment
-            
+            logLine.style.color = logColors[randInt(0, 1)]; 
             logsBox.appendChild(logLine);
-            
-            // Limit to exactly 8 lines at any given time to perfectly fit height
             if(logsBox.childElementCount > 8) logsBox.removeChild(logsBox.firstElementChild);
         }, 1200);
 
-        // Populate Logs initially on load
         for(let i=0; i<8; i++){
             let initLine = document.createElement('div');
             initLine.innerHTML = logMsgs[randInt(0, logMsgs.length-1)];
@@ -678,10 +739,8 @@
         }
 
         /* =====================================
-           PART 3: THREE.JS 3D ENVIRONMENT
-           Sets up the Brain, Nodes, and Data Flow
+           PART 3: THREE.JS 3D ENVIRONMENT (Interactive)
            ===================================== */
-        
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 3000);
         camera.position.set(0, 10, 450); 
@@ -692,16 +751,17 @@
         renderer.setClearColor(0x02040a, 1); 
         document.getElementById('webgl-container').appendChild(renderer.domElement);
 
+        // OrbitControls enabled for Full Interaction (Zoom & Pan capabilities added)
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true; controls.dampingFactor = 0.05;
         controls.autoRotate = true; controls.autoRotateSpeed = 0.5;
-        controls.enableZoom = true; 
+        controls.enableZoom = true; // Enables pinch-to-zoom / scroll-to-zoom
+        controls.enablePan = true;  // Enables panning (drag with 2 fingers / right click)
 
         scene.add(new THREE.AmbientLight(0xffffff, 0.3));
         const pl1 = new THREE.PointLight(0x00e5ff, 2.5, 800); pl1.position.set(250, 100, 250); scene.add(pl1);
         const pl2 = new THREE.PointLight(0xb052ff, 2.5, 800); pl2.position.set(-250, -50, -250); scene.add(pl2);
 
-        // Stars Background (Increased to 8000 for depth)
         const starsGeo = new THREE.BufferGeometry();
         const starsVerts = [];
         for(let i=0; i<8000; i++) starsVerts.push((Math.random()-0.5)*3000, (Math.random()-0.5)*3000, (Math.random()-0.5)*3000);
@@ -729,7 +789,6 @@
             return sprite;
         }
 
-        // --- 3.1 GENERATE BRAIN NODES ---
         const brainNodes = [], leftHem = [], rightHem = [];
         const nodeGeo = new THREE.SphereGeometry(0.8, 8, 8); 
         
@@ -763,7 +822,6 @@
             if (x > 2) rightHem.push(node);
         }
 
-        // --- 3.2 BRAIN CONNECTIONS ---
         const lMatC = new THREE.LineBasicMaterial({ color: 0x00e5ff, transparent: true, opacity: 0.15, blending: THREE.AdditiveBlending });
         const lMatP = new THREE.LineBasicMaterial({ color: 0xb052ff, transparent: true, opacity: 0.15, blending: THREE.AdditiveBlending });
         const allConnections = [];
@@ -780,7 +838,6 @@
             }
         }
 
-        // --- 3.3 GENERATE 5-6-8 SIDE INPUT LAYERS ---
         const bigGeo = new THREE.SphereGeometry(1.8, 16, 16);
         const L_nodes = [[], [], []], R_nodes = [[], [], []];
 
@@ -810,7 +867,6 @@
             }
         }
 
-        // Connect Side Layers and isolate tracks for heavy outer flow
         const linkP = new THREE.LineBasicMaterial({ color: 0xb052ff, transparent: true, opacity: 0.3, blending: THREE.AdditiveBlending });
         const linkC = new THREE.LineBasicMaterial({ color: 0x00e5ff, transparent: true, opacity: 0.3, blending: THREE.AdditiveBlending });
         const outerConnections = []; 
@@ -823,12 +879,10 @@
         for(let n1 of R_nodes[1]) for(let n2 of R_nodes[2]) { systemGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([n1.position, n2.position]), linkC)); outerConnections.push({start: n1.position, end: n2.position}); }
         for(let n1 of R_nodes[2]) for(let j=0; j<6; j++) { let n2 = rightHem[randInt(0, rightHem.length-1)]; systemGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([n1.position, n2.position]), linkC)); outerConnections.push({start: n1.position, end: n2.position}); }
 
-        // --- 3.4 INTENSE OUTER WHITE DATA FLOW ---
         const flowParticles = [];
-        const particleGeo = new THREE.SphereGeometry(0.25, 16, 16); // Tiny ball size
+        const particleGeo = new THREE.SphereGeometry(0.25, 16, 16); 
         const particleMat = new THREE.MeshBasicMaterial({color: 0xffffff, depthTest: false}); 
 
-        // Generate 600 particles heavily focused on the outer tracks
         for(let i=0; i<600; i++) { 
             let mesh = new THREE.Mesh(particleGeo, particleMat);
             let conn = Math.random() > 0.3 ? outerConnections[randInt(0, outerConnections.length-1)] : allConnections[randInt(0, allConnections.length-1)];
@@ -836,13 +890,12 @@
             mesh.start = conn.start.clone();
             mesh.end = conn.end.clone();
             mesh.t = Math.random();
-            mesh.speed = (Math.random() * 0.035) + 0.02; // Fast speed
+            mesh.speed = (Math.random() * 0.035) + 0.02; 
             
             systemGroup.add(mesh);
             flowParticles.push(mesh);
         }
 
-        // --- 3.5 HOLOGRAPHIC 3D RINGS BASE ---
         const plat = new THREE.Group();
         plat.rotation.x = Math.PI / 2;
         plat.position.y = -65; 
@@ -904,18 +957,15 @@
 
         /* =====================================
            PART 4: MAIN RENDER LOOP
-           Executes every frame (~60fps)
            ===================================== */
         function animate() {
             requestAnimationFrame(animate);
             controls.update(); 
             
-            // Labels face camera
             systemGroup.children.forEach(c => {
                 if (c.type === "Mesh") c.children.forEach(l => l.quaternion.copy(camera.quaternion));
             });
 
-            // Handle Data Particles path jumping logic
             flowParticles.forEach(p => {
                 p.t += p.speed;
                 if (p.t >= 1.0) { 
@@ -923,34 +973,31 @@
                     let newConn = Math.random() > 0.3 ? outerConnections[randInt(0, outerConnections.length-1)] : allConnections[randInt(0, allConnections.length-1)];
                     p.start.copy(newConn.start);
                     p.end.copy(newConn.end);
-                    p.speed = (Math.random() * 0.035) + 0.02; // Fast randomization
+                    p.speed = (Math.random() * 0.035) + 0.02; 
                 } 
                 p.position.lerpVectors(p.start, p.end, p.t);
             });
 
-            // Rotate bottom glowing rings
             animatedRings.forEach(r => {
                 r.mesh.rotation.z += r.speed;
             });
 
-            // THUNDER FLASH EFFECT: Randomly turn a brain node bright white
             if (Math.random() > 0.85) {
                 let flashNode = brainNodes[randInt(0, brainNodes.length - 1)];
                 let originalColor = flashNode.material.color.getHex();
-                flashNode.material.color.setHex(0xffffff); // Flash pure white
-                flashNode.scale.setScalar(2.5); // Pop in size
+                flashNode.material.color.setHex(0xffffff); 
+                flashNode.scale.setScalar(2.5); 
                 
                 setTimeout(() => {
-                    flashNode.material.color.setHex(originalColor); // Revert color
-                    flashNode.scale.setScalar(1.0); // Revert size
-                }, 150); // Flash duration
+                    flashNode.material.color.setHex(originalColor); 
+                    flashNode.scale.setScalar(1.0); 
+                }, 150); 
             }
             
             renderer.render(scene, camera);
         }
         animate();
 
-        // Handle window resize dynamically
         window.addEventListener('resize', () => { 
             camera.aspect = window.innerWidth / window.innerHeight; 
             camera.updateProjectionMatrix(); 

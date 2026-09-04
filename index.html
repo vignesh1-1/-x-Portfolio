@@ -264,7 +264,7 @@ html { scroll-behavior: smooth; }
   left: 50%;
   transform: translateX(-50%);
   width: 58%;
-  padding: 12px 2%;
+  padding: 12px 1% 12px 2%;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -2755,6 +2755,23 @@ input:disabled + .cookie-slider-toggle { cursor: not-allowed; opacity: 0.5; }
 }
 .light-mode .terminal-prompt { color: #0969da; } 
 .light-mode .blinking-caret { color: #0969da; } /* Matches light mode prompt */
+
+/* =========================================
+   1. LOADER ANIMATION FIX
+   ========================================= */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* =========================================
+   2. AI CONNECTING BADGE (YELLOW/BROWN)
+   ========================================= */
+.api-badge.warning { 
+    background-color: #fef3c7; 
+    color: #78350f; 
+    border: 1px solid #fde68a; 
+}
   </style>
 </head>
 <body>
@@ -3381,7 +3398,11 @@ if (navLogo) {
         logoClicks++;
         
         if (logoClicks === 5) {
-            window.location.href = 'game.html';
+            const overlay = document.getElementById("loadingOverlay");
+            if (overlay) overlay.classList.add("active");
+            setTimeout(() => {
+                window.location.href = 'game.html';
+            }, 3000);
             logoClicks = 0; 
         }
         
@@ -3474,18 +3495,88 @@ aiNavBtn.addEventListener("click", () => {
 });
 // =========================================================================
 
-// Page Transition Overlay
-document.querySelectorAll("a").forEach(link => {
-  link.addEventListener("click", function(e){
-    const target = this.getAttribute("href");
-    if(target && target.endsWith(".html")){
-      e.preventDefault();
-      const overlay = document.getElementById("loadingOverlay");
-      overlay.classList.add("active");
-      setTimeout(()=>{
-        window.location.href = target;
-      }, 2000);
+// ==========================================
+// AUTO-WAKE API LOGIC
+// ==========================================
+async function wakeUpBackend() {
+  const apiBadge = document.getElementById('apiBadge');
+  const faceText = document.getElementById('faceText');
+
+  if (!apiBadge || !faceText) return;
+
+  // 1. Set UI to Connecting State
+  apiBadge.className = 'api-badge warning';
+  apiBadge.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> CONNECTING TO RENDER!';
+  faceText.textContent = '🌐';
+
+  try {
+    // 2. Ping the base URL of your API to wake it up silently
+    const response = await fetch("https://portfolio-backend-iua6.onrender.com/");
+    
+    if (response.ok) {
+      // 3. Server is awake! Update UI to Active
+      apiBadge.className = 'api-badge success';
+      apiBadge.innerHTML = '<i class="fa-solid fa-check"></i> API ACTIVE';
+      faceText.textContent = '◕⁠‿⁠◕';
+    } else {
+      throw new Error("Server offline");
     }
+  } catch (error) {
+    // 4. Server failed to wake up
+    apiBadge.className = 'api-badge error';
+    apiBadge.innerHTML = '<i class="fa-solid fa-xmark"></i> ERROR FETCHING API';
+    faceText.textContent = 'x_x';
+  }
+}
+
+// ==========================================
+// INITIAL LOAD & REFRESH OVERLAY
+// ==========================================
+document.addEventListener("DOMContentLoaded", () => {
+  const overlay = document.getElementById("loadingOverlay");
+  
+  // Immediately show the overlay when the page loads
+  if (overlay) {
+    overlay.classList.add("active");
+    
+    // Remove the overlay after 3 seconds
+    setTimeout(() => {
+      overlay.classList.remove("active");
+    }, 3000);
+  }
+
+  // Trigger the backend wake-up process in the background
+  wakeUpBackend();
+});
+
+// ==========================================
+// LINK CLICK TRANSITIONS
+// ==========================================
+document.querySelectorAll("a").forEach(link => {
+  link.addEventListener("click", function(e) {
+    const target = this.getAttribute("href");
+    
+    // Ignore links that are empty, hashtags, emails, phones, or have onclick attributes
+    if (!target || target === "#" || target.startsWith("#") || target.startsWith("mailto:") || target.startsWith("tel:") || this.hasAttribute('onclick')) {
+      return; 
+    }
+
+    e.preventDefault(); 
+    
+    const overlay = document.getElementById("loadingOverlay");
+    if(overlay) overlay.classList.add("active");
+
+    const isNewTab = this.getAttribute("target") === "_blank";
+
+    // Wait 3 seconds, then execute navigation
+    setTimeout(() => {
+      if (isNewTab) {
+        window.open(target, "_blank"); 
+        if(overlay) overlay.classList.remove("active"); 
+      } else {
+        window.location.href = target; 
+      }
+    }, 3000);
   });
 });
 
@@ -3608,7 +3699,7 @@ if (currentTheme) {
     document.documentElement.classList.add(currentTheme);
     if (currentTheme === 'light-mode') {
         themeCheckbox.checked = true;
-        isLightMode = true; // Update global state for canvas
+        isLightMode = true; 
     }
 }
 
@@ -3616,11 +3707,11 @@ themeCheckbox.addEventListener('change', function() {
     if (this.checked) {
         document.documentElement.classList.add('light-mode');
         localStorage.setItem('theme', 'light-mode');
-        isLightMode = true; // Update global state for canvas
+        isLightMode = true; 
     } else {
         document.documentElement.classList.remove('light-mode');
         localStorage.setItem('theme', 'dark-mode');
-        isLightMode = false; // Update global state for canvas
+        isLightMode = false; 
     }
 });
 
@@ -3698,24 +3789,19 @@ const processList = document.getElementById('process-list');
 
 processCards.forEach(card => {
   card.addEventListener('click', () => {
-    // Remove active class from all
     processCards.forEach(c => c.classList.remove('active'));
-    // Add active class to clicked
     card.classList.add('active');
 
     const phase = card.getAttribute('data-phase');
     const data = processData[phase];
 
-    // Populate data
     processIcon.innerHTML = data.icon;
     processTitle.textContent = data.title;
     processDesc.textContent = data.desc;
     processList.innerHTML = data.list.map(item => `<li>${item}</li>`).join('');
 
-    // Toggle views
     emptyState.style.display = 'none';
     
-    // Trigger animation reflow
     processContentView.classList.remove('visible');
     void processContentView.offsetWidth;
     processContentView.classList.add('visible');
@@ -3731,16 +3817,13 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
 
 function addAnimation() {
   scrollers.forEach((scroller) => {
-    // Add data-animated to enable CSS animations
     scroller.setAttribute("data-animated", true);
-
     const scrollerInner = scroller.querySelector(".scroller__inner");
     const scrollerContent = Array.from(scrollerInner.children);
 
-    // Duplicate each item in the list exactly once so it can loop seamlessly
     scrollerContent.forEach((item) => {
       const duplicatedItem = item.cloneNode(true);
-      duplicatedItem.setAttribute("aria-hidden", true); // hide clone from screen readers
+      duplicatedItem.setAttribute("aria-hidden", true); 
       scrollerInner.appendChild(duplicatedItem);
     });
   });
@@ -3748,11 +3831,10 @@ function addAnimation() {
 
 // =============== HIDE BROKEN IMAGES ===============
 document.addEventListener('error', function(event) {
-    // Check if the element that triggered the error is an image
     if (event.target.tagName.toLowerCase() === 'img') {
         event.target.style.display = 'none';
     }
-}, true); // 'true' is required to capture the event since error events don't bubble
+}, true); 
 
 
 // =============== TYPING EFFECT LOGIC ===============
@@ -3766,11 +3848,9 @@ const keySound = new Audio("450282__stu556__mechanical-keyboard-typing-treble-ve
 keySound.volume = 0.5;
 keySound.loop = true;
 
-// Flag to track if audio is allowed and enabled
 let audioUnlocked = false;
-let isAudioEnabled = true; // New state for the toggle button
+let isAudioEnabled = true; 
 
-// Audio Toggle Button Event Listener
 const audioToggleBtn = document.getElementById("audioToggleBtn");
 if (audioToggleBtn) {
   audioToggleBtn.addEventListener("click", () => {
@@ -3783,13 +3863,11 @@ if (audioToggleBtn) {
     } else {
       icon.classList.remove("fa-volume-up");
       icon.classList.add("fa-volume-mute");
-      // Stop currently playing audio immediately
       if (!keySound.paused) keySound.pause();
     }
   });
 }
 
-// Aggressive Audio Unlocker
 ['click', 'touchstart', 'keydown'].forEach(eventType => {
     document.body.addEventListener(eventType, () => {
         if (!audioUnlocked) {
@@ -3807,9 +3885,8 @@ function typeEffect() {
     if (!typingTextElement) return;
 
     const currentWord = typingWords[typingIndex];
-    let shouldPlaySound = false; // Controls if the audio track should be running THIS exact millisecond
+    let shouldPlaySound = false; 
     
-    // Generate two random character indices to pause at for a realistic typing feel
     if (!isDeleting && charIndex === 0 && pauseIndices.length === 0) {
         if (currentWord.length > 3) {
             let p1 = Math.floor(Math.random() * (currentWord.length - 2)) + 1;
@@ -3818,48 +3895,43 @@ function typeEffect() {
         }
     }
 
-    // Check if we are typing or deleting
     if (isDeleting) {
         typingTextElement.textContent = currentWord.substring(0, charIndex - 1);
         charIndex--;
-        shouldPlaySound = false; // ERASING = PAUSE AUDIO
+        shouldPlaySound = false; 
     } else {
         typingTextElement.textContent = currentWord.substring(0, charIndex + 1);
         charIndex++;
-        shouldPlaySound = true; // TYPING = PLAY AUDIO
+        shouldPlaySound = true; 
     }
 
-    // Base typing speed and deleting speed
     let typingSpeed = isDeleting ? 40 : 100;
 
-    // Introduce a small millisecond gap during typing (twice per word)
     if (!isDeleting && pauseIndices.includes(charIndex)) {
         typingSpeed += 250; 
-        shouldPlaySound = false; // MICRO-PAUSE = PAUSE AUDIO
+        shouldPlaySound = false; 
     }
 
-    // Logic for pausing at ends of words
     if (!isDeleting && charIndex === currentWord.length) {
-        typingSpeed = 2000; // Pause for 2 seconds when word is fully typed
+        typingSpeed = 2000; 
         isDeleting = true;
-        shouldPlaySound = false; // END OF WORD = PAUSE AUDIO
+        shouldPlaySound = false; 
     } else if (isDeleting && charIndex === 0) {
         isDeleting = false;
         typingIndex = (typingIndex + 1) % typingWords.length;
-        typingSpeed = 500; // Pause for half a second before typing the next word
-        pauseIndices = []; // Reset pauses for the next word
-        shouldPlaySound = false; // START OF NEW WORD PAUSE = PAUSE AUDIO
+        typingSpeed = 500; 
+        pauseIndices = []; 
+        shouldPlaySound = false; 
     }
 
-    // NEW PLAY/PAUSE LOGIC: Requires user interaction unlock AND toggle switch to be true
     if (audioUnlocked && isAudioEnabled) {
         if (shouldPlaySound) {
             if (keySound.paused) {
-                keySound.play().catch(e => {}); // Resume track instantly
+                keySound.play().catch(e => {}); 
             }
         } else {
             if (!keySound.paused) {
-                keySound.pause(); // Pause track instantly
+                keySound.pause(); 
             }
         }
     }
@@ -3867,14 +3939,12 @@ function typeEffect() {
     setTimeout(typeEffect, typingSpeed);
 }
 
-// Start the typing effect after a short delay
 document.addEventListener("DOMContentLoaded", () => {
     setTimeout(typeEffect, 1400); 
 });
 // ===================================================
 
 // =============== SCROLL REVEAL ANIMATIONS ===============
-// Now specifically targets the original upward reveal, plus the new left & right reveals
 const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
 const revealObserver = new IntersectionObserver((entries, observer) => {
     entries.forEach(entry => {
@@ -3883,7 +3953,7 @@ const revealObserver = new IntersectionObserver((entries, observer) => {
             observer.unobserve(entry.target); 
         }
     });
-}, { threshold: 0.1 }); // 0.1 ensures elements trigger as soon as 10% is visible on screen
+}, { threshold: 0.1 }); 
 
 revealElements.forEach(el => revealObserver.observe(el));
 
@@ -3895,14 +3965,13 @@ const counterObserver = new IntersectionObserver((entries, observer) => {
             const counter = entry.target;
             const target = +counter.getAttribute('data-target');
             const suffix = counter.getAttribute('data-suffix');
-            const duration = 2000; // Complete in 2 seconds
+            const duration = 2000; 
             
             let startTimestamp = null;
             const step = (timestamp) => {
                 if (!startTimestamp) startTimestamp = timestamp;
                 const progress = Math.min((timestamp - startTimestamp) / duration, 1);
                 
-                // Calculates the current value based on progress smoothly
                 const current = Math.floor(progress * target);
                 counter.innerText = current + suffix;
                 
@@ -3913,10 +3982,10 @@ const counterObserver = new IntersectionObserver((entries, observer) => {
                 }
             };
             window.requestAnimationFrame(step);
-            observer.unobserve(counter); // Stops watching once it counts up once
+            observer.unobserve(counter); 
         }
     });
-}, { threshold: 0.5 }); // Triggers when the stat block is 50% visible
+}, { threshold: 0.5 }); 
 
 counters.forEach(counter => counterObserver.observe(counter));
 
@@ -3935,29 +4004,22 @@ quickPrompts.forEach(btn => {
   });
 });
 
-// Helper function for delays
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 async function sendChatMessage() {
   const message = chatInputArea.value.trim();
   if (!message) return;
 
-  // Hide error banner if it's currently showing
   chatErrorBanner.style.display = 'none';
 
-  // 1. Append user's message
   const userMsg = document.createElement('div');
   userMsg.className = 'chat-message user';
   userMsg.textContent = message;
   chatWin.appendChild(userMsg);
 
-  // Clear input and scroll to bottom
   chatInputArea.value = '';
   chatWin.scrollTop = chatWin.scrollHeight;
 
-  // ==========================================
-  // EASTER EGG: /sudo download_resume
-  // ==========================================
   if (message.toLowerCase() === '/sudo download_resume') {
     const botMsg = document.createElement('div');
     botMsg.className = 'chat-message bot';
@@ -3965,26 +4027,23 @@ async function sendChatMessage() {
     chatWin.appendChild(botMsg);
     chatWin.scrollTop = chatWin.scrollHeight;
 
-    // Trigger local download programmatically
     setTimeout(() => {
       const link = document.createElement('a');
       link.href = 'resumeee.html'; 
-      link.download = 'Vignesh_Resume.html'; // Forces download instead of navigating
+      link.download = 'Vignesh_Resume.html'; 
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     }, 1500);
-    return; // Stop execution here so it doesn't hit the backend
+    return; 
   }
 
-  // 2. Add temporary "Thinking..." message
   const botMsg = document.createElement('div');
   botMsg.className = 'chat-message bot';
   botMsg.textContent = 'Thinking...';
   chatWin.appendChild(botMsg);
   chatWin.scrollTop = chatWin.scrollHeight;
 
-  // --- EMOTION/FACE UPDATE: THINKING ---
   const faceText = document.getElementById('faceText');
   faceText.textContent = '🤔';
 
@@ -3992,20 +4051,15 @@ async function sendChatMessage() {
     await sleep(1000);
     faceText.textContent = '✍️';
     
-    // ==========================================
-    // CONTEXT-AWARE CHAT LOGIC
-    // ==========================================
-    // Figure out what section the user is currently looking at
     const activeNav = document.querySelector('nav a.active');
     const currentContext = activeNav ? activeNav.getAttribute('href').substring(1) : 'unknown';
 
-    // 3. Send message + context to Python backend
     const responsePromise = fetch("https://portfolio-backend-iua6.onrender.com/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ 
         message: message, 
-        context: currentContext // "home", "about", "projects", etc.
+        context: currentContext 
       })
     });
 
@@ -4054,14 +4108,12 @@ chatInputArea.addEventListener('keydown', (e) => {
   }
 });
 
-// Function to handle the slide-in/out notification
 function showNextNotification() {
   const notif = document.getElementById('aiNotification');
   if (notif) {
     notif.classList.remove('slide-out');
     notif.classList.add('slide-in');
     
-    // Slide out after 3 seconds
     setTimeout(() => {
       notif.classList.remove('slide-in');
       notif.classList.add('slide-out');
@@ -4078,28 +4130,23 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnAcceptAll = document.getElementById("btn-accept-all");
   const btnAcceptNecessary = document.getElementById("btn-accept-necessary");
   
-  // Theme and AI toggle inputs inside the panel
   const themeToggle = document.getElementById("cookie-theme");
   const aiToggle = document.getElementById("cookie-ai");
 
-  // Display the panel automatically EVERY time the page loads
   setTimeout(() => {
     cookiePanel.classList.add("show");
-  }, 2000); // 2 second delay after site loads
+  }, 2000); 
 
-  // Handle opening the Full-Screen "Know More" modal
   window.openCookieModal = function(title, description) {
     document.getElementById("cookieInfoTitle").innerText = title;
     document.getElementById("cookieInfoDesc").innerText = description;
     document.getElementById("cookieInfoModal").classList.add("show");
   };
 
-  // Handle closing the Full-Screen "Know More" modal
   window.closeCookieModal = function() {
     document.getElementById("cookieInfoModal").classList.remove("show");
   };
 
-  // "Accept All" button click
   btnAcceptAll.addEventListener("click", () => {
     localStorage.setItem("cookieConsent", "all");
     localStorage.setItem("functionalCookies", "true");
@@ -4108,11 +4155,9 @@ document.addEventListener("DOMContentLoaded", () => {
     themeToggle.checked = true;
     aiToggle.checked = true;
     
-    // Slide it out
     cookiePanel.classList.remove("show");
   });
 
-  // "Accept Necessary" button click
   btnAcceptNecessary.addEventListener("click", () => {
     localStorage.setItem("cookieConsent", "necessary");
     
@@ -4122,7 +4167,6 @@ document.addEventListener("DOMContentLoaded", () => {
     themeToggle.checked = false;
     aiToggle.checked = false;
 
-    // Slide it out
     cookiePanel.classList.remove("show");
   });
 });
@@ -4130,8 +4174,6 @@ document.addEventListener("DOMContentLoaded", () => {
 // =========================================================================
 // =============== CUSTOM CURSOR COPY/SELECT LOGIC =========================
 // =========================================================================
-// This triggers the CSS rule to change the cursor to a Pill shape 
-// while you are holding the mouse down to copy text.
 document.addEventListener('mousedown', () => {
     document.body.classList.add('is-copying');
 });
@@ -4144,18 +4186,16 @@ document.addEventListener('mouseup', () => {
 // =========================================================================
 const terminalInput = document.getElementById("terminalInput");
 const terminalBody = document.getElementById("terminalBody");
-const mirrorText = document.getElementById("mirrorText"); // Custom Caret Tracker
+const mirrorText = document.getElementById("mirrorText"); 
 
 if (terminalInput && terminalBody) {
   
-  // Sync the invisible mirror text with exactly what you type
   if(mirrorText) {
       terminalInput.addEventListener("input", () => {
           mirrorText.textContent = terminalInput.value;
       });
   }
 
-  // Focus input automatically when user clicks anywhere inside the terminal
   terminalBody.addEventListener("click", () => {
     if (window.getSelection().toString() === "") {
       terminalInput.focus();
@@ -4167,13 +4207,11 @@ if (terminalInput && terminalBody) {
       const command = terminalInput.value.trim();
       const inputLine = document.querySelector(".terminal-input-line");
 
-      // 1. ALWAYS print the prompt line with whatever the user typed (even if it's empty)
       const cmdLine = document.createElement("div");
       cmdLine.className = "terminal-line";
       cmdLine.innerHTML = `<span class="terminal-prompt">guest@vignesh-os:~$></span> ${command}`;
       terminalBody.insertBefore(cmdLine, inputLine);
 
-      // If they just hit Enter without typing anything, reset and return early
       if (!command) {
         terminalInput.value = "";
         if(mirrorText) mirrorText.textContent = ""; 
@@ -4181,7 +4219,6 @@ if (terminalInput && terminalBody) {
         return; 
       }
 
-      // 2. Process command and generate a response
       const responseLine = document.createElement("div");
       responseLine.className = "terminal-line";
       
@@ -4229,7 +4266,6 @@ if (terminalInput && terminalBody) {
         responseLine.innerHTML = "NICE TRY. System lockdown initiated... Just kidding.";
         responseLine.style.color = "#ff5f56";
         
-        // Trigger Glitch Shake Animation
         const termContainer = document.querySelector(".terminal-container");
         if(termContainer) {
             termContainer.classList.add("glitch-shake");
@@ -4280,7 +4316,9 @@ if (terminalInput && terminalBody) {
       
       } else if (lowerCmd === "./neural_vision.sh" || lowerCmd === "./neural_vision") {
         responseLine.innerHTML = "Executing Neural Vision protocol... Redirecting...";
-        setTimeout(() => window.location.href = 'rcb.html', 1000);
+        const overlay = document.getElementById("loadingOverlay");
+        if (overlay) overlay.classList.add("active");
+        setTimeout(() => window.location.href = 'rcb.html', 3000);
 
       } else if (lowerCmd === "whoami") {
         responseLine.innerHTML = "guest_recruiter_looking_for_top_talent";
@@ -4297,10 +4335,8 @@ if (terminalInput && terminalBody) {
         responseLine.style.color = "#ff5f56";
       }
 
-      // Insert response right before the input line
       terminalBody.insertBefore(responseLine, inputLine);
       
-      // 3. Clear the input box and scroll to the absolute bottom
       terminalInput.value = "";
       if(mirrorText) mirrorText.textContent = ""; 
       terminalBody.scrollTop = terminalBody.scrollHeight;

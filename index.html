@@ -237,12 +237,15 @@ html { scroll-behavior: smooth; }
 
 .nav-btn:hover { background: #9d75fa; }
 
+/* =========================================
+   NAVBAR SIZING ADJUSTMENTS FOR NEW LINK
+   ========================================= */
 .navbar {
   position: fixed;
   top: 20px;
   left: 50%;
   transform: translateX(-50%);
-  width: 55%;
+  width: 56%; /* Increased to fit the new tab */
   padding: 12px 2%;
   display: flex;
   justify-content: space-between;
@@ -312,9 +315,9 @@ html { scroll-behavior: smooth; }
 
 .nav-links a {
   color: #475569;
-  padding: 8px 18px;
+  padding: 8px 14px; /* Reduced to fit the new link */
   text-decoration: none;
-  font-size: 15px;
+  font-size: 13.5px; /* Reduced to fit the new link */
   font-weight: 600;
   letter-spacing: 0.5px;
   border-radius: 20px;
@@ -2612,6 +2615,215 @@ body:not(.loaded) .about {
 @media(max-width: 768px) {
   .chat-window { height: 280px; }
 }
+
+/* =========================================
+   EXPERIENCE & EDUCATION TIMELINE
+   ========================================= */
+.experience-section {
+  padding: 80px 15%;
+  color: #000000;
+  width: 100%;
+}
+
+.timeline-container {
+  position: relative;
+  margin-left: 10px;
+  padding-left: 40px;
+  margin-bottom: 40px;
+}
+
+/* The Vertical Timeline Line */
+.timeline-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 1px;
+  background-color: #cbd5e1;
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 30px;
+}
+
+/* The Timeline Dot */
+.timeline-dot {
+  position: absolute;
+  left: -40px; 
+  top: 24px;
+  width: 12px;
+  height: 12px;
+  background-color: #000000;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #cbd5e1; /* Subtle grey outer ring */
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+.experience-card {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.experience-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+}
+
+.exp-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.exp-header h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 20px;
+  color: #000000;
+  margin: 0;
+}
+
+.exp-header .company {
+  color: #64748b;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+}
+
+.exp-date {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.badge-now {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: 0.5px;
+}
+
+.exp-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.exp-list li {
+  color: #475569;
+  font-size: 14.5px;
+  margin-bottom: 12px;
+  padding-left: 20px;
+  position: relative;
+  line-height: 1.6;
+}
+
+.exp-list li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: #94a3b8;
+  font-size: 18px;
+  line-height: 1;
+  top: 0px;
+}
+
+/* Education Bottom Grid */
+.education-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 25px;
+}
+
+.edu-card {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+  transition: transform 0.3s ease;
+}
+
+.edu-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+}
+
+.edu-icon {
+  width: 45px;
+  height: 45px;
+  background: #f1f5f9;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+
+.edu-icon i {
+  font-size: 20px;
+  color: #0f172a;
+  transition: all 0.3s ease;
+}
+
+.edu-card:hover .edu-icon {
+  background: #0f172a;
+  border-color: #0f172a;
+}
+
+.edu-card:hover .edu-icon i {
+  color: #ffffff;
+}
+
+.edu-card h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 18px;
+  color: #000000;
+  margin-bottom: 10px;
+}
+
+.edu-card h5 {
+  font-size: 15px;
+  color: #334155;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.edu-card p {
+  font-size: 13.5px;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+/* Mobile Adjustments for Timeline */
+@media(max-width: 768px) {
+  .experience-section { padding: 40px 5%; margin-bottom: 0; }
+  .education-grid { grid-template-columns: 1fr; }
+  .exp-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .exp-header h3 { font-size: 18px; }
+  .exp-list li { font-size: 13.5px; }
+  .timeline-container { padding-left: 25px; margin-left: 5px; }
+  .timeline-dot { left: -25px; }
+  .experience-card, .edu-card { padding: 20px; }
+}
   </style>
 </head>
 <body>
@@ -2630,6 +2842,7 @@ body:not(.loaded) .about {
     <div class="nav-links">
       <a class="active" href="#home">HOME</a>
       <a href="#about">CAPABILITIES</a>
+      <a href="#experience">EXPERIENCE</a> <!-- NEW TIMELINE LINK -->
       <a href="#projects">PROJECTS</a>
       <a href="#ai-assistant">ASSISTANT</a>
       <a href="#contact">CONTACT</a>
@@ -2851,6 +3064,55 @@ body:not(.loaded) .about {
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE & EDUCATION SECTION -->
+  <section id="experience" class="experience-section">
+    <!-- Header slides from left -->
+    <div class="approach-header reveal-left" style="margin-bottom: 40px;">
+      <div class="approach-badge" style="margin-bottom: 15px;">CAREER</div>
+      <div class="title-row">
+        <h2 class="approach-heading">Experience</h2>
+        <div class="header-line"></div>
+      </div>
+    </div>
+
+    <!-- Timeline Container slides from right -->
+    <div class="timeline-container reveal-right">
+      <!-- Experience Item -->
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content experience-card">
+          <div class="exp-header">
+            <h3>Software Engineering Intern <span class="company">· Technglobal Pvt Ltd.</span></h3>
+            <span class="exp-date">June 2026 - Aug 2026 &emsp13;<span class="badge-now">COMPLETED</span></span>
+          </div>
+          <ul class="exp-list">
+            <li>Completed a two-month software engineering internship developing full-stack solutions.</li>
+            <li>Engineered and deployed the BITS RADAR bug tracking system using Python, Flask, and SQLite.</li>
+            <li>Contributed backend components and UI improvements to the XAND Banking Software.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Education & Focus Grid slides from up -->
+    <div class="education-grid reveal">
+      <!-- Education Card -->
+      <div class="edu-card">
+        <div class="edu-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+        <h4>Education</h4>
+        <h5>BCA | CMR University</h5>
+        <p>2024-2027 | --------</p>
+      </div>
+      <!-- Technical Focus Card -->
+      <div class="edu-card">
+        <div class="edu-icon"><i class="fa-solid fa-code"></i></div>
+        <h4>Technical Focus</h4>
+        <h5>Full-Stack AI Engineering</h5>
+        <p>Building scalable web applications, interactive interfaces.</p>
       </div>
     </div>
   </section>

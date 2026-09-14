@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neural Firewall</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="Gemini_Generated_Image_ko64ocko64ocko64-removebg-preview.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #ffffff; overflow: hidden; font-family: 'Space Grotesk', sans-serif; user-select: none; touch-action: none; cursor: crosshair; }
+    canvas { display: block; }
+    .ui { position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; color: #0f172a; z-index: 10; pointer-events: none; }
+    .hud-box { background: rgba(255, 255, 255, 0.9); border: 1px solid #cbd5e1; padding: 10px 20px; border-radius: 10px; backdrop-filter: blur(8px); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); }
+    h2 { margin: 0; font-size: 0.9rem; color: #4f46e5; text-transform: uppercase; letter-spacing: 2px; }
+    span.val { color: #0f172a; font-size: 1.4rem; font-weight: bold; }
+    
+    /* OVERLAYS & MODALS */
+    .modal-backdrop { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.94); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 25; backdrop-filter: blur(8px); }
+    .modal-card { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 20px; padding: 40px; width: 90%; max-width: 500px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.08); }
+    h1 { font-size: 2.8rem; margin-bottom: 10px; color: #0f172a; }
+    
+    /* DIFFICULTY SELECTOR */
+    .diff-group { display: flex; justify-content: center; gap: 8px; margin: 25px 0; flex-wrap: wrap; }
+    .diff-btn { padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: 0.2s; font-family: inherit; }
+    .diff-btn.active { transform: scale(1.08); box-shadow: 0 4px 12px rgba(0,0,0,0.15); outline: 2px solid #0f172a; }
+    
+    .btn-easy { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+    .btn-med { background: #fef08a; color: #713f12; border: 1px solid #fde047; }
+    .btn-hard { background: #fce7f3; color: #991b1b; border: 1px solid #fbcfe8; }
+    .btn-cyanx { background: #ede9fe; color: #581c87; border: 1px solid #ddd6fe; }
+
+    /* ACTION BUTTONS */
+    .btn { padding: 14px 35px; background: #4f46e5; border: none; color: white; font-size: 1.1rem; cursor: pointer; border-radius: 30px; font-family: 'Space Grotesk', sans-serif; transition: 0.3s; margin: 8px; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25); font-weight: bold; }
+    .btn:hover { background: #4338ca; transform: translateY(-2px); }
+    .btn-outline { background: transparent; border: 2px solid #cbd5e1; color: #1e293b; box-shadow: none; }
+    .btn-outline:hover { background: #f1f5f9; }
+
+    /* SCORE POPUP DETAILS */
+    .score-banner { font-size: 3rem; font-weight: 800; color: #4f46e5; margin: 15px 0; }
+    .mode-indicator { display: inline-block; padding: 6px 14px; border-radius: 12px; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; font-size: 0.85rem; }
+</style>
+</head>
+<body>
+    <div class="ui">
+        <div class="hud-box"><h2>Integrity</h2><span class="val" id="integrity">100%</span></div>
+        <div class="hud-box"><h2>Score</h2><span class="val" id="currentScore">0</span></div>
+        <div class="hud-box"><h2>Time Left</h2><span class="val" id="time">45.0s</span></div>
+    </div>
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- START MODAL -->
+    <div class="modal-backdrop" id="startOverlay">
+        <div class="modal-card">
+            <h1>NEURAL FIREWALL</h1>
+            <p style="color:#64748b;">Rotate the curved shield around the core to vaporize attacking data packets.</p>
+            
+            <div class="diff-group">
+                <button class="diff-btn btn-easy active" onclick="setDifficulty('Easy')">Easy</button>
+                <button class="diff-btn btn-med" onclick="setDifficulty('Medium')">Medium</button>
+                <button class="diff-btn btn-hard" onclick="setDifficulty('Hard')">Hard</button>
+                <button class="diff-btn btn-cyanx" onclick="setDifficulty('CYANX AI')">CYANX AI</button>
+            </div>
+
+            <div>
+                <button class="btn" onclick="startGame()">INITIATE SEQUENCE</button>
+                <button class="btn btn-outline" onclick="window.location.href='game.html'">ABORT</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCORE POPUP MODAL -->
+    <div class="modal-backdrop" id="scoreModal" style="display: none;">
+        <div class="modal-card">
+            <h2 id="resultTitle" style="font-size:1.8rem; margin-bottom: 5px;">SYSTEM REPORT</h2>
+            <div id="resultBadge" class="mode-indicator"></div>
+            <div style="color:#64748b; font-size:0.95rem;">INDIVIDUAL RUN SCORE</div>
+            <div class="score-banner" id="popupScore">0</div>
+            <p id="highScoreNote" style="font-size:0.9rem; color:#15803d; font-weight:600; margin-bottom:20px;"></p>
+            
+            <div>
+                <button class="btn" onclick="retryGame()">PLAY AGAIN</button>
+                <button class="btn btn-outline" onclick="window.location.href='game.html'">MAIN MENU</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let currentDifficulty = 'Easy';
+    const configs = {
+        'Easy':     { spawnRate: 1100, minRate: 400, speedMin: 1.8, speedMax: 2.8, arc: Math.PI / 1.7, rateStep: 12 },
+        'Medium':   { spawnRate: 900,  minRate: 280, speedMin: 2.3, speedMax: 3.5, arc: Math.PI / 2.1, rateStep: 16 },
+        'Hard':     { spawnRate: 700,  minRate: 200, speedMin: 3.0, speedMax: 4.8, arc: Math.PI / 2.7, rateStep: 22 },
+        'CYANX AI': { spawnRate: 480,  minRate: 140, speedMin: 4.2, speedMax: 6.5, arc: Math.PI / 3.4, rateStep: 28 }
+    };
+
+    let integrity = 100;
+    let timeLeft = 45;
+    let gameActive = false;
+    let packets = [];
+    let particles = [];
+    let lastTime = 0;
+    let spawnTimer = 0;
+    let eliminatedCount = 0;
+    let score = 0;
+
+    const core = { x: canvas.width / 2, y: canvas.height / 2, radius: 42 };
+    const shield = { radius: 88, thickness: 14, arcSpan: Math.PI / 2.1, angle: 0 };
+
+    let mouseX = canvas.width / 2 + shield.radius;
+    let mouseY = canvas.height / 2;
+
+    window.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+    window.addEventListener('touchmove', (e) => {
+        if (e.touches.length > 0) { mouseX = e.touches[0].clientX; mouseY = e.touches[0].clientY; }
+    }, { passive: true });
+
+    function setDifficulty(mode) {
+        currentDifficulty = mode;
+        document.querySelectorAll('.diff-btn').forEach(btn => btn.classList.remove('active'));
+        if (mode === 'Easy') document.querySelector('.btn-easy').classList.add('active');
+        if (mode === 'Medium') document.querySelector('.btn-med').classList.add('active');
+        if (mode === 'Hard') document.querySelector('.btn-hard').classList.add('active');
+        if (mode === 'CYANX AI') document.querySelector('.btn-cyanx').classList.add('active');
+    }
+
+    function startGame() {
+        document.getElementById('startOverlay').style.display = 'none';
+        document.getElementById('scoreModal').style.display = 'none';
+        
+        const cfg = configs[currentDifficulty];
+        shield.arcSpan = cfg.arc;
+
+        integrity = 100;
+        timeLeft = 45;
+        packets = [];
+        particles = [];
+        eliminatedCount = 0;
+        score = 0;
+        
+        document.getElementById('integrity').innerText = integrity + "%";
+        document.getElementById('currentScore').innerText = "0";
+        gameActive = true;
+        lastTime = performance.now();
+        requestAnimationFrame(update);
+    }
+
+    function retryGame() {
+        document.getElementById('scoreModal').style.display = 'none';
+        document.getElementById('startOverlay').style.display = 'flex';
+    }
+
+    function endGame(win) {
+        gameActive = false;
+        
+        // Final Score Calculation
+        const totalScore = (eliminatedCount * 120) + (integrity * 15) + (win ? 1000 : 0);
+        
+        // Save Record
+        const prevBest = parseInt(localStorage.getItem('cyanx_firewall_best') || 0);
+        let isNewHigh = false;
+        if (totalScore > prevBest) {
+            localStorage.setItem('cyanx_firewall_best', totalScore);
+            localStorage.setItem('cyanx_firewall_mode', currentDifficulty);
+            isNewHigh = true;
+        }
+
+        // Show Score Pop-up
+        const modal = document.getElementById('scoreModal');
+        const title = document.getElementById('resultTitle');
+        const badge = document.getElementById('resultBadge');
+        const scoreVal = document.getElementById('popupScore');
+        const highNote = document.getElementById('highScoreNote');
+
+        title.innerText = win ? "NEURAL CORE DEFENDED" : "CORE BREACH DETECTED";
+        title.style.color = win ? "#16a34a" : "#dc2626";
+
+        badge.innerText = currentDifficulty;
+        badge.className = `mode-indicator btn-${currentDifficulty === 'Easy' ? 'easy' : currentDifficulty === 'Medium' ? 'med' : currentDifficulty === 'Hard' ? 'hard' : 'cyanx'}`;
+
+        scoreVal.innerText = totalScore;
+        highNote.innerText = isNewHigh ? "🎉 NEW HIGH SCORE RECORDED!" : `Best Score: ${prevBest} pts`;
+
+        modal.style.display = 'flex';
+    }
+
+    function createExplosion(x, y, color, count = 16) {
+        for(let i = 0; i < count; i++){
+            particles.push({
+                x: x, y: y,
+                vx: (Math.random() - 0.5) * 8,
+                vy: (Math.random() - 0.5) * 8,
+                life: 1, color: color
+            });
+        }
+    }
+
+    function update(time) {
+        if(!gameActive) return;
+        const dt = time - lastTime;
+        lastTime = time;
+
+        timeLeft -= dt / 1000;
+        document.getElementById('time').innerText = Math.max(0, timeLeft).toFixed(1) + "s";
+        if(timeLeft <= 0) { endGame(true); return; }
+
+        const cfg = configs[currentDifficulty];
+        spawnTimer += dt;
+        let currentRate = Math.max(cfg.minRate, cfg.spawnRate - (45 - timeLeft) * cfg.rateStep);
+        if(spawnTimer > currentRate) {
+            spawnTimer = 0;
+            let angle = Math.random() * Math.PI * 2;
+            let dist = Math.hypot(canvas.width, canvas.height) / 2 + 50;
+            packets.push({
+                x: core.x + Math.cos(angle) * dist,
+                y: core.y + Math.sin(angle) * dist,
+                radius: 11,
+                speed: cfg.speedMin + Math.random() * (cfg.speedMax - cfg.speedMin)
+            });
+        }
+
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.32)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Core Ring
+        ctx.beginPath();
+        ctx.arc(core.x, core.y, shield.radius, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(79, 70, 229, 0.12)';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([6, 6]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Core Center
+        ctx.beginPath();
+        ctx.arc(core.x, core.y, core.radius + Math.sin(time / 200) * 4, 0, Math.PI * 2);
+        ctx.fillStyle = '#4f46e5';
+        ctx.shadowBlur = 24;
+        ctx.shadowColor = 'rgba(79, 70, 229, 0.5)';
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        ctx.beginPath();
+        ctx.arc(core.x, core.y, core.radius * 0.55, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+
+        // Calculate Curved Shield
+        shield.angle = Math.atan2(mouseY - core.y, mouseX - core.x);
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(core.x, core.y, shield.radius, shield.angle - shield.arcSpan / 2, shield.angle + shield.arcSpan / 2);
+        ctx.strokeStyle = '#2563eb';
+        ctx.lineWidth = shield.thickness;
+        ctx.lineCap = 'round';
+        ctx.shadowBlur = 18;
+        ctx.shadowColor = 'rgba(37, 99, 235, 0.7)';
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(core.x, core.y, shield.radius, shield.angle - (shield.arcSpan / 2) + 0.08, shield.angle + (shield.arcSpan / 2) - 0.08);
+        ctx.strokeStyle = '#93c5fd';
+        ctx.lineWidth = shield.thickness * 0.35;
+        ctx.stroke();
+        ctx.restore();
+
+        // Packets
+        for(let i = packets.length - 1; i >= 0; i--) {
+            let p = packets[i];
+            let angleToCore = Math.atan2(core.y - p.y, core.x - p.x);
+            p.x += Math.cos(angleToCore) * p.speed;
+            p.y += Math.sin(angleToCore) * p.speed;
+
+            let distToCore = Math.hypot(core.x - p.x, core.y - p.y);
+
+            // 1. Shield Arc Collision
+            if (Math.abs(distToCore - shield.radius) <= (p.radius + shield.thickness / 2 + 5)) {
+                let packetAngle = Math.atan2(p.y - core.y, p.x - core.x);
+                let angleDiff = Math.atan2(Math.sin(packetAngle - shield.angle), Math.cos(packetAngle - shield.angle));
+                let edgeForgiveness = (p.radius + 6) / shield.radius;
+
+                if (Math.abs(angleDiff) <= (shield.arcSpan / 2 + edgeForgiveness)) {
+                    createExplosion(p.x, p.y, '#38bdf8', 12);
+                    createExplosion(p.x, p.y, '#dc2626', 10);
+                    packets.splice(i, 1);
+                    eliminatedCount++;
+                    document.getElementById('currentScore').innerText = eliminatedCount * 120;
+                    continue;
+                }
+            }
+
+            // 2. Core Collision
+            if (distToCore <= core.radius + p.radius) {
+                integrity -= 10;
+                document.getElementById('integrity').innerText = integrity + "%";
+                createExplosion(p.x, p.y, '#dc2626', 20);
+                packets.splice(i, 1);
+                if (integrity <= 0) { endGame(false); return; }
+                continue;
+            }
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fillStyle = '#dc2626';
+            ctx.shadowBlur = 12;
+            ctx.shadowColor = 'rgba(220, 38, 38, 0.5)';
+            ctx.fill();
+            ctx.shadowBlur = 0;
+        }
+
+        // Particles
+        for(let i = particles.length - 1; i >= 0; i--) {
+            let pt = particles[i];
+            pt.x += pt.vx; pt.y += pt.vy; pt.life -= 0.045;
+            ctx.globalAlpha = Math.max(0, pt.life);
+            ctx.fillStyle = pt.color;
+            ctx.beginPath();
+            ctx.arc(pt.x, pt.y, 3, 0, Math.PI * 2);
+            ctx.fill();
+            if(pt.life <= 0) particles.splice(i, 1);
+        }
+        ctx.globalAlpha = 1;
+
+        requestAnimationFrame(update);
+    }
+
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        core.x = canvas.width / 2; core.y = canvas.height / 2;
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Memory Matrix</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="icon" type="image/png" href="Gemini_Generated_Image_ko64ocko64ocko64-removebg-preview.png">
+<style>
+    body { margin: 0; background: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; color: #0f172a; font-family: 'Space Grotesk', sans-serif; overflow: hidden; }
+    h1 { margin-bottom: 5px; color: #0f172a; text-shadow: 0 4px 15px rgba(79, 70, 229, 0.15); }
+    p { color: #64748b; margin-bottom: 25px; letter-spacing: 2px; text-transform: uppercase; font-size: 14px; font-weight: 600; }
+    
+    .grid { display: grid; grid-template-columns: repeat(4, 75px); gap: 14px; margin-bottom: 25px; pointer-events: none; }
+    .cell { width: 75px; height: 75px; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 12px; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04); }
+    .cell:hover { background: #e2e8f0; border-color: #94a3b8; }
+    .cell.active { background: #4f46e5; box-shadow: 0 0 25px rgba(79, 70, 229, 0.6); border-color: #4338ca; transform: scale(1.05); }
+    
+    .diff-group { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
+    .diff-btn { padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: 0.2s; font-family: inherit; }
+    .diff-btn.active { transform: scale(1.08); box-shadow: 0 4px 10px rgba(0,0,0,0.12); outline: 2px solid #0f172a; }
+    
+    .btn-easy { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+    .btn-med { background: #fef08a; color: #713f12; border: 1px solid #fde047; }
+    .btn-hard { background: #fce7f3; color: #991b1b; border: 1px solid #fbcfe8; }
+    .btn-cyanx { background: #ede9fe; color: #581c87; border: 1px solid #ddd6fe; }
+
+    .controls { display: flex; gap: 12px; }
+    .btn { padding: 12px 30px; background: #4f46e5; border: none; color: white; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.3s; font-family: inherit; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25); }
+    .btn:hover { background: #4338ca; }
+    .btn-outline { background: transparent; border: 1px solid #cbd5e1; color: #334155; box-shadow: none; }
+    
+    #status { font-size: 1.15rem; color: #16a34a; height: 26px; margin-bottom: 12px; font-weight: bold; }
+
+    /* POPUP MODAL */
+    .modal-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.94); display: flex; justify-content: center; align-items: center; z-index: 50; backdrop-filter: blur(8px); }
+    .modal-card { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 20px; padding: 35px; width: 90%; max-width: 460px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.08); }
+    .score-banner { font-size: 3.2rem; font-weight: 800; color: #4f46e5; margin: 15px 0; }
+    .mode-indicator { display: inline-block; padding: 6px 14px; border-radius: 12px; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; font-size: 0.85rem; }
+</style>
+</head>
+<body>
+    <h1>MEMORY MATRIX</h1>
+    <p>Train the Neural Network</p>
+
+    <div class="diff-group" id="diffGroup">
+        <button class="diff-btn btn-easy active" onclick="setDifficulty('Easy')">Easy</button>
+        <button class="diff-btn btn-med" onclick="setDifficulty('Medium')">Medium</button>
+        <button class="diff-btn btn-hard" onclick="setDifficulty('Hard')">Hard</button>
+        <button class="diff-btn btn-cyanx" onclick="setDifficulty('CYANX AI')">CYANX AI</button>
+    </div>
+
+    <div id="status">Ready for Calibration</div>
+    <div class="grid" id="grid"></div>
+    
+    <div class="controls">
+        <button class="btn" id="startBtn" onclick="startTraining()">START TRAINING</button>
+        <button class="btn btn-outline" onclick="window.location.href='game.html'">BACK</button>
+    </div>
+
+    <!-- SCORE POPUP MODAL -->
+    <div class="modal-backdrop" id="scoreModal" style="display: none;">
+        <div class="modal-card">
+            <h2 style="font-size:1.8rem; color:#dc2626; margin-bottom: 5px;">TRAINING TERMINATED</h2>
+            <div id="resultBadge" class="mode-indicator"></div>
+            <div style="color:#64748b; font-size:0.95rem;">TOTAL ROUNDS VERIFIED</div>
+            <div class="score-banner" id="popupRounds">0</div>
+            <p id="highScoreNote" style="font-size:0.9rem; color:#15803d; font-weight:600; margin-bottom:20px;"></p>
+            
+            <div>
+                <button class="btn" onclick="retryTraining()">RETRY</button>
+                <button class="btn btn-outline" onclick="window.location.href='game.html'">MAIN MENU</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    const grid = document.getElementById('grid');
+    const status = document.getElementById('status');
+    const startBtn = document.getElementById('startBtn');
+    const diffGroup = document.getElementById('diffGroup');
+
+    let currentDifficulty = 'Easy';
+    const speeds = {
+        'Easy':     { on: 500, off: 350 },
+        'Medium':   { on: 380, off: 260 },
+        'Hard':     { on: 260, off: 160 },
+        'CYANX AI': { on: 160, off: 90 }
+    };
+
+    let sequence = [];
+    let playerSeq = [];
+    let isPlayerTurn = false;
+
+    for(let i=0; i<16; i++){
+        let cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.dataset.index = i;
+        cell.onclick = () => handlePlayerClick(i);
+        grid.appendChild(cell);
+    }
+    const cells = document.querySelectorAll('.cell');
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+    function setDifficulty(mode) {
+        currentDifficulty = mode;
+        document.querySelectorAll('.diff-btn').forEach(btn => btn.classList.remove('active'));
+        if (mode === 'Easy') document.querySelector('.btn-easy').classList.add('active');
+        if (mode === 'Medium') document.querySelector('.btn-med').classList.add('active');
+        if (mode === 'Hard') document.querySelector('.btn-hard').classList.add('active');
+        if (mode === 'CYANX AI') document.querySelector('.btn-cyanx').classList.add('active');
+    }
+
+    async function startTraining() {
+        startBtn.style.display = 'none';
+        diffGroup.style.pointerEvents = 'none';
+        diffGroup.style.opacity = '0.6';
+        sequence = [];
+        startRound();
+    }
+
+    async function startRound() {
+        playerSeq = [];
+        isPlayerTurn = false;
+        sequence.push(Math.floor(Math.random() * 16));
+        status.innerText = `Memorize Sequence... (Round ${sequence.length})`;
+        status.style.color = '#4f46e5';
+        grid.style.pointerEvents = 'none';
+        
+        await sleep(700);
+        const spd = speeds[currentDifficulty];
+        
+        for(let i=0; i<sequence.length; i++) {
+            let index = sequence[i];
+            cells[index].classList.add('active');
+            await sleep(spd.on);
+            cells[index].classList.remove('active');
+            await sleep(spd.off);
+        }
+        
+        status.innerText = 'Your Turn';
+        status.style.color = '#16a34a';
+        grid.style.pointerEvents = 'auto';
+        isPlayerTurn = true;
+    }
+
+    async function handlePlayerClick(index) {
+        if(!isPlayerTurn) return;
+        
+        cells[index].classList.add('active');
+        setTimeout(() => cells[index].classList.remove('active'), 200);
+        
+        playerSeq.push(index);
+        let currMove = playerSeq.length - 1;
+        
+        if(playerSeq[currMove] !== sequence[currMove]) {
+            grid.style.pointerEvents = 'none';
+            handleFail();
+            return;
+        }
+        
+        if(playerSeq.length === sequence.length) {
+            isPlayerTurn = false;
+            status.innerText = 'SEQUENCE VERIFIED';
+            status.style.color = '#7c3aed';
+            grid.style.pointerEvents = 'none';
+            await sleep(900);
+            startRound();
+        }
+    }
+
+    function handleFail() {
+        const finalRounds = Math.max(0, sequence.length - 1);
+        const prevBest = parseInt(localStorage.getItem('cyanx_matrix_best') || 0);
+        let isNewHigh = false;
+        
+        if (finalRounds > prevBest) {
+            localStorage.setItem('cyanx_matrix_best', finalRounds);
+            localStorage.setItem('cyanx_matrix_mode', currentDifficulty);
+            isNewHigh = true;
+        }
+
+        const modal = document.getElementById('scoreModal');
+        const badge = document.getElementById('resultBadge');
+        const scoreVal = document.getElementById('popupRounds');
+        const highNote = document.getElementById('highScoreNote');
+
+        badge.innerText = currentDifficulty;
+        badge.className = `mode-indicator btn-${currentDifficulty === 'Easy' ? 'easy' : currentDifficulty === 'Medium' ? 'med' : currentDifficulty === 'Hard' ? 'hard' : 'cyanx'}`;
+
+        scoreVal.innerText = finalRounds;
+        highNote.innerText = isNewHigh ? "🎉 NEW HIGH SCORE RECORDED!" : `Best: Round ${prevBest}`;
+
+        modal.style.display = 'flex';
+    }
+
+    function retryTraining() {
+        document.getElementById('scoreModal').style.display = 'none';
+        diffGroup.style.pointerEvents = 'auto';
+        diffGroup.style.opacity = '1';
+        startBtn.style.display = 'block';
+        startBtn.innerText = 'START TRAINING';
+        status.innerText = 'Ready for Calibration';
+        status.style.color = '#16a34a';
+    }
+</script>
+</body>
+</html>

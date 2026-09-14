@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cipher Breaker</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="icon" type="image/png" href="Gemini_Generated_Image_ko64ocko64ocko64-removebg-preview.png">
+<style>
+    body { margin: 0; background: #ffffff; display: flex; flex-direction: column; align-items: center; padding-top: 60px; color: #0f172a; font-family: 'Space Grotesk', sans-serif; min-height: 100vh; overflow-x: hidden; }
+    h1 { color: #0f172a; text-shadow: 0 4px 15px rgba(79, 70, 229, 0.15); margin-bottom: 5px; }
+    p.sub { color: #64748b; margin-bottom: 20px; letter-spacing: 2px; text-transform: uppercase; font-size: 14px; text-align: center; }
+    
+    .diff-group { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
+    .diff-btn { padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: 0.2s; font-family: inherit; }
+    .diff-btn.active { transform: scale(1.08); box-shadow: 0 4px 10px rgba(0,0,0,0.12); outline: 2px solid #0f172a; }
+    
+    .btn-easy { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+    .btn-med { background: #fef08a; color: #713f12; border: 1px solid #fde047; }
+    .btn-hard { background: #fce7f3; color: #991b1b; border: 1px solid #fbcfe8; }
+    .btn-cyanx { background: #ede9fe; color: #581c87; border: 1px solid #ddd6fe; }
+
+    .terminal { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 16px; width: 90%; max-width: 500px; padding: 25px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06); }
+    
+    .log { height: 230px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; padding-right: 10px; }
+    .log-entry { padding: 12px 14px; background: #f8fafc; border-radius: 8px; border-left: 4px solid #94a3b8; display: flex; justify-content: space-between; align-items: center; border: 1px solid #e2e8f0; border-left-width: 4px; }
+    .log-entry.exact { border-left-color: #16a34a; background: #f0fdf4; }
+    
+    .input-row { display: flex; gap: 10px; }
+    input[type="number"] { flex-grow: 1; padding: 14px; background: #f8fafc; border: 1px solid #cbd5e1; color: #0f172a; font-size: 1.5rem; border-radius: 8px; text-align: center; font-family: monospace; outline: none; transition: 0.3s; font-weight: bold; }
+    input[type="number"]:focus { border-color: #4f46e5; box-shadow: 0 0 12px rgba(79, 70, 229, 0.2); background: #ffffff; }
+    input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    
+    .btn { padding: 14px 25px; background: #4f46e5; border: none; color: white; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; font-family: inherit; font-size: 1.1rem; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25); }
+    .btn:hover { background: #4338ca; }
+    .btn-outline { background: transparent; border: 1px solid #cbd5e1; color: #334155; box-shadow: none; border-radius: 8px; }
+    
+    .status { margin-top: 15px; font-size: 1rem; color: #16a34a; text-align: center; height: 20px; font-weight: bold; }
+    .btn-return { position: absolute; top: 30px; left: 30px; padding: 10px 20px; background: #ffffff; border: 1px solid #cbd5e1; color: #1e293b; border-radius: 30px; text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.3s; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); }
+
+    /* POPUP MODAL */
+    .modal-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.94); display: flex; justify-content: center; align-items: center; z-index: 50; backdrop-filter: blur(8px); }
+    .modal-card { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 20px; padding: 35px; width: 90%; max-width: 460px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.08); }
+    .score-banner { font-size: 3.2rem; font-weight: 800; color: #4f46e5; margin: 15px 0; }
+    .mode-indicator { display: inline-block; padding: 6px 14px; border-radius: 12px; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; font-size: 0.85rem; }
+</style>
+</head>
+<body>
+    <a href="game.html" class="btn-return"><i class="fa-solid fa-arrow-left"></i> BACK</a>
+    
+    <h1>CIPHER BREAKER</h1>
+    <p class="sub" id="modeDescription">Crack the encrypted AI Vault Code</p>
+
+    <div class="diff-group">
+        <button class="diff-btn btn-easy active" onclick="changeDifficulty('Easy')">Easy</button>
+        <button class="diff-btn btn-med" onclick="changeDifficulty('Medium')">Medium</button>
+        <button class="diff-btn btn-hard" onclick="changeDifficulty('Hard')">Hard</button>
+        <button class="diff-btn btn-cyanx" onclick="changeDifficulty('CYANX AI')">CYANX AI</button>
+    </div>
+
+    <div class="terminal">
+        <div class="log" id="logArea"></div>
+        
+        <form class="input-row" id="guessForm">
+            <input type="number" id="guessInput" placeholder="0000" maxlength="4" autocomplete="off" autofocus required>
+            <button type="submit" class="btn" id="submitBtn">DECRYPT</button>
+        </form>
+        
+        <div class="status" id="statusMsg"></div>
+    </div>
+
+    <!-- SCORE POPUP MODAL -->
+    <div class="modal-backdrop" id="scoreModal" style="display: none;">
+        <div class="modal-card">
+            <h2 id="resultTitle" style="font-size:1.8rem; color:#16a34a; margin-bottom: 5px;">VAULT DECRYPTED</h2>
+            <div id="resultBadge" class="mode-indicator"></div>
+            <div style="color:#64748b; font-size:0.95rem;">ATTEMPTS UTILIZED</div>
+            <div class="score-banner" id="popupAttempts">0</div>
+            <p id="highScoreNote" style="font-size:0.9rem; color:#15803d; font-weight:600; margin-bottom:20px;"></p>
+            
+            <div>
+                <button class="btn" onclick="retryCipher()">PLAY AGAIN</button>
+                <button class="btn btn-outline" onclick="window.location.href='game.html'">MAIN MENU</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    const logArea = document.getElementById('logArea');
+    const guessForm = document.getElementById('guessForm');
+    const guessInput = document.getElementById('guessInput');
+    const statusMsg = document.getElementById('statusMsg');
+    const modeDesc = document.getElementById('modeDescription');
+
+    let currentDifficulty = 'Easy';
+    const configs = {
+        'Easy':     { digits: 3, maxAttempts: 10, pool: 6, desc: "Crack 3-digit Code (Numbers 0-5) [10 Attempts]" },
+        'Medium':   { digits: 4, maxAttempts: 8, pool: 10, desc: "Crack 4-digit Code (Numbers 0-9) [8 Attempts]" },
+        'Hard':     { digits: 4, maxAttempts: 6, pool: 10, desc: "Crack 4-digit Code (Numbers 0-9) [6 Attempts]" },
+        'CYANX AI': { digits: 5, maxAttempts: 6, pool: 10, desc: "Crack 5-digit Code (Numbers 0-9) [6 Attempts]" }
+    };
+
+    let secretCode = "";
+    let attempts = 0;
+
+    function changeDifficulty(mode) {
+        currentDifficulty = mode;
+        document.querySelectorAll('.diff-btn').forEach(btn => btn.classList.remove('active'));
+        if (mode === 'Easy') document.querySelector('.btn-easy').classList.add('active');
+        if (mode === 'Medium') document.querySelector('.btn-med').classList.add('active');
+        if (mode === 'Hard') document.querySelector('.btn-hard').classList.add('active');
+        if (mode === 'CYANX AI') document.querySelector('.btn-cyanx').classList.add('active');
+        resetGame();
+    }
+
+    function generateCode() {
+        const cfg = configs[currentDifficulty];
+        let nums = Array.from({length: cfg.pool}, (_, i) => i);
+        let code = "";
+        for(let i=0; i<cfg.digits; i++) {
+            let index = Math.floor(Math.random() * nums.length);
+            code += nums[index];
+            nums.splice(index, 1);
+        }
+        return code;
+    }
+
+    guessInput.addEventListener('input', function() {
+        const max = configs[currentDifficulty].digits;
+        if (this.value.length > max) this.value = this.value.slice(0, max);
+    });
+
+    guessForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const cfg = configs[currentDifficulty];
+        let guess = guessInput.value.trim();
+
+        if(guess.length !== cfg.digits) {
+            statusMsg.innerText = `Error: Requires exactly ${cfg.digits} digits.`;
+            statusMsg.style.color = "#dc2626";
+            return;
+        }
+
+        attempts++;
+        if(attempts === 1) logArea.innerHTML = "";
+
+        let exact = 0;
+        let partial = 0;
+        let secretArr = secretCode.split("");
+        let guessArr = guess.split("");
+        
+        for(let i=0; i<cfg.digits; i++){
+            if(guessArr[i] === secretArr[i]) {
+                exact++;
+                secretArr[i] = null;
+                guessArr[i] = null;
+            }
+        }
+        for(let i=0; i<cfg.digits; i++){
+            if(guessArr[i] !== null && secretArr.includes(guessArr[i])) {
+                partial++;
+                secretArr[secretArr.indexOf(guessArr[i])] = null;
+            }
+        }
+
+        addLogEntry(guess, exact, partial);
+        guessInput.value = "";
+        
+        if(exact === cfg.digits) {
+            handleEnd(true);
+        } else if(attempts >= cfg.maxAttempts) {
+            handleEnd(false);
+        } else {
+            statusMsg.innerText = `Attempt ${attempts}/${cfg.maxAttempts} Failed.`;
+            statusMsg.style.color = "#d97706";
+        }
+    });
+
+    function addLogEntry(guess, exact, partial) {
+        const entry = document.createElement('div');
+        const cfg = configs[currentDifficulty];
+        entry.className = exact === cfg.digits ? 'log-entry exact' : 'log-entry';
+        
+        let feedback = "";
+        for(let i=0; i<exact; i++) feedback += '<span style="color:#16a34a; font-size:1.2rem;">●</span> ';
+        for(let i=0; i<partial; i++) feedback += '<span style="color:#d97706; font-size:1.2rem;">○</span> ';
+        if(exact === 0 && partial === 0) feedback = '<span style="color:#dc2626; font-weight:600;">None</span>';
+
+        entry.innerHTML = `
+            <span style="font-family: monospace; font-size: 1.3rem; letter-spacing: 3px; color: #0f172a; font-weight: bold;">${guess}</span>
+            <div>${feedback}</div>
+        `;
+        logArea.appendChild(entry);
+        logArea.scrollTop = logArea.scrollHeight;
+    }
+
+    function handleEnd(win) {
+        guessInput.disabled = true;
+        const prevBest = parseInt(localStorage.getItem('cyanx_cipher_best') || 999);
+        let isNewHigh = false;
+
+        if (win && attempts < prevBest) {
+            localStorage.setItem('cyanx_cipher_best', attempts);
+            localStorage.setItem('cyanx_cipher_mode', currentDifficulty);
+            isNewHigh = true;
+        }
+
+        const modal = document.getElementById('scoreModal');
+        const title = document.getElementById('resultTitle');
+        const badge = document.getElementById('resultBadge');
+        const scoreVal = document.getElementById('popupAttempts');
+        const highNote = document.getElementById('highScoreNote');
+
+        title.innerText = win ? "VAULT DECRYPTED" : "SECURITY LOCKOUT";
+        title.style.color = win ? "#16a34a" : "#dc2626";
+
+        badge.innerText = currentDifficulty;
+        badge.className = `mode-indicator btn-${currentDifficulty === 'Easy' ? 'easy' : currentDifficulty === 'Medium' ? 'med' : currentDifficulty === 'Hard' ? 'hard' : 'cyanx'}`;
+
+        scoreVal.innerText = win ? `${attempts} tries` : "FAILED";
+        highNote.innerText = isNewHigh ? "🎉 NEW CIPHER RECORD RECORDED!" : (win ? `Best: ${prevBest} attempts` : `Secret Code was: ${secretCode}`);
+
+        modal.style.display = 'flex';
+    }
+
+    function retryCipher() {
+        document.getElementById('scoreModal').style.display = 'none';
+        resetGame();
+    }
+
+    function resetGame() {
+        secretCode = generateCode();
+        attempts = 0;
+        const cfg = configs[currentDifficulty];
+        modeDesc.innerText = cfg.desc;
+        guessInput.placeholder = "0".repeat(cfg.digits);
+        guessInput.maxLength = cfg.digits;
+        guessInput.disabled = false;
+        guessInput.value = "";
+        
+        logArea.innerHTML = `
+            <div style="color: #4f46e5; text-align: center; padding-top: 60px; font-size: 0.95rem; line-height: 1.8;">
+                <i class="fa-solid fa-terminal"></i> Enter ${cfg.digits} digits to begin.<br><br>
+                <span style="color:#16a34a; font-weight: 600;">● Correct Number & Position</span><br>
+                <span style="color:#d97706; font-weight: 600;">○ Correct Number, Wrong Position</span>
+            </div>
+        `;
+        statusMsg.innerText = "";
+        guessInput.focus();
+    }
+
+    resetGame();
+</script>
+</body>
+</html>

@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Nᴇᴜʀᴀʟ Vɪsɪᴏɴ</title>
   <meta name="description" content="Interactive 3D neural network portfolio displaying project nodes, geometric connections, and detailed project inspect sheets." />
-  <link rel="icon" type="image/png" href="Gemini_Generated_Image_ko64ocko64ocko64-removebg-preview.png">
   
   <!-- Typography -->
+   <link rel="icon" type="image/png" href="Gemini_Generated_Image_ko64ocko64ocko64-removebg-preview.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -72,14 +72,15 @@
       pointer-events: auto;
     }
 
+    /* Top HUD */
     header.header-hud {
       top: 0;
       left: 0;
       right: 0;
-      padding: 16px 20px;
+      padding: 14px 16px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
 
     .top-bar {
@@ -93,120 +94,143 @@
     .top-bar-left {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
+      flex-shrink: 0;
     }
 
     .btn-nav-back {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       background: rgba(255, 255, 255, 0.94);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       border: 1px solid var(--color-border);
       border-radius: 8px;
-      padding: 8px 12px;
+      padding: 7px 11px;
       font-family: var(--font-mono);
-      font-size: 11.5px;
+      font-size: 11px;
       font-weight: 700;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.05em;
       text-transform: uppercase;
       color: var(--color-text);
       text-decoration: none;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
       transition: all 0.15s ease;
-      flex-shrink: 0;
+      white-space: nowrap;
     }
     .btn-nav-back:hover {
       background: #000000;
       color: #ffffff;
       border-color: #000000;
-      transform: translateY(-1px);
+    }
+
+    /* Flowing Border on NEURAL VIEW */
+    .brand-badge-wrapper {
+      position: relative;
+      border-radius: 9px;
+      padding: 1.5px;
+      background: var(--color-border);
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    @keyframes rotateFlow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .brand-badge-wrapper::before {
+      content: '';
+      position: absolute;
+      width: 250%;
+      height: 250%;
+      top: -75%;
+      left: -75%;
+      background: transparent;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    .brand-badge-wrapper.flow-yellow::before {
+      opacity: 1;
+      background: conic-gradient(from 0deg, transparent 60%, #eab308 85%, #fde047 100%);
+      animation: rotateFlow 2.4s linear infinite;
+    }
+    .brand-badge-wrapper.flow-green::before {
+      opacity: 1;
+      background: conic-gradient(from 0deg, transparent 60%, #10b981 85%, #34d399 100%);
+      animation: rotateFlow 2s linear infinite;
+    }
+    .brand-badge-wrapper.flow-red::before {
+      opacity: 1;
+      background: conic-gradient(from 0deg, transparent 50%, #ef4444 85%, #f87171 100%);
+      animation: rotateFlow 1.6s linear infinite;
     }
 
     .brand-badge {
-      background: rgba(255, 255, 255, 0.94);
+      position: relative;
+      z-index: 1;
+      background: rgba(255, 255, 255, 0.96);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
-      border: 1px solid var(--color-border);
-      border-radius: 8px;
-      padding: 8px 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      border-radius: 7.5px;
+      padding: 7px 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+      white-space: nowrap;
     }
     .brand-title {
       font-family: var(--font-mono);
-      font-size: 11.5px;
+      font-size: 11px;
       font-weight: 700;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 7px;
+      gap: 6px;
+      white-space: nowrap;
     }
     .pulse-dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
       background: #000000;
+      transition: background 0.3s ease;
       animation: pulseAnim 2s infinite ease-in-out;
     }
     @keyframes pulseAnim {
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.3; transform: scale(0.85); }
     }
-    .brand-meta {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      color: var(--color-muted);
-      letter-spacing: 0.05em;
-    }
+    .flow-yellow .pulse-dot { background: #eab308; }
+    .flow-green .pulse-dot { background: #10b981; }
+    .flow-red .pulse-dot { background: #ef4444; }
 
+    /* Control Tray */
     .control-tray {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       background: rgba(255, 255, 255, 0.94);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       border: 1px solid var(--color-border);
       border-radius: 8px;
-      padding: 4px 6px;
+      padding: 3px 5px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
       flex-shrink: 0;
     }
 
-    .btn-add-project {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: #000000;
-      color: #ffffff;
-      border: 1px solid #000000;
-      border-radius: 6px;
-      padding: 7px 12px;
-      font-family: var(--font-mono);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-    .btn-add-project:hover {
-      background: #262626;
-      border-color: #262626;
-    }
-    .btn-add-project:active {
-      transform: scale(0.97);
-    }
-
     .icon-btn {
-      width: 32px;
-      height: 32px;
+      width: 30px;
+      height: 30px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -219,7 +243,6 @@
     }
     .icon-btn:hover {
       background: #f0f0f0;
-      border-color: #dcdcdc;
     }
     .icon-btn.active {
       background: #000000;
@@ -227,10 +250,11 @@
       border-color: #000000;
     }
 
+    /* Filter Strip */
     .filter-strip {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       overflow-x: auto;
       padding-bottom: 2px;
       scrollbar-width: none;
@@ -241,9 +265,9 @@
     }
     .filter-pill {
       font-family: var(--font-mono);
-      font-size: 10.5px;
-      padding: 5px 11px;
-      border-radius: 6px;
+      font-size: 10px;
+      padding: 4px 10px;
+      border-radius: 5px;
       background: rgba(255, 255, 255, 0.88);
       backdrop-filter: blur(6px);
       -webkit-backdrop-filter: blur(6px);
@@ -264,7 +288,131 @@
       font-weight: 700;
     }
 
-    /* Node Hover Tooltip */
+    /* Status Alert Pop-up */
+    #status-popup {
+      position: fixed;
+      top: 75px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-10px);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      z-index: 100;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      max-width: 90vw;
+      text-align: center;
+    }
+    #status-popup.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
+    }
+    #status-popup.status-yellow {
+      background: #fefce8;
+      color: #854d0e;
+      border: 1px solid #facc15;
+    }
+    #status-popup.status-green {
+      background: #000000;
+      color: #ffffff;
+      border: 1px solid #10b981;
+    }
+    #status-popup.status-red {
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #f87171;
+    }
+
+    /* Feature Space Card */
+    #feature-space-card {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      width: 320px;
+      max-width: calc(100vw - 40px);
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--color-border);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      z-index: 25;
+      font-family: var(--font-sans);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: transform 0.25s ease, opacity 0.25s ease;
+    }
+    #feature-space-card.hidden {
+      transform: translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+    }
+    .fs-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .fs-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #000000;
+    }
+    .fs-close {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: #888;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+    }
+    .fs-body {
+      font-size: 11.5px;
+      line-height: 1.55;
+      color: #444444;
+    }
+    .fs-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .fs-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: #333333;
+    }
+    .fs-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .fs-dot.dot-project { background: #050505; }
+    .fs-dot.dot-live { background: #00d2ff; box-shadow: 0 0 6px #00d2ff; }
+    .fs-dot.dot-tech { background: #9ca3af; }
+    .fs-footer {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: #888888;
+      border-top: 1px solid #ebebeb;
+      padding-top: 8px;
+    }
+
+    /* Tooltip */
     #node-tooltip {
       position: fixed;
       z-index: 25;
@@ -349,6 +497,7 @@
       visibility: visible;
     }
 
+    /* Inspection Card */
     #side-card {
       position: fixed;
       top: 0;
@@ -370,7 +519,7 @@
     }
 
     .card-header {
-      padding: 20px 22px;
+      padding: 18px 20px;
       border-bottom: 1px solid var(--color-border);
       display: flex;
       align-items: flex-start;
@@ -380,13 +529,13 @@
     .card-header-left {
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 4px;
       padding-right: 14px;
     }
     .card-badges {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
     .status-badge {
       display: inline-flex;
@@ -395,9 +544,9 @@
       background: #000000;
       color: #ffffff;
       font-family: var(--font-mono);
-      font-size: 9.5px;
+      font-size: 9px;
       font-weight: 700;
-      padding: 3px 7px;
+      padding: 3px 6px;
       border-radius: 4px;
       text-transform: uppercase;
     }
@@ -419,20 +568,20 @@
     }
     .card-category-label {
       font-family: var(--font-mono);
-      font-size: 10.5px;
+      font-size: 10px;
       color: var(--color-muted);
       text-transform: uppercase;
     }
     .card-title {
-      font-size: 20px;
+      font-size: 19px;
       font-weight: 700;
       color: #000000;
       line-height: 1.25;
     }
 
     .btn-close {
-      width: 32px;
-      height: 32px;
+      width: 30px;
+      height: 30px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -442,6 +591,7 @@
       cursor: pointer;
       color: var(--color-muted);
       transition: all 0.15s ease;
+      font-size: 16px;
       flex-shrink: 0;
     }
     .btn-close:hover {
@@ -452,10 +602,10 @@
     .card-body {
       flex: 1;
       overflow-y: auto;
-      padding: 20px 22px;
+      padding: 18px 20px;
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 16px;
       -webkit-overflow-scrolling: touch;
     }
     .section-label {
@@ -471,7 +621,7 @@
       justify-content: space-between;
     }
     .card-description {
-      font-size: 13.5px;
+      font-size: 13px;
       line-height: 1.6;
       color: #262626;
     }
@@ -479,36 +629,36 @@
     .tags-container {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
+      gap: 5px;
     }
     .tech-tag {
       font-family: var(--font-mono);
-      font-size: 10.5px;
+      font-size: 10px;
       font-weight: 500;
       color: #000000;
       background: var(--color-tag-bg);
       border: 1px solid var(--color-border);
       border-radius: 4px;
-      padding: 4px 8px;
+      padding: 3px 7px;
     }
 
     .metadata-box {
       background: #f9f9f9;
       border: 1px solid var(--color-border);
       border-radius: 8px;
-      padding: 12px 14px;
+      padding: 10px 12px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 7px;
     }
     .meta-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 10.5px;
       border-bottom: 1px solid #ebebeb;
-      padding-bottom: 5px;
+      padding-bottom: 4px;
     }
     .meta-row:last-child {
       border-bottom: none;
@@ -525,26 +675,26 @@
     .metrics-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
+      gap: 6px;
     }
     .metric-card {
       background: #ffffff;
       border: 1px solid var(--color-border);
       border-radius: 6px;
-      padding: 8px 10px;
+      padding: 7px 9px;
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 2px;
     }
     .metric-label {
       font-family: var(--font-mono);
-      font-size: 9px;
+      font-size: 8.5px;
       color: var(--color-muted);
       text-transform: uppercase;
     }
     .metric-val {
       font-family: var(--font-mono);
-      font-size: 12.5px;
+      font-size: 12px;
       font-weight: 700;
       color: #000000;
     }
@@ -552,13 +702,13 @@
     .connected-list {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 5px;
     }
     .conn-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 8px 12px;
+      padding: 8px 10px;
       background: #ffffff;
       border: 1px solid var(--color-border);
       border-radius: 6px;
@@ -573,24 +723,24 @@
     }
     .conn-name {
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 700;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
     }
     .conn-action {
       font-family: var(--font-mono);
-      font-size: 10px;
+      font-size: 9.5px;
       color: var(--color-muted);
     }
 
     .card-footer {
-      padding: 16px 20px;
+      padding: 14px 18px;
       border-top: 1px solid var(--color-border);
       background: #fafafa;
       display: flex;
-      gap: 10px;
+      gap: 8px;
     }
     .btn-action-primary {
       flex: 1;
@@ -598,21 +748,17 @@
       color: #ffffff;
       border: 1px solid #000000;
       border-radius: 6px;
-      padding: 10px;
+      padding: 9px;
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 700;
       text-transform: uppercase;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 5px;
       cursor: pointer;
       text-decoration: none;
-      transition: all 0.15s ease;
-    }
-    .btn-action-primary:hover {
-      background: #262626;
     }
     .btn-action-primary.disabled {
       opacity: 0.4;
@@ -626,22 +772,17 @@
       color: #000000;
       border: 1px solid var(--color-border);
       border-radius: 6px;
-      padding: 10px;
+      padding: 9px;
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 700;
       text-transform: uppercase;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 5px;
       cursor: pointer;
       text-decoration: none;
-      transition: all 0.15s ease;
-    }
-    .btn-action-secondary:hover {
-      background: #f5f5f5;
-      border-color: #000000;
     }
     .btn-action-secondary.disabled {
       opacity: 0.4;
@@ -649,110 +790,15 @@
       cursor: not-allowed;
     }
 
-    #add-modal {
-      position: fixed;
-      inset: 0;
-      z-index: 50;
-      background: rgba(0, 0, 0, 0.35);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.2s ease, visibility 0.2s ease;
-    }
-    #add-modal.open {
-      opacity: 1;
-      visibility: visible;
-    }
-    .modal-box {
-      width: 100%;
-      max-width: 480px;
-      background: #ffffff;
-      border: 1px solid var(--color-border);
-      border-radius: 12px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-    .modal-header {
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--color-border);
-      background: #fafafa;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .modal-headline {
-      font-family: var(--font-mono);
-      font-size: 12.5px;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-    .modal-sub {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      color: var(--color-muted);
-    }
-    .modal-form {
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-    .form-label {
-      font-family: var(--font-mono);
-      font-size: 10.5px;
-      font-weight: 700;
-      text-transform: uppercase;
-      color: #000000;
-    }
-    .form-input, .form-textarea, .form-select {
-      width: 100%;
-      padding: 9px 11px;
-      background: #f9f9f9;
-      border: 1px solid var(--color-border);
-      border-radius: 6px;
-      font-family: var(--font-sans);
-      font-size: 13px;
-      color: #000000;
-      outline: none;
-    }
-    .form-input:focus, .form-textarea:focus, .form-select:focus {
-      border-color: #000000;
-      background: #ffffff;
-    }
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-    .modal-footer {
-      padding-top: 10px;
-      border-top: 1px solid var(--color-border);
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-    }
-
     footer.footer-hud {
       bottom: 0;
       left: 0;
       right: 0;
-      padding: 14px 20px;
+      padding: 12px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
     .hud-badge {
       background: rgba(255, 255, 255, 0.94);
@@ -760,43 +806,18 @@
       -webkit-backdrop-filter: blur(8px);
       border: 1px solid var(--color-border);
       border-radius: 6px;
-      padding: 6px 12px;
+      padding: 5px 10px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       font-family: var(--font-mono);
-      font-size: 10.5px;
+      font-size: 10px;
       color: var(--color-muted);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
     }
     .hud-highlight {
       color: #000000;
       font-weight: 700;
-    }
-
-    #toast {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: #000000;
-      color: #ffffff;
-      padding: 8px 16px;
-      border-radius: 6px;
-      font-family: var(--font-mono);
-      font-size: 11px;
-      z-index: 60;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    #toast.show {
-      opacity: 1;
-      visibility: visible;
-      transform: translateX(-50%) translateY(0);
     }
 
     #directory-drawer {
@@ -804,7 +825,7 @@
       top: 0;
       left: 0;
       width: 100%;
-      max-width: 340px;
+      max-width: 320px;
       height: 100%;
       background: #ffffff;
       border-right: 1px solid var(--color-border);
@@ -819,7 +840,7 @@
       transform: translateX(0);
     }
     .drawer-header {
-      padding: 16px 18px;
+      padding: 14px 16px;
       border-bottom: 1px solid var(--color-border);
       background: #fafafa;
       display: flex;
@@ -827,20 +848,20 @@
       align-items: center;
     }
     .drawer-search-wrap {
-      padding: 10px 18px;
+      padding: 8px 16px;
       border-bottom: 1px solid var(--color-border);
     }
     .drawer-list {
       flex: 1;
       overflow-y: auto;
-      padding: 10px;
+      padding: 8px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 5px;
       -webkit-overflow-scrolling: touch;
     }
     .drawer-item {
-      padding: 10px 12px;
+      padding: 9px 11px;
       border-radius: 6px;
       border: 1px solid var(--color-border);
       background: #ffffff;
@@ -854,7 +875,7 @@
     }
     .drawer-item-title {
       font-family: var(--font-mono);
-      font-size: 11.5px;
+      font-size: 11px;
       font-weight: 700;
       margin-bottom: 2px;
       display: flex;
@@ -862,8 +883,8 @@
       justify-content: space-between;
     }
     .drawer-tag-live {
-      font-size: 9px;
-      padding: 1px 5px;
+      font-size: 8.5px;
+      padding: 1px 4px;
       border-radius: 3px;
       background: #00bcd4;
       color: #ffffff;
@@ -871,35 +892,23 @@
       font-weight: 700;
     }
     .drawer-item-sub {
-      font-size: 10.5px;
+      font-size: 10px;
       color: var(--color-muted);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    .drawer-item.active .drawer-item-sub {
-      color: #cccccc;
-    }
 
     @media (max-width: 640px) {
       header.header-hud {
-        padding: 10px 12px;
-        gap: 8px;
-      }
-      .brand-meta {
-        display: none;
-      }
-      .btn-add-project span {
-        display: none;
-      }
-      .btn-add-project {
-        padding: 7px 9px;
+        padding: 8px 10px;
+        gap: 6px;
       }
       .hud-badge:first-child {
         display: none;
       }
       footer.footer-hud {
-        padding: 10px 12px;
+        padding: 8px 10px;
       }
 
       #side-card {
@@ -909,22 +918,24 @@
         right: 0;
         width: 100%;
         max-width: 100%;
-        height: 78vh;
+        height: 75vh;
         border-left: none;
         border-top: 1px solid var(--color-border);
-        border-radius: 18px 18px 0 0;
+        border-radius: 16px 16px 0 0;
         transform: translateY(100%);
       }
       #side-card.open {
         transform: translateY(0);
       }
       .card-header {
-        border-radius: 18px 18px 0 0;
-        padding: 16px 18px;
+        border-radius: 16px 16px 0 0;
+        padding: 14px 16px;
       }
-      #directory-drawer {
-        width: 86%;
-        max-width: 320px;
+      #feature-space-card {
+        bottom: 50px;
+        left: 10px;
+        right: 10px;
+        width: auto;
       }
     }
   </style>
@@ -933,6 +944,12 @@
 
   <div id="canvas-container"></div>
 
+  <!-- State Alert Pop-up -->
+  <div id="status-popup">
+    <span id="popup-text">Connecting...</span>
+  </div>
+
+  <!-- Node Hover Tooltip -->
   <div id="node-tooltip">
     <div class="tooltip-card">
       <div class="tooltip-title-wrap">
@@ -944,54 +961,58 @@
     <div class="tooltip-arrow"></div>
   </div>
 
+  <!-- Top Header HUD -->
   <header class="ui-layer header-hud">
     <div class="top-bar">
       <div class="top-bar-left">
         <a href="index.html" class="btn-nav-back interactive" title="Back to Portfolio">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="19" y1="12" x2="5" y2="12"></line>
             <polyline points="12 19 5 12 12 5"></polyline>
           </svg>
           <span>Portfolio</span>
         </a>
 
-        <div class="brand-badge interactive">
-          <div class="brand-title">
-            <span class="pulse-dot"></span>
-            <span>NEURAL VIEW</span>
+        <!-- Flowing Border Wrapper around NEURAL VIEW -->
+        <div class="brand-badge-wrapper interactive" id="brand-badge-wrapper">
+          <div class="brand-badge">
+            <div class="brand-title">
+              <span class="pulse-dot"></span>
+              <span>NEURAL VIEW</span>
+            </div>
           </div>
-          <div class="brand-meta" id="hud-telemetry-nodes">SYNCHRONIZING...</div>
         </div>
       </div>
 
+      <!-- Controls -->
       <div class="control-tray interactive">
-        <button id="btn-open-add" class="btn-add-project" title="Inject Node">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="12" y1="5" x2="12" y2="19"></line>
-            <line x1="5" y1="12" x2="19" y2="12"></line>
+        <button id="btn-toggle-info" class="icon-btn" title="Toggle Info">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
           </svg>
-          <span>Add Node</span>
         </button>
 
         <button id="btn-reset-cam" class="icon-btn" title="Reset Camera">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
             <path d="M3 3v5h5"></path>
           </svg>
         </button>
 
-        <button id="btn-toggle-orbit" class="icon-btn active" title="Toggle Orbit Drift">
-          <svg id="icon-pause" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <button id="btn-toggle-orbit" class="icon-btn active" title="Toggle Orbit">
+          <svg id="icon-pause" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="6" y="4" width="4" height="16"></rect>
             <rect x="14" y="4" width="4" height="16"></rect>
           </svg>
-          <svg id="icon-play" style="display: none;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg id="icon-play" style="display: none;" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polygon points="5 3 19 12 5 21 5 3"></polygon>
           </svg>
         </button>
 
         <button id="btn-toggle-dir" class="icon-btn" title="Directory Index">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="8" y1="6" x2="21" y2="6"></line>
             <line x1="8" y1="12" x2="21" y2="12"></line>
             <line x1="8" y1="18" x2="21" y2="18"></line>
@@ -1003,13 +1024,43 @@
       </div>
     </div>
 
+    <!-- Category Filter Strip -->
     <div class="filter-strip interactive" id="category-filter-container">
       <button class="filter-pill active" data-cat="ALL">ALL NODES</button>
     </div>
   </header>
 
+  <!-- Feature Space Info Card -->
+  <div id="feature-space-card" class="interactive">
+    <div class="fs-header">
+      <span class="fs-title">Portfolio feature space</span>
+      <button class="fs-close" id="btn-close-info" aria-label="Close card">&times;</button>
+    </div>
+    <div class="fs-body">
+      Every point is a real entry from this site. Nodes are distributed spatially in 3D neural space with real-time vector coordinate connections.
+    </div>
+    <div class="fs-legend">
+      <div class="fs-legend-item">
+        <span class="fs-dot dot-project"></span>
+        <span>Project (Standard Node)</span>
+      </div>
+      <div class="fs-legend-item">
+        <span class="fs-dot dot-live"></span>
+        <span>Live Application (Active System)</span>
+      </div>
+      <div class="fs-legend-item">
+        <span class="fs-dot dot-tech"></span>
+        <span>Metallic Synaptic Bridges</span>
+      </div>
+    </div>
+    <div class="fs-footer">
+      Drag to orbit • scroll to zoom • tap node to inspect
+    </div>
+  </div>
+
   <div id="frosted-backdrop" title="Click to unfocus"></div>
 
+  <!-- Detail Sheet -->
   <aside id="side-card" role="dialog" aria-label="Project Details">
     <div class="card-header">
       <div class="card-header-left">
@@ -1022,12 +1073,7 @@
         </div>
         <h2 class="card-title" id="detail-title">Project Title</h2>
       </div>
-      <button class="btn-close" id="btn-close-card" aria-label="Close card">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </button>
+      <button class="btn-close" id="btn-close-card" aria-label="Close card">&times;</button>
     </div>
 
     <div class="card-body">
@@ -1079,7 +1125,7 @@
 
     <div class="card-footer">
       <a href="#" target="_blank" rel="noopener" class="btn-action-primary" id="detail-live-demo">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
           <polyline points="15 3 21 3 21 9"></polyline>
           <line x1="10" y1="14" x2="21" y2="3"></line>
@@ -1087,7 +1133,7 @@
         Live Demo
       </a>
       <a href="#" target="_blank" rel="noopener" class="btn-action-secondary" id="detail-repo">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="6" y1="3" x2="6" y2="15"></line>
           <circle cx="18" cy="6" r="3"></circle>
           <circle cx="6" cy="18" r="3"></circle>
@@ -1098,97 +1144,21 @@
     </div>
   </aside>
 
-  <div id="add-modal">
-    <div class="modal-box">
-      <div class="modal-header">
-        <div>
-          <div class="modal-headline">Inject Neural Node</div>
-          <div class="modal-sub">Spawn project or live application node</div>
-        </div>
-        <button class="btn-close" id="btn-close-modal">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
-      </div>
-
-      <form id="add-project-form" class="modal-form">
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label" for="input-title">Name *</label>
-            <input type="text" id="input-title" class="form-input" placeholder="e.g. CYANX AI" required />
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="select-type">Classification *</label>
-            <select id="select-type" class="form-select">
-              <option value="project">Project Node (Normal)</option>
-              <option value="live">Live Application (Aqua Shaded & Animated)</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="input-desc">Small Description *</label>
-          <textarea id="input-desc" class="form-textarea" rows="2" placeholder="Provide technical summary..." required></textarea>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label" for="select-cat">Category</label>
-            <select id="select-cat" class="form-select">
-              <option value="Artificial Intelligence">Artificial Intelligence</option>
-              <option value="Distributed Systems">Distributed Systems</option>
-              <option value="Cryptography & Security">Cryptography & Security</option>
-              <option value="Web Applications">Web Applications</option>
-              <option value="High Performance">High Performance</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="input-tags">Technologies</label>
-            <input type="text" id="input-tags" class="form-input" placeholder="FastAPI, Three.js" value="Python, FastAPI, Three.js" />
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label" for="input-demo">Demo URL</label>
-            <input type="url" id="input-demo" class="form-input" placeholder="https://..." />
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="input-repo">Repository URL</label>
-            <input type="url" id="input-repo" class="form-input" placeholder="https://github.com/..." />
-          </div>
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn-action-secondary" id="btn-cancel-modal" style="flex: initial; padding: 7px 14px;">Cancel</button>
-          <button type="submit" class="btn-add-project" style="flex: initial; padding: 7px 16px;">Create Node</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
   <div id="directory-drawer">
     <div class="drawer-header">
       <div>
-        <div style="font-family: var(--font-mono); font-size: 12px; font-weight: 700; text-transform: uppercase;">Neural Directory</div>
-        <div id="drawer-count" style="font-family: var(--font-mono); font-size: 10px; color: var(--color-muted);">0 Nodes Indexed</div>
+        <div style="font-family: var(--font-mono); font-size: 11px; font-weight: 700; text-transform: uppercase;">Neural Directory</div>
+        <div id="drawer-count" style="font-family: var(--font-mono); font-size: 9.5px; color: var(--color-muted);">0 Nodes Indexed</div>
       </div>
-      <button class="btn-close" id="btn-close-dir">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </button>
+      <button class="btn-close" id="btn-close-dir">&times;</button>
     </div>
     <div class="drawer-search-wrap">
-      <input type="text" id="drawer-search" class="form-input" placeholder="Search nodes, live apps, tech..." style="font-size: 12px; padding: 8px 10px;" />
+      <input type="text" id="drawer-search" class="form-input" placeholder="Search nodes, tech..." style="font-size: 11.5px; padding: 6px 8px;" />
     </div>
     <div class="drawer-list" id="drawer-list-items"></div>
   </div>
 
+  <!-- Footer HUD -->
   <footer class="ui-layer footer-hud">
     <div class="hud-badge interactive">
       <span class="hud-highlight">Drag to Rotate</span>
@@ -1205,14 +1175,6 @@
     </div>
   </footer>
 
-  <div id="toast">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-      <polyline points="22 4 12 14.01 9 11.01"></polyline>
-    </svg>
-    <span id="toast-message">Project Injected into Neural Network</span>
-  </div>
-
   <!-- ==================== SCRIPT ==================== -->
   <script>
     (function () {
@@ -1223,6 +1185,37 @@
       let hoveredProject = null;
       let activeCategory = 'ALL';
       let autoRotate = true;
+      let popupTimer = null;
+
+      const badgeWrapper = document.getElementById('brand-badge-wrapper');
+      const statusPopup = document.getElementById('status-popup');
+      const popupText = document.getElementById('popup-text');
+
+      function setBadgeState(state, message, durationMs) {
+        badgeWrapper.classList.remove('flow-yellow', 'flow-green', 'flow-red');
+        statusPopup.classList.remove('status-yellow', 'status-green', 'status-red', 'show');
+        if (popupTimer) clearTimeout(popupTimer);
+
+        if (state === 'yellow') {
+          badgeWrapper.classList.add('flow-yellow');
+          statusPopup.classList.add('status-yellow', 'show');
+          popupText.textContent = message || 'Server Cold-Starting... Waking up endpoints';
+        } else if (state === 'green') {
+          badgeWrapper.classList.add('flow-green');
+          statusPopup.classList.add('status-green', 'show');
+          popupText.textContent = message || 'Connected to Server • Neural Network Live';
+          popupTimer = setTimeout(() => {
+            statusPopup.classList.remove('show');
+          }, durationMs || 3000);
+        } else if (state === 'red') {
+          badgeWrapper.classList.add('flow-red');
+          statusPopup.classList.add('status-red', 'show');
+          popupText.textContent = message || 'Warning: Failed fetching projects.json';
+          popupTimer = setTimeout(() => {
+            statusPopup.classList.remove('show');
+          }, durationMs || 7000);
+        }
+      }
 
       function saveProjects() {
         try {
@@ -1230,43 +1223,59 @@
         } catch (e) {}
       }
 
+      // Universal Dual-Hosting Data Loader (Localhost + GitHub Pages)
       async function loadProjectsData() {
+        setBadgeState('yellow', 'Connecting • Fetching neural nodes...');
+        let fetchedSuccessfully = false;
+
+        const currentPath = window.location.pathname;
+        const basePath = currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
+        const resolvedProjectsUrl = new URL('projects.json?t=' + Date.now(), window.location.origin + basePath).href;
+
         try {
-          const response = await fetch('/projects.json?t=' + Date.now());
+          const response = await fetch(resolvedProjectsUrl);
           if (response.ok) {
             const data = await response.json();
             if (Array.isArray(data) && data.length > 0) {
               normalizeProjects(data);
-              return;
+              fetchedSuccessfully = true;
             }
           }
         } catch (e) {
-          console.warn('Could not read /projects.json:', e);
+          console.warn('Resolved projects.json fetch failed, trying local fallback:', e);
         }
 
-        try {
-          const apiRes = await fetch('/api/site-data');
-          if (apiRes.ok) {
-            const apiData = await apiRes.json();
-            if (apiData && Array.isArray(apiData.projects) && apiData.projects.length > 0) {
-              normalizeProjects(apiData.projects);
-              return;
+        if (!fetchedSuccessfully) {
+          try {
+            const apiRes = await fetch('/api/site-data');
+            if (apiRes.ok) {
+              const apiData = await apiRes.json();
+              if (apiData && Array.isArray(apiData.projects) && apiData.projects.length > 0) {
+                normalizeProjects(apiData.projects);
+                fetchedSuccessfully = true;
+              }
             }
-          }
-        } catch (err) {
-          console.warn('Could not read /api/site-data fallback:', err);
+          } catch (err) {}
         }
 
-        try {
-          const cached = localStorage.getItem('neural_portfolio_projects_singlefile');
-          if (cached) {
-            const parsed = JSON.parse(cached);
-            if (Array.isArray(parsed) && parsed.length > 0) {
-              normalizeProjects(parsed);
-              return;
+        if (!fetchedSuccessfully) {
+          try {
+            const cached = localStorage.getItem('neural_portfolio_projects_singlefile');
+            if (cached) {
+              const parsed = JSON.parse(cached);
+              if (Array.isArray(parsed) && parsed.length > 0) {
+                normalizeProjects(parsed);
+                fetchedSuccessfully = true;
+              }
             }
-          }
-        } catch (e) {}
+          } catch (e) {}
+        }
+
+        if (fetchedSuccessfully) {
+          setBadgeState('green', 'Connected to Server • Neural Network Live', 3000);
+        } else {
+          setBadgeState('red', 'Warning: Error fetching projects.json (Check file location)', 7000);
+        }
 
         rebuildCategoryFilters();
         rebuildNeuralNetwork();
@@ -1322,8 +1331,6 @@
         });
 
         saveProjects();
-        rebuildCategoryFilters();
-        rebuildNeuralNetwork();
       }
 
       function rebuildCategoryFilters() {
@@ -1357,18 +1364,22 @@
       const tooltipDot = document.getElementById('tooltip-dot');
       const frostedBackdrop = document.getElementById('frosted-backdrop');
       const sideCard = document.getElementById('side-card');
-      const addModal = document.getElementById('add-modal');
-      const addForm = document.getElementById('add-project-form');
       const dirDrawer = document.getElementById('directory-drawer');
       const dirSearch = document.getElementById('drawer-search');
       const dirListItems = document.getElementById('drawer-list-items');
-      const toast = document.getElementById('toast');
-      const toastMsg = document.getElementById('toast-message');
 
-      const btnOpenAdd = document.getElementById('btn-open-add');
+      const featureSpaceCard = document.getElementById('feature-space-card');
+      const btnToggleInfo = document.getElementById('btn-toggle-info');
+      const btnCloseInfo = document.getElementById('btn-close-info');
+
+      btnToggleInfo.addEventListener('click', () => {
+        featureSpaceCard.classList.toggle('hidden');
+      });
+      btnCloseInfo.addEventListener('click', () => {
+        featureSpaceCard.classList.add('hidden');
+      });
+
       const btnCloseCard = document.getElementById('btn-close-card');
-      const btnCloseModal = document.getElementById('btn-close-modal');
-      const btnCancelModal = document.getElementById('btn-cancel-modal');
       const btnResetCam = document.getElementById('btn-reset-cam');
       const btnToggleOrbit = document.getElementById('btn-toggle-orbit');
       const iconPause = document.getElementById('icon-pause');
@@ -1392,11 +1403,9 @@
       const detailConnected = document.getElementById('detail-connected');
       const detailLiveDemo = document.getElementById('detail-live-demo');
       const detailRepo = document.getElementById('detail-repo');
-
-      const hudTelemetryNodes = document.getElementById('hud-telemetry-nodes');
+      const drawerCount = document.getElementById('drawer-count');
       const footerFocusTitle = document.getElementById('footer-focus-title');
       const footerClusterInfo = document.getElementById('footer-cluster-info');
-      const drawerCount = document.getElementById('drawer-count');
 
       // --- THREE.JS SCENE SETUP ---
       let width = window.innerWidth;
@@ -1498,7 +1507,6 @@
         pulsePackets = [];
 
         if (projects.length === 0) {
-          updateHUDTelemetry();
           renderDrawerList();
           return;
         }
@@ -1522,48 +1530,39 @@
           const group = new THREE.Group();
           group.position.set(...proj.position);
 
-          // 1. Core Sphere (Solid Black for all)
           const coreColor = 0x050505;
-          const coreMat = new THREE.MeshBasicMaterial({ color: coreColor });
-          const coreMesh = new THREE.Mesh(sphereGeo, coreMat);
+          const coreMesh = new THREE.Mesh(sphereGeo, new THREE.MeshBasicMaterial({ color: coreColor }));
           group.add(coreMesh);
 
-          // 2. Halo Sphere (Light Aqua Glow for Live, Soft Black for Project)
           const haloColor = isLive ? 0x00d2ff : 0x000000;
-          const haloMat = new THREE.MeshBasicMaterial({ 
+          const haloMesh = new THREE.Mesh(haloGeo, new THREE.MeshBasicMaterial({ 
             color: haloColor, 
             transparent: true, 
             opacity: isLive ? 0.35 : 0.12 
-          });
-          const haloMesh = new THREE.Mesh(haloGeo, haloMat);
+          }));
           group.add(haloMesh);
 
-          // 3. Primary Gyro Ring (Silver/Grey tone)
           const ringPts = [];
           for (let s = 0; s <= 48; s++) {
             const a = (s / 48) * Math.PI * 2;
             ringPts.push(new THREE.Vector3(Math.cos(a) * 7.5, 0, Math.sin(a) * 7.5));
           }
           const ringGeo = new THREE.BufferGeometry().setFromPoints(ringPts);
-          const ringColor = isLive ? 0x9ca3af : 0x737373; // Silver vs Deep Grey
-          const ringMat = new THREE.LineBasicMaterial({ color: ringColor, transparent: true, opacity: isLive ? 0.95 : 0.6 });
-          const ringMesh = new THREE.LineLoop(ringGeo, ringMat);
+          const ringColor = isLive ? 0x9ca3af : 0x737373;
+          const ringMesh = new THREE.LineLoop(ringGeo, new THREE.LineBasicMaterial({ color: ringColor, transparent: true, opacity: isLive ? 0.95 : 0.6 }));
           ringMesh.rotation.x = Math.PI / 4 + idx * 0.2;
           ringMesh.rotation.y = idx * 0.3;
           group.add(ringMesh);
 
-          // 4. Secondary Live Features: Aqua Expanding Wave & Metallic Secondary Ring
           let livePulseWave = null;
           let secondaryRing = null;
 
           if (isLive) {
-            // Aqua glowing ripple wave
             const waveMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.6, side: THREE.DoubleSide });
             livePulseWave = new THREE.Mesh(pulseWaveGeo, waveMat);
             livePulseWave.rotation.x = Math.PI / 2;
             group.add(livePulseWave);
 
-            // Silver / Chrome counter-spinning ring
             const secRingMat = new THREE.LineBasicMaterial({ color: 0xd1d5db, transparent: true, opacity: 0.85 });
             secondaryRing = new THREE.LineLoop(ringGeo, secRingMat);
             secondaryRing.rotation.x = -Math.PI / 3 + idx * 0.2;
@@ -1571,7 +1570,6 @@
             group.add(secondaryRing);
           }
 
-          // Hit Mesh for Raycasting
           const hitMesh = new THREE.Mesh(hitGeo, new THREE.MeshBasicMaterial({ visible: false }));
           hitMesh.userData = { projectId: proj.id };
           group.add(hitMesh);
@@ -1593,7 +1591,6 @@
           });
         });
 
-        // Synaptic Connection Edges
         const edgeKeySet = new Set();
         visibleProjects.forEach(p => {
           p.connections.forEach(tId => {
@@ -1605,8 +1602,6 @@
                   edgeKeySet.add(key);
                   const pts = [new THREE.Vector3(...p.position), new THREE.Vector3(...target.position)];
                   const lineGeo = new THREE.BufferGeometry().setFromPoints(pts);
-                  
-                  // Live connected edges have subtle aqua tint
                   const isBothLive = (p.type === 'live' && target.type === 'live');
                   const lineColor = isBothLive ? 0x38bdf8 : 0x888888;
                   const lineMat = new THREE.LineBasicMaterial({ color: lineColor, transparent: true, opacity: 0.65 });
@@ -1620,7 +1615,6 @@
           });
         });
 
-        // Pulse packets
         const pulseGeo = new THREE.SphereGeometry(1.2, 8, 8);
         const maxPulses = Math.min(14, edgeStructures.length);
         for (let i = 0; i < maxPulses; i++) {
@@ -1629,7 +1623,6 @@
           const p2 = nodeMap.get(edge.toId);
           if (p1 && p2) {
             const isLivePacket = edge.isBothLive || (p1.type === 'live' || p2.type === 'live');
-            // Traveling packets glow aqua on live networks
             const pulseMat = new THREE.MeshBasicMaterial({ color: isLivePacket ? 0x00e5ff : 0x000000 });
             const mesh = new THREE.Mesh(pulseGeo, pulseMat);
             pulsesGroup.add(mesh);
@@ -1644,16 +1637,10 @@
           }
         }
 
-        updateHUDTelemetry();
-        renderDrawerList();
-      }
-
-      function updateHUDTelemetry() {
-        const liveCount = projects.filter(p => p.type === 'live').length;
-        hudTelemetryNodes.textContent = `${projects.length} NODES (${liveCount} LIVE) • ${edgeStructures.length} SYNAPSES`;
         drawerCount.textContent = `${projects.length} Nodes Indexed`;
         const clusters = new Set(projects.map(p => p.cluster || 1)).size;
         footerClusterInfo.textContent = `${clusters} Clusters Active`;
+        renderDrawerList();
       }
 
       function selectProject(proj) {
@@ -1753,7 +1740,6 @@
 
         sideCard.classList.add('open');
         frostedBackdrop.classList.add('active');
-
         footerFocusTitle.textContent = proj.title.toUpperCase();
         renderDrawerList();
       }
@@ -1766,14 +1752,6 @@
         camState.targetDistance = 260;
         footerFocusTitle.textContent = 'CONSTELLATION OVERVIEW';
         renderDrawerList();
-      }
-
-      function showToast(text) {
-        toastMsg.textContent = text;
-        toast.classList.add('show');
-        setTimeout(() => {
-          toast.classList.remove('show');
-        }, 3000);
       }
 
       function renderDrawerList() {
@@ -1814,7 +1792,7 @@
         });
       }
 
-      // Pointer Controls
+      // Pointer & Touch Controls
       container.addEventListener('mousedown', e => {
         if (e.button !== 0) return;
         camState.isDragging = true;
@@ -1920,101 +1898,6 @@
         camState.isDragging = false;
       }, { passive: true });
 
-      btnOpenAdd.addEventListener('click', () => {
-        addModal.classList.add('open');
-        document.getElementById('input-title').focus();
-      });
-
-      function closeAddModal() {
-        addModal.classList.remove('open');
-        addForm.reset();
-      }
-
-      btnCloseModal.addEventListener('click', closeAddModal);
-      btnCancelModal.addEventListener('click', closeAddModal);
-      addModal.addEventListener('click', e => {
-        if (e.target === addModal) closeAddModal();
-      });
-
-      addForm.addEventListener('submit', async e => {
-        e.preventDefault();
-        const title = document.getElementById('input-title').value.trim();
-        const desc = document.getElementById('input-desc').value.trim();
-        const type = document.getElementById('select-type').value;
-        const cat = document.getElementById('select-cat').value;
-        const tagStr = document.getElementById('input-tags').value.trim();
-        const demoUrl = document.getElementById('input-demo').value.trim();
-        const repoUrl = document.getElementById('input-repo').value.trim();
-
-        if (!title || !desc) return;
-
-        const tags = tagStr.split(',').map(t => t.trim()).filter(Boolean);
-        const newId = 'node-' + Date.now().toString(36);
-
-        const randomTarget = projects[Math.floor(Math.random() * projects.length)];
-        const connections = randomTarget ? [randomTarget.id] : [];
-
-        let position;
-        if (randomTarget) {
-          const angle = Math.random() * Math.PI * 2;
-          const dist = 50 + Math.random() * 25;
-          position = [
-            Math.round(randomTarget.position[0] + Math.cos(angle) * dist),
-            Math.round(randomTarget.position[1] + (Math.random() - 0.5) * 40),
-            Math.round(randomTarget.position[2] + Math.sin(angle) * dist),
-          ];
-        } else {
-          position = [
-            Math.round((Math.random() - 0.5) * 160),
-            Math.round((Math.random() - 0.5) * 80),
-            Math.round((Math.random() - 0.5) * 160),
-          ];
-        }
-
-        const newProject = {
-          id: newId,
-          type,
-          title,
-          description: desc,
-          category: cat,
-          tags: tags.length > 0 ? tags : ['TypeScript', 'Core Node'],
-          position,
-          connections,
-          status: type === 'live' ? 'Live System' : 'Active Project',
-          cluster: (projects.length % 3) + 1,
-          year: new Date().getFullYear().toString(),
-          architecture: 'Distributed Synaptic Mesh',
-          metrics: [
-            { label: 'Latency', value: type === 'live' ? '< 1ms' : '2.8ms' },
-            { label: 'Status', value: type === 'live' ? 'Live' : 'Static' },
-            { label: 'Synapse', value: '0.96' },
-          ],
-          repoUrl,
-          demoUrl
-        };
-
-        if (randomTarget && !randomTarget.connections.includes(newId)) {
-          randomTarget.connections.push(newId);
-        }
-
-        projects.push(newProject);
-        saveProjects();
-
-        try {
-          await fetch('/api/neural/projects', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newProject)
-          });
-        } catch (err) {}
-
-        rebuildCategoryFilters();
-        rebuildNeuralNetwork();
-        closeAddModal();
-        selectProject(newProject);
-        showToast(`Injected ${type.toUpperCase()} Node: "${newProject.title}"`);
-      });
-
       btnCloseCard.addEventListener('click', closeProjectCard);
       frostedBackdrop.addEventListener('click', closeProjectCard);
 
@@ -2028,7 +1911,6 @@
         btnToggleOrbit.classList.add('active');
         iconPause.style.display = 'block';
         iconPlay.style.display = 'none';
-        showToast('3D Camera Reset');
       });
 
       btnToggleOrbit.addEventListener('click', () => {
@@ -2047,8 +1929,7 @@
 
       window.addEventListener('keydown', e => {
         if (e.key === 'Escape') {
-          if (addModal.classList.contains('open')) closeAddModal();
-          else if (dirDrawer.classList.contains('open')) dirDrawer.classList.remove('open');
+          if (dirDrawer.classList.contains('open')) dirDrawer.classList.remove('open');
           else if (sideCard.classList.contains('open')) closeProjectCard();
         }
       });

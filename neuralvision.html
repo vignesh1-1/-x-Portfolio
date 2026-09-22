@@ -1,0 +1,2199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Nᴇᴜʀᴀʟ Vɪsɪᴏɴ</title>
+  <meta name="description" content="Interactive 3D neural network portfolio displaying project nodes, geometric connections, and detailed project inspect sheets." />
+  <link rel="icon" type="image/png" href="Gemini_Generated_Image_ko64ocko64ocko64-removebg-preview.png">
+  
+  <!-- Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Three.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-canvas: #ffffff;
+      --color-text: #050505;
+      --color-muted: #555555;
+      --color-border: #e2e2e2;
+      --color-tag-bg: #f5f5f5;
+      --color-aqua: #00d2ff;
+      --font-mono: 'Space Mono', monospace, ui-monospace;
+      --font-sans: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--bg-canvas);
+      color: var(--color-text);
+      font-family: var(--font-sans);
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
+    }
+
+    ::selection {
+      background: #000000;
+      color: #ffffff;
+    }
+
+    #canvas-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      cursor: grab;
+      z-index: 1;
+    }
+    #canvas-container:active {
+      cursor: grabbing;
+    }
+
+    .ui-layer {
+      position: fixed;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .interactive {
+      pointer-events: auto;
+    }
+
+    header.header-hud {
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      gap: 8px;
+    }
+
+    .top-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-nav-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-text);
+      text-decoration: none;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+    .btn-nav-back:hover {
+      background: #000000;
+      color: #ffffff;
+      border-color: #000000;
+      transform: translateY(-1px);
+    }
+
+    .brand-badge {
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      padding: 8px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+    .brand-title {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #000000;
+      animation: pulseAnim 2s infinite ease-in-out;
+    }
+    @keyframes pulseAnim {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.3; transform: scale(0.85); }
+    }
+    .brand-meta {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--color-muted);
+      letter-spacing: 0.05em;
+    }
+
+    .control-tray {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      padding: 4px 6px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      flex-shrink: 0;
+    }
+
+    .btn-add-project {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #000000;
+      color: #ffffff;
+      border: 1px solid #000000;
+      border-radius: 6px;
+      padding: 7px 12px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .btn-add-project:hover {
+      background: #262626;
+      border-color: #262626;
+    }
+    .btn-add-project:active {
+      transform: scale(0.97);
+    }
+
+    .icon-btn {
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      color: var(--color-text);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .icon-btn:hover {
+      background: #f0f0f0;
+      border-color: #dcdcdc;
+    }
+    .icon-btn.active {
+      background: #000000;
+      color: #ffffff;
+      border-color: #000000;
+    }
+
+    .filter-strip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .filter-strip::-webkit-scrollbar {
+      display: none;
+    }
+    .filter-pill {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      padding: 5px 11px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border: 1px solid var(--color-border);
+      color: var(--color-muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+    .filter-pill:hover {
+      color: #000000;
+      border-color: #000000;
+    }
+    .filter-pill.active {
+      background: #000000;
+      color: #ffffff;
+      border-color: #000000;
+      font-weight: 700;
+    }
+
+    /* Node Hover Tooltip */
+    #node-tooltip {
+      position: fixed;
+      z-index: 25;
+      pointer-events: none;
+      transform: translate(-50%, -100%);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #node-tooltip.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+    .tooltip-card {
+      background: #000000;
+      color: #ffffff;
+      padding: 6px 11px;
+      border-radius: 6px;
+      border: 1px solid #222222;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+    .tooltip-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tooltip-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #ffffff;
+    }
+    .tooltip-dot.live {
+      background: #00e5ff;
+      box-shadow: 0 0 8px #00e5ff;
+    }
+    .tooltip-title {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .tooltip-cat {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: #a0a0a0;
+      letter-spacing: 0.05em;
+    }
+    .tooltip-arrow {
+      width: 8px;
+      height: 8px;
+      background: #000000;
+      transform: rotate(45deg);
+      margin-top: -4px;
+      border-right: 1px solid #222222;
+      border-bottom: 1px solid #222222;
+    }
+
+    #frosted-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      background: rgba(255, 255, 255, 0.45);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s ease, visibility 0.25s ease;
+      cursor: pointer;
+    }
+    #frosted-backdrop.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    #side-card {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 100%;
+      max-width: 460px;
+      height: 100%;
+      background: #ffffff;
+      border-left: 1px solid var(--color-border);
+      box-shadow: -10px 0 30px rgba(0, 0, 0, 0.07);
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    #side-card.open {
+      transform: translateX(0);
+    }
+
+    .card-header {
+      padding: 20px 22px;
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      background: #fafafa;
+    }
+    .card-header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding-right: 14px;
+    }
+    .card-badges {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #000000;
+      color: #ffffff;
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      font-weight: 700;
+      padding: 3px 7px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+    .status-badge.live {
+      background: #042f2e;
+      color: #00e5ff;
+      border: 1px solid #00bcd4;
+    }
+    .status-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #10b981;
+    }
+    .status-dot.aqua-pulse {
+      background: #00e5ff;
+      box-shadow: 0 0 6px #00e5ff;
+      animation: pulseAnim 1.2s infinite ease-in-out;
+    }
+    .card-category-label {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--color-muted);
+      text-transform: uppercase;
+    }
+    .card-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #000000;
+      line-height: 1.25;
+    }
+
+    .btn-close {
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--color-muted);
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+    .btn-close:hover {
+      background: #ebebeb;
+      color: #000000;
+    }
+
+    .card-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-description {
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: #262626;
+    }
+
+    .tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tech-tag {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 500;
+      color: #000000;
+      background: var(--color-tag-bg);
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      padding: 4px 8px;
+    }
+
+    .metadata-box {
+      background: #f9f9f9;
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      border-bottom: 1px solid #ebebeb;
+      padding-bottom: 5px;
+    }
+    .meta-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .meta-label {
+      color: var(--color-muted);
+    }
+    .meta-value {
+      font-weight: 700;
+      color: #000000;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .metric-card {
+      background: #ffffff;
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .metric-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--color-muted);
+      text-transform: uppercase;
+    }
+    .metric-val {
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #000000;
+    }
+
+    .connected-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .conn-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      background: #ffffff;
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+      color: inherit;
+    }
+    .conn-item:hover {
+      border-color: #000000;
+      background: #fbfbfb;
+    }
+    .conn-name {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .conn-action {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--color-muted);
+    }
+
+    .card-footer {
+      padding: 16px 20px;
+      border-top: 1px solid var(--color-border);
+      background: #fafafa;
+      display: flex;
+      gap: 10px;
+    }
+    .btn-action-primary {
+      flex: 1;
+      background: #000000;
+      color: #ffffff;
+      border: 1px solid #000000;
+      border-radius: 6px;
+      padding: 10px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+    .btn-action-primary:hover {
+      background: #262626;
+    }
+    .btn-action-primary.disabled {
+      opacity: 0.4;
+      pointer-events: none;
+      cursor: not-allowed;
+    }
+
+    .btn-action-secondary {
+      flex: 1;
+      background: #ffffff;
+      color: #000000;
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      padding: 10px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+    .btn-action-secondary:hover {
+      background: #f5f5f5;
+      border-color: #000000;
+    }
+    .btn-action-secondary.disabled {
+      opacity: 0.4;
+      pointer-events: none;
+      cursor: not-allowed;
+    }
+
+    #add-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      background: rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+    }
+    #add-modal.open {
+      opacity: 1;
+      visibility: visible;
+    }
+    .modal-box {
+      width: 100%;
+      max-width: 480px;
+      background: #ffffff;
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--color-border);
+      background: #fafafa;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .modal-headline {
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .modal-sub {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--color-muted);
+    }
+    .modal-form {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .form-label {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #000000;
+    }
+    .form-input, .form-textarea, .form-select {
+      width: 100%;
+      padding: 9px 11px;
+      background: #f9f9f9;
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      color: #000000;
+      outline: none;
+    }
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      border-color: #000000;
+      background: #ffffff;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .modal-footer {
+      padding-top: 10px;
+      border-top: 1px solid var(--color-border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    footer.footer-hud {
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+    .hud-badge {
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--color-muted);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+    .hud-highlight {
+      color: #000000;
+      font-weight: 700;
+    }
+
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #000000;
+      color: #ffffff;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      z-index: 60;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #toast.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    #directory-drawer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      max-width: 340px;
+      height: 100%;
+      background: #ffffff;
+      border-right: 1px solid var(--color-border);
+      box-shadow: 10px 0 30px rgba(0, 0, 0, 0.07);
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(-100%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    #directory-drawer.open {
+      transform: translateX(0);
+    }
+    .drawer-header {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--color-border);
+      background: #fafafa;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .drawer-search-wrap {
+      padding: 10px 18px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .drawer-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .drawer-item {
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--color-border);
+      background: #ffffff;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .drawer-item:hover, .drawer-item.active {
+      border-color: #000000;
+      background: #000000;
+      color: #ffffff;
+    }
+    .drawer-item-title {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 700;
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .drawer-tag-live {
+      font-size: 9px;
+      padding: 1px 5px;
+      border-radius: 3px;
+      background: #00bcd4;
+      color: #ffffff;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .drawer-item-sub {
+      font-size: 10.5px;
+      color: var(--color-muted);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .drawer-item.active .drawer-item-sub {
+      color: #cccccc;
+    }
+
+    @media (max-width: 640px) {
+      header.header-hud {
+        padding: 10px 12px;
+        gap: 8px;
+      }
+      .brand-meta {
+        display: none;
+      }
+      .btn-add-project span {
+        display: none;
+      }
+      .btn-add-project {
+        padding: 7px 9px;
+      }
+      .hud-badge:first-child {
+        display: none;
+      }
+      footer.footer-hud {
+        padding: 10px 12px;
+      }
+
+      #side-card {
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        max-width: 100%;
+        height: 78vh;
+        border-left: none;
+        border-top: 1px solid var(--color-border);
+        border-radius: 18px 18px 0 0;
+        transform: translateY(100%);
+      }
+      #side-card.open {
+        transform: translateY(0);
+      }
+      .card-header {
+        border-radius: 18px 18px 0 0;
+        padding: 16px 18px;
+      }
+      #directory-drawer {
+        width: 86%;
+        max-width: 320px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="canvas-container"></div>
+
+  <div id="node-tooltip">
+    <div class="tooltip-card">
+      <div class="tooltip-title-wrap">
+        <span class="tooltip-dot" id="tooltip-dot"></span>
+        <span class="tooltip-title" id="tooltip-title">PROJECT TITLE</span>
+      </div>
+      <span class="tooltip-cat" id="tooltip-cat">CATEGORY</span>
+    </div>
+    <div class="tooltip-arrow"></div>
+  </div>
+
+  <header class="ui-layer header-hud">
+    <div class="top-bar">
+      <div class="top-bar-left">
+        <a href="index.html" class="btn-nav-back interactive" title="Back to Portfolio">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          <span>Portfolio</span>
+        </a>
+
+        <div class="brand-badge interactive">
+          <div class="brand-title">
+            <span class="pulse-dot"></span>
+            <span>NEURAL VIEW</span>
+          </div>
+          <div class="brand-meta" id="hud-telemetry-nodes">SYNCHRONIZING...</div>
+        </div>
+      </div>
+
+      <div class="control-tray interactive">
+        <button id="btn-open-add" class="btn-add-project" title="Inject Node">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          <span>Add Node</span>
+        </button>
+
+        <button id="btn-reset-cam" class="icon-btn" title="Reset Camera">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+            <path d="M3 3v5h5"></path>
+          </svg>
+        </button>
+
+        <button id="btn-toggle-orbit" class="icon-btn active" title="Toggle Orbit Drift">
+          <svg id="icon-pause" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="6" y="4" width="4" height="16"></rect>
+            <rect x="14" y="4" width="4" height="16"></rect>
+          </svg>
+          <svg id="icon-play" style="display: none;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+        </button>
+
+        <button id="btn-toggle-dir" class="icon-btn" title="Directory Index">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="8" y1="6" x2="21" y2="6"></line>
+            <line x1="8" y1="12" x2="21" y2="12"></line>
+            <line x1="8" y1="18" x2="21" y2="18"></line>
+            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="filter-strip interactive" id="category-filter-container">
+      <button class="filter-pill active" data-cat="ALL">ALL NODES</button>
+    </div>
+  </header>
+
+  <div id="frosted-backdrop" title="Click to unfocus"></div>
+
+  <aside id="side-card" role="dialog" aria-label="Project Details">
+    <div class="card-header">
+      <div class="card-header-left">
+        <div class="card-badges">
+          <span class="status-badge" id="detail-badge">
+            <span class="status-dot" id="detail-badge-dot"></span>
+            <span id="detail-status">PRODUCTION</span>
+          </span>
+          <span class="card-category-label" id="detail-category">GENERAL</span>
+        </div>
+        <h2 class="card-title" id="detail-title">Project Title</h2>
+      </div>
+      <button class="btn-close" id="btn-close-card" aria-label="Close card">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="card-body">
+      <div>
+        <div class="section-label">Description</div>
+        <p class="card-description" id="detail-desc"></p>
+      </div>
+
+      <div>
+        <div class="section-label">
+          <span>Technologies Used</span>
+          <span id="detail-tag-count" style="font-weight: 400; color: #888;">0 tags</span>
+        </div>
+        <div class="tags-container" id="detail-tags"></div>
+      </div>
+
+      <div class="metadata-box">
+        <div class="meta-row">
+          <span class="meta-label">NODE CLASSIFICATION</span>
+          <span class="meta-value" id="detail-type-label">PROJECT NODE</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">SPATIAL VECTOR [X, Y, Z]</span>
+          <span class="meta-value" id="detail-vector">[0, 0, 0]</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">NETWORK CLUSTER</span>
+          <span class="meta-value" id="detail-cluster">CLUSTER 01</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">ARCHITECTURE PATTERN</span>
+          <span class="meta-value" id="detail-arch">Decentralized Synaptic Mesh</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">Operational Benchmarks</div>
+        <div class="metrics-grid" id="detail-metrics"></div>
+      </div>
+
+      <div>
+        <div class="section-label">
+          <span>Connected Neural Nodes</span>
+          <span style="font-weight: 400; color: #888;">Click to traverse</span>
+        </div>
+        <div class="connected-list" id="detail-connected"></div>
+      </div>
+    </div>
+
+    <div class="card-footer">
+      <a href="#" target="_blank" rel="noopener" class="btn-action-primary" id="detail-live-demo">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          <polyline points="15 3 21 3 21 9"></polyline>
+          <line x1="10" y1="14" x2="21" y2="3"></line>
+        </svg>
+        Live Demo
+      </a>
+      <a href="#" target="_blank" rel="noopener" class="btn-action-secondary" id="detail-repo">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="6" y1="3" x2="6" y2="15"></line>
+          <circle cx="18" cy="6" r="3"></circle>
+          <circle cx="6" cy="18" r="3"></circle>
+          <path d="M18 9a9 9 0 0 1-9 9"></path>
+        </svg>
+        Repository
+      </a>
+    </div>
+  </aside>
+
+  <div id="add-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div>
+          <div class="modal-headline">Inject Neural Node</div>
+          <div class="modal-sub">Spawn project or live application node</div>
+        </div>
+        <button class="btn-close" id="btn-close-modal">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <form id="add-project-form" class="modal-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="input-title">Name *</label>
+            <input type="text" id="input-title" class="form-input" placeholder="e.g. CYANX AI" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="select-type">Classification *</label>
+            <select id="select-type" class="form-select">
+              <option value="project">Project Node (Normal)</option>
+              <option value="live">Live Application (Aqua Shaded & Animated)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="input-desc">Small Description *</label>
+          <textarea id="input-desc" class="form-textarea" rows="2" placeholder="Provide technical summary..." required></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="select-cat">Category</label>
+            <select id="select-cat" class="form-select">
+              <option value="Artificial Intelligence">Artificial Intelligence</option>
+              <option value="Distributed Systems">Distributed Systems</option>
+              <option value="Cryptography & Security">Cryptography & Security</option>
+              <option value="Web Applications">Web Applications</option>
+              <option value="High Performance">High Performance</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="input-tags">Technologies</label>
+            <input type="text" id="input-tags" class="form-input" placeholder="FastAPI, Three.js" value="Python, FastAPI, Three.js" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="input-demo">Demo URL</label>
+            <input type="url" id="input-demo" class="form-input" placeholder="https://..." />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="input-repo">Repository URL</label>
+            <input type="url" id="input-repo" class="form-input" placeholder="https://github.com/..." />
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-action-secondary" id="btn-cancel-modal" style="flex: initial; padding: 7px 14px;">Cancel</button>
+          <button type="submit" class="btn-add-project" style="flex: initial; padding: 7px 16px;">Create Node</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="directory-drawer">
+    <div class="drawer-header">
+      <div>
+        <div style="font-family: var(--font-mono); font-size: 12px; font-weight: 700; text-transform: uppercase;">Neural Directory</div>
+        <div id="drawer-count" style="font-family: var(--font-mono); font-size: 10px; color: var(--color-muted);">0 Nodes Indexed</div>
+      </div>
+      <button class="btn-close" id="btn-close-dir">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="drawer-search-wrap">
+      <input type="text" id="drawer-search" class="form-input" placeholder="Search nodes, live apps, tech..." style="font-size: 12px; padding: 8px 10px;" />
+    </div>
+    <div class="drawer-list" id="drawer-list-items"></div>
+  </div>
+
+  <footer class="ui-layer footer-hud">
+    <div class="hud-badge interactive">
+      <span class="hud-highlight">Drag to Rotate</span>
+      <span>•</span>
+      <span>Pinch / Scroll to Zoom</span>
+      <span>•</span>
+      <span>Tap Node</span>
+    </div>
+
+    <div class="hud-badge interactive">
+      <span class="hud-highlight" id="footer-focus-title">CONSTELLATION OVERVIEW</span>
+      <span>|</span>
+      <span id="footer-cluster-info">Clusters Active</span>
+    </div>
+  </footer>
+
+  <div id="toast">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+    </svg>
+    <span id="toast-message">Project Injected into Neural Network</span>
+  </div>
+
+  <!-- ==================== SCRIPT ==================== -->
+  <script>
+    (function () {
+      'use strict';
+
+      let projects = [];
+      let selectedProject = null;
+      let hoveredProject = null;
+      let activeCategory = 'ALL';
+      let autoRotate = true;
+
+      function saveProjects() {
+        try {
+          localStorage.setItem('neural_portfolio_projects_singlefile', JSON.stringify(projects));
+        } catch (e) {}
+      }
+
+      async function loadProjectsData() {
+        try {
+          const response = await fetch('/projects.json?t=' + Date.now());
+          if (response.ok) {
+            const data = await response.json();
+            if (Array.isArray(data) && data.length > 0) {
+              normalizeProjects(data);
+              return;
+            }
+          }
+        } catch (e) {
+          console.warn('Could not read /projects.json:', e);
+        }
+
+        try {
+          const apiRes = await fetch('/api/site-data');
+          if (apiRes.ok) {
+            const apiData = await apiRes.json();
+            if (apiData && Array.isArray(apiData.projects) && apiData.projects.length > 0) {
+              normalizeProjects(apiData.projects);
+              return;
+            }
+          }
+        } catch (err) {
+          console.warn('Could not read /api/site-data fallback:', err);
+        }
+
+        try {
+          const cached = localStorage.getItem('neural_portfolio_projects_singlefile');
+          if (cached) {
+            const parsed = JSON.parse(cached);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              normalizeProjects(parsed);
+              return;
+            }
+          }
+        } catch (e) {}
+
+        rebuildCategoryFilters();
+        rebuildNeuralNetwork();
+      }
+
+      function normalizeProjects(rawList) {
+        const n = rawList.length;
+        const goldenRatio = (1 + Math.sqrt(5)) / 2;
+        const radius = Math.min(100, 40 + n * 8);
+
+        projects = rawList.map((p, i) => {
+          let pos = p.position;
+          if (!pos || !Array.isArray(pos) || pos.length < 3) {
+            const theta = (2 * Math.PI * i) / goldenRatio;
+            const phi = Math.acos(1 - (2 * (i + 0.5)) / Math.max(1, n));
+            pos = [
+              Math.round(radius * Math.sin(phi) * Math.cos(theta)),
+              Math.round(radius * Math.cos(phi) * 0.75),
+              Math.round(radius * Math.sin(phi) * Math.sin(theta))
+            ];
+          }
+
+          const isLive = String(p.type || '').toLowerCase() === 'live';
+
+          return {
+            id: String(p.id || 'node-' + i),
+            type: isLive ? 'live' : 'project',
+            title: p.title || 'Untitled Node',
+            description: p.description || 'No description provided.',
+            category: p.category || 'General',
+            tags: Array.isArray(p.tags) ? p.tags : ['TypeScript', 'Core Node'],
+            position: pos,
+            connections: Array.isArray(p.connections) ? p.connections.map(String) : [],
+            status: p.status || (isLive ? 'Live System' : 'Completed Project'),
+            cluster: p.cluster || ((i % 3) + 1),
+            year: p.year || new Date().getFullYear().toString(),
+            architecture: p.architecture || 'Decentralized Microkernel',
+            metrics: p.metrics || [
+              { label: 'Latency', value: isLive ? '< 1ms' : '3.2ms' },
+              { label: 'Throughput', value: isLive ? 'Real-time' : 'N/A' },
+              { label: 'Status', value: isLive ? 'Active' : 'Offline' }
+            ],
+            repoUrl: p.repoUrl || p.github_url || p.github || '',
+            demoUrl: p.demoUrl || p.live_url || p.liveUrl || ''
+          };
+        });
+
+        projects.forEach(p => {
+          if (p.connections.length === 0 && projects.length > 1) {
+            const match = projects.find(o => o.id !== p.id && (o.category === p.category || o.tags.some(t => p.tags.includes(t))));
+            if (match) p.connections.push(match.id);
+          }
+        });
+
+        saveProjects();
+        rebuildCategoryFilters();
+        rebuildNeuralNetwork();
+      }
+
+      function rebuildCategoryFilters() {
+        const catContainer = document.getElementById('category-filter-container');
+        const categories = Array.from(new Set(projects.map(p => p.category).filter(Boolean)));
+        catContainer.innerHTML = '<button class="filter-pill active" data-cat="ALL">ALL NODES</button>';
+        
+        categories.forEach(cat => {
+          const btn = document.createElement('button');
+          btn.className = 'filter-pill';
+          btn.setAttribute('data-cat', cat);
+          btn.textContent = cat.toUpperCase();
+          catContainer.appendChild(btn);
+        });
+
+        catContainer.querySelectorAll('.filter-pill').forEach(pill => {
+          pill.addEventListener('click', () => {
+            catContainer.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+            activeCategory = pill.getAttribute('data-cat');
+            rebuildNeuralNetwork();
+          });
+        });
+      }
+
+      // DOM Elements
+      const container = document.getElementById('canvas-container');
+      const tooltip = document.getElementById('node-tooltip');
+      const tooltipTitle = document.getElementById('tooltip-title');
+      const tooltipCat = document.getElementById('tooltip-cat');
+      const tooltipDot = document.getElementById('tooltip-dot');
+      const frostedBackdrop = document.getElementById('frosted-backdrop');
+      const sideCard = document.getElementById('side-card');
+      const addModal = document.getElementById('add-modal');
+      const addForm = document.getElementById('add-project-form');
+      const dirDrawer = document.getElementById('directory-drawer');
+      const dirSearch = document.getElementById('drawer-search');
+      const dirListItems = document.getElementById('drawer-list-items');
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-message');
+
+      const btnOpenAdd = document.getElementById('btn-open-add');
+      const btnCloseCard = document.getElementById('btn-close-card');
+      const btnCloseModal = document.getElementById('btn-close-modal');
+      const btnCancelModal = document.getElementById('btn-cancel-modal');
+      const btnResetCam = document.getElementById('btn-reset-cam');
+      const btnToggleOrbit = document.getElementById('btn-toggle-orbit');
+      const iconPause = document.getElementById('icon-pause');
+      const iconPlay = document.getElementById('icon-play');
+      const btnToggleDir = document.getElementById('btn-toggle-dir');
+      const btnCloseDir = document.getElementById('btn-close-dir');
+
+      const detailBadge = document.getElementById('detail-badge');
+      const detailBadgeDot = document.getElementById('detail-badge-dot');
+      const detailStatus = document.getElementById('detail-status');
+      const detailTypeLabel = document.getElementById('detail-type-label');
+      const detailCategory = document.getElementById('detail-category');
+      const detailTitle = document.getElementById('detail-title');
+      const detailDesc = document.getElementById('detail-desc');
+      const detailTags = document.getElementById('detail-tags');
+      const detailTagCount = document.getElementById('detail-tag-count');
+      const detailVector = document.getElementById('detail-vector');
+      const detailCluster = document.getElementById('detail-cluster');
+      const detailArch = document.getElementById('detail-arch');
+      const detailMetrics = document.getElementById('detail-metrics');
+      const detailConnected = document.getElementById('detail-connected');
+      const detailLiveDemo = document.getElementById('detail-live-demo');
+      const detailRepo = document.getElementById('detail-repo');
+
+      const hudTelemetryNodes = document.getElementById('hud-telemetry-nodes');
+      const footerFocusTitle = document.getElementById('footer-focus-title');
+      const footerClusterInfo = document.getElementById('footer-cluster-info');
+      const drawerCount = document.getElementById('drawer-count');
+
+      // --- THREE.JS SCENE SETUP ---
+      let width = window.innerWidth;
+      let height = window.innerHeight;
+
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0xffffff);
+      scene.fog = new THREE.FogExp2(0xffffff, 0.0016);
+
+      const camera = new THREE.PerspectiveCamera(48, width / height, 1, 1600);
+      camera.position.set(0, 50, 260);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setClearColor(0xffffff, 1);
+      container.appendChild(renderer.domElement);
+
+      const grid = new THREE.GridHelper(440, 44, 0x8c8c8c, 0xb5b5b5);
+      grid.position.y = -100;
+      scene.add(grid);
+
+      for (let r = 80; r <= 280; r += 60) {
+        const ringGeo = new THREE.BufferGeometry();
+        const pts = [];
+        for (let s = 0; s <= 90; s++) {
+          const a = (s / 90) * Math.PI * 2;
+          pts.push(new THREE.Vector3(Math.cos(a) * r, -99, Math.sin(a) * r));
+        }
+        ringGeo.setFromPoints(pts);
+        scene.add(new THREE.Line(ringGeo, new THREE.LineBasicMaterial({ color: 0x7a7a7a, transparent: true, opacity: 0.8 })));
+      }
+
+      const pCount = 300;
+      const pPositions = new Float32Array(pCount * 3);
+      for (let i = 0; i < pCount; i++) {
+        pPositions[i * 3] = (Math.random() - 0.5) * 460;
+        pPositions[i * 3 + 1] = (Math.random() - 0.5) * 270;
+        pPositions[i * 3 + 2] = (Math.random() - 0.5) * 460;
+      }
+      const pGeo = new THREE.BufferGeometry();
+      pGeo.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
+      const pMat = new THREE.PointsMaterial({ color: 0x222222, size: 2.4, transparent: true, opacity: 0.85 });
+      const dust = new THREE.Points(pGeo, pMat);
+      scene.add(dust);
+
+      const edgesGroup = new THREE.Group();
+      scene.add(edgesGroup);
+
+      const nodesGroup = new THREE.Group();
+      scene.add(nodesGroup);
+
+      const pulsesGroup = new THREE.Group();
+      scene.add(pulsesGroup);
+
+      let nodeVisuals = [];
+      let edgeStructures = [];
+      let pulsePackets = [];
+
+      const camState = {
+        distance: 260,
+        targetDistance: 260,
+        theta: 0.8,
+        phi: 1.25,
+        targetTheta: 0.8,
+        targetPhi: 1.25,
+        lookAt: new THREE.Vector3(0, 0, 0),
+        targetLookAt: new THREE.Vector3(0, 0, 0),
+        isDragging: false,
+        prevX: 0,
+        prevY: 0,
+        dragDist: 0,
+      };
+
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2(-999, -999);
+      let isMouseInCanvas = false;
+
+      function toScreen(pos) {
+        const v = pos.clone();
+        v.project(camera);
+        const isBehind = v.z > 1;
+        const x = ((v.x + 1) * width) / 2;
+        const y = ((-v.y + 1) * height) / 2;
+        return {
+          x,
+          y,
+          visible: !isBehind && x >= 0 && x <= width && y >= 0 && y <= height,
+        };
+      }
+
+      function rebuildNeuralNetwork() {
+        while (nodesGroup.children.length > 0) nodesGroup.remove(nodesGroup.children[0]);
+        while (edgesGroup.children.length > 0) edgesGroup.remove(edgesGroup.children[0]);
+        while (pulsesGroup.children.length > 0) pulsesGroup.remove(pulsesGroup.children[0]);
+
+        nodeVisuals = [];
+        edgeStructures = [];
+        pulsePackets = [];
+
+        if (projects.length === 0) {
+          updateHUDTelemetry();
+          renderDrawerList();
+          return;
+        }
+
+        const nodeMap = new Map();
+        projects.forEach(p => nodeMap.set(p.id, p));
+
+        const visibleProjects = activeCategory === 'ALL' 
+          ? projects 
+          : projects.filter(p => p.category === activeCategory);
+
+        const visibleIds = new Set(visibleProjects.map(p => p.id));
+
+        const sphereGeo = new THREE.SphereGeometry(4.2, 32, 32);
+        const haloGeo = new THREE.SphereGeometry(6.2, 24, 24);
+        const pulseWaveGeo = new THREE.RingGeometry(4.8, 6.4, 32);
+        const hitGeo = new THREE.SphereGeometry(11, 16, 16);
+
+        visibleProjects.forEach((proj, idx) => {
+          const isLive = proj.type === 'live';
+          const group = new THREE.Group();
+          group.position.set(...proj.position);
+
+          // 1. Core Sphere (Solid Black for all)
+          const coreColor = 0x050505;
+          const coreMat = new THREE.MeshBasicMaterial({ color: coreColor });
+          const coreMesh = new THREE.Mesh(sphereGeo, coreMat);
+          group.add(coreMesh);
+
+          // 2. Halo Sphere (Light Aqua Glow for Live, Soft Black for Project)
+          const haloColor = isLive ? 0x00d2ff : 0x000000;
+          const haloMat = new THREE.MeshBasicMaterial({ 
+            color: haloColor, 
+            transparent: true, 
+            opacity: isLive ? 0.35 : 0.12 
+          });
+          const haloMesh = new THREE.Mesh(haloGeo, haloMat);
+          group.add(haloMesh);
+
+          // 3. Primary Gyro Ring (Silver/Grey tone)
+          const ringPts = [];
+          for (let s = 0; s <= 48; s++) {
+            const a = (s / 48) * Math.PI * 2;
+            ringPts.push(new THREE.Vector3(Math.cos(a) * 7.5, 0, Math.sin(a) * 7.5));
+          }
+          const ringGeo = new THREE.BufferGeometry().setFromPoints(ringPts);
+          const ringColor = isLive ? 0x9ca3af : 0x737373; // Silver vs Deep Grey
+          const ringMat = new THREE.LineBasicMaterial({ color: ringColor, transparent: true, opacity: isLive ? 0.95 : 0.6 });
+          const ringMesh = new THREE.LineLoop(ringGeo, ringMat);
+          ringMesh.rotation.x = Math.PI / 4 + idx * 0.2;
+          ringMesh.rotation.y = idx * 0.3;
+          group.add(ringMesh);
+
+          // 4. Secondary Live Features: Aqua Expanding Wave & Metallic Secondary Ring
+          let livePulseWave = null;
+          let secondaryRing = null;
+
+          if (isLive) {
+            // Aqua glowing ripple wave
+            const waveMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.6, side: THREE.DoubleSide });
+            livePulseWave = new THREE.Mesh(pulseWaveGeo, waveMat);
+            livePulseWave.rotation.x = Math.PI / 2;
+            group.add(livePulseWave);
+
+            // Silver / Chrome counter-spinning ring
+            const secRingMat = new THREE.LineBasicMaterial({ color: 0xd1d5db, transparent: true, opacity: 0.85 });
+            secondaryRing = new THREE.LineLoop(ringGeo, secRingMat);
+            secondaryRing.rotation.x = -Math.PI / 3 + idx * 0.2;
+            secondaryRing.rotation.z = Math.PI / 6;
+            group.add(secondaryRing);
+          }
+
+          // Hit Mesh for Raycasting
+          const hitMesh = new THREE.Mesh(hitGeo, new THREE.MeshBasicMaterial({ visible: false }));
+          hitMesh.userData = { projectId: proj.id };
+          group.add(hitMesh);
+
+          nodesGroup.add(group);
+
+          nodeVisuals.push({
+            project: proj,
+            isLive,
+            group,
+            coreMesh,
+            haloMesh,
+            ringMesh,
+            secondaryRing,
+            livePulseWave,
+            hitMesh,
+            baseY: proj.position[1],
+            floatOffset: idx * 0.7,
+          });
+        });
+
+        // Synaptic Connection Edges
+        const edgeKeySet = new Set();
+        visibleProjects.forEach(p => {
+          p.connections.forEach(tId => {
+            if (visibleIds.has(tId)) {
+              const target = nodeMap.get(tId);
+              if (target) {
+                const key = [p.id, target.id].sort().join('--');
+                if (!edgeKeySet.has(key)) {
+                  edgeKeySet.add(key);
+                  const pts = [new THREE.Vector3(...p.position), new THREE.Vector3(...target.position)];
+                  const lineGeo = new THREE.BufferGeometry().setFromPoints(pts);
+                  
+                  // Live connected edges have subtle aqua tint
+                  const isBothLive = (p.type === 'live' && target.type === 'live');
+                  const lineColor = isBothLive ? 0x38bdf8 : 0x888888;
+                  const lineMat = new THREE.LineBasicMaterial({ color: lineColor, transparent: true, opacity: 0.65 });
+                  const line = new THREE.Line(lineGeo, lineMat);
+                  edgesGroup.add(line);
+
+                  edgeStructures.push({ fromId: p.id, toId: target.id, line, material: lineMat, isBothLive });
+                }
+              }
+            }
+          });
+        });
+
+        // Pulse packets
+        const pulseGeo = new THREE.SphereGeometry(1.2, 8, 8);
+        const maxPulses = Math.min(14, edgeStructures.length);
+        for (let i = 0; i < maxPulses; i++) {
+          const edge = edgeStructures[i % edgeStructures.length];
+          const p1 = nodeMap.get(edge.fromId);
+          const p2 = nodeMap.get(edge.toId);
+          if (p1 && p2) {
+            const isLivePacket = edge.isBothLive || (p1.type === 'live' || p2.type === 'live');
+            // Traveling packets glow aqua on live networks
+            const pulseMat = new THREE.MeshBasicMaterial({ color: isLivePacket ? 0x00e5ff : 0x000000 });
+            const mesh = new THREE.Mesh(pulseGeo, pulseMat);
+            pulsesGroup.add(mesh);
+
+            pulsePackets.push({
+              progress: Math.random(),
+              speed: 0.003 + Math.random() * 0.005,
+              from: new THREE.Vector3(...p1.position),
+              to: new THREE.Vector3(...p2.position),
+              mesh,
+            });
+          }
+        }
+
+        updateHUDTelemetry();
+        renderDrawerList();
+      }
+
+      function updateHUDTelemetry() {
+        const liveCount = projects.filter(p => p.type === 'live').length;
+        hudTelemetryNodes.textContent = `${projects.length} NODES (${liveCount} LIVE) • ${edgeStructures.length} SYNAPSES`;
+        drawerCount.textContent = `${projects.length} Nodes Indexed`;
+        const clusters = new Set(projects.map(p => p.cluster || 1)).size;
+        footerClusterInfo.textContent = `${clusters} Clusters Active`;
+      }
+
+      function selectProject(proj) {
+        selectedProject = proj;
+        autoRotate = false;
+        btnToggleOrbit.classList.remove('active');
+        iconPause.style.display = 'none';
+        iconPlay.style.display = 'block';
+
+        const pos = new THREE.Vector3(...proj.position);
+        camState.targetLookAt.copy(pos);
+        camState.targetDistance = Math.min(camState.distance, 150);
+
+        const isLive = proj.type === 'live';
+        detailTitle.textContent = proj.title;
+        detailDesc.textContent = proj.description;
+        detailCategory.textContent = proj.category;
+        detailStatus.textContent = proj.status || (isLive ? 'LIVE SYSTEM' : 'ACTIVE NODE');
+
+        if (isLive) {
+          detailBadge.classList.add('live');
+          detailBadgeDot.classList.add('aqua-pulse');
+          detailTypeLabel.textContent = 'LIVE APPLICATION';
+          detailTypeLabel.style.color = '#00bcd4';
+        } else {
+          detailBadge.classList.remove('live');
+          detailBadgeDot.classList.remove('aqua-pulse');
+          detailTypeLabel.textContent = 'PROJECT NODE';
+          detailTypeLabel.style.color = '#000000';
+        }
+
+        detailVector.textContent = `[${proj.position.map(v => Math.round(v)).join(', ')}]`;
+        detailCluster.textContent = `CLUSTER 0${proj.cluster || 1}`;
+        detailArch.textContent = proj.architecture || 'Distributed Synaptic Mesh';
+
+        detailTags.innerHTML = '';
+        detailTagCount.textContent = `${proj.tags.length} tags`;
+        proj.tags.forEach(tag => {
+          const span = document.createElement('span');
+          span.className = 'tech-tag';
+          span.textContent = tag;
+          detailTags.appendChild(span);
+        });
+
+        detailMetrics.innerHTML = '';
+        const metrics = proj.metrics || [
+          { label: 'Latency', value: isLive ? '< 1ms' : '3.2ms' },
+          { label: 'Throughput', value: isLive ? 'Realtime' : '120 tps' },
+          { label: 'Status', value: isLive ? 'Operational' : 'Online' }
+        ];
+        metrics.forEach(m => {
+          const div = document.createElement('div');
+          div.className = 'metric-card';
+          div.innerHTML = `
+            <span class="metric-label">${m.label}</span>
+            <span class="metric-val">${m.value}</span>
+          `;
+          detailMetrics.appendChild(div);
+        });
+
+        detailConnected.innerHTML = '';
+        const connectedNodes = projects.filter(p => proj.connections.includes(p.id));
+        if (connectedNodes.length === 0) {
+          detailConnected.innerHTML = '<div style="font-size: 11px; font-family: var(--font-mono); color: #888;">No adjacent neural connections.</div>';
+        } else {
+          connectedNodes.forEach(conn => {
+            const btn = document.createElement('div');
+            btn.className = 'conn-item';
+            const connIsLive = conn.type === 'live';
+            btn.innerHTML = `
+              <div>
+                <div class="conn-name">${conn.title} ${connIsLive ? '<span class="drawer-tag-live">LIVE</span>' : ''}</div>
+                <div style="font-size: 9.5px; color: #888;">${conn.category}</div>
+              </div>
+              <span class="conn-action">Traverse &rarr;</span>
+            `;
+            btn.addEventListener('click', () => selectProject(conn));
+            detailConnected.appendChild(btn);
+          });
+        }
+
+        if (proj.demoUrl && proj.demoUrl.trim() !== '') {
+          detailLiveDemo.href = proj.demoUrl;
+          detailLiveDemo.classList.remove('disabled');
+        } else {
+          detailLiveDemo.removeAttribute('href');
+          detailLiveDemo.classList.add('disabled');
+        }
+
+        if (proj.repoUrl && proj.repoUrl.trim() !== '') {
+          detailRepo.href = proj.repoUrl;
+          detailRepo.classList.remove('disabled');
+        } else {
+          detailRepo.removeAttribute('href');
+          detailRepo.classList.add('disabled');
+        }
+
+        sideCard.classList.add('open');
+        frostedBackdrop.classList.add('active');
+
+        footerFocusTitle.textContent = proj.title.toUpperCase();
+        renderDrawerList();
+      }
+
+      function closeProjectCard() {
+        sideCard.classList.remove('open');
+        frostedBackdrop.classList.remove('active');
+        selectedProject = null;
+        camState.targetLookAt.set(0, 0, 0);
+        camState.targetDistance = 260;
+        footerFocusTitle.textContent = 'CONSTELLATION OVERVIEW';
+        renderDrawerList();
+      }
+
+      function showToast(text) {
+        toastMsg.textContent = text;
+        toast.classList.add('show');
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 3000);
+      }
+
+      function renderDrawerList() {
+        dirListItems.innerHTML = '';
+        const q = (dirSearch.value || '').toLowerCase();
+        const filtered = projects.filter(p => 
+          p.title.toLowerCase().includes(q) ||
+          p.description.toLowerCase().includes(q) ||
+          p.category.toLowerCase().includes(q) ||
+          p.type.toLowerCase().includes(q) ||
+          p.tags.some(t => t.toLowerCase().includes(q))
+        );
+
+        if (filtered.length === 0) {
+          dirListItems.innerHTML = '<div style="padding: 20px; text-align: center; font-family: var(--font-mono); font-size: 11px; color: #888;">No matching nodes found.</div>';
+          return;
+        }
+
+        filtered.forEach(p => {
+          const div = document.createElement('div');
+          const isLive = p.type === 'live';
+          div.className = `drawer-item ${selectedProject && selectedProject.id === p.id ? 'active' : ''}`;
+          div.innerHTML = `
+            <div class="drawer-item-title">
+              <span>${p.title}</span>
+              ${isLive ? '<span class="drawer-tag-live">LIVE</span>' : ''}
+            </div>
+            <div class="drawer-item-sub">${p.description}</div>
+            <div style="margin-top: 5px; display: flex; gap: 4px; flex-wrap: wrap;">
+              ${p.tags.slice(0, 3).map(t => `<span style="font-family: var(--font-mono); font-size: 8.5px; padding: 2px 4px; border-radius: 3px; background: rgba(128,128,128,0.15);">${t}</span>`).join('')}
+            </div>
+          `;
+          div.addEventListener('click', () => {
+            selectProject(p);
+            dirDrawer.classList.remove('open');
+          });
+          dirListItems.appendChild(div);
+        });
+      }
+
+      // Pointer Controls
+      container.addEventListener('mousedown', e => {
+        if (e.button !== 0) return;
+        camState.isDragging = true;
+        camState.prevX = e.clientX;
+        camState.prevY = e.clientY;
+        camState.dragDist = 0;
+      });
+
+      window.addEventListener('mousemove', e => {
+        const rect = container.getBoundingClientRect();
+        mouse.x = ((e.clientX - rect.left) / width) * 2 - 1;
+        mouse.y = -((e.clientY - rect.top) / height) * 2 + 1;
+        isMouseInCanvas = true;
+
+        if (camState.isDragging) {
+          const dx = e.clientX - camState.prevX;
+          const dy = e.clientY - camState.prevY;
+          camState.dragDist += Math.abs(dx) + Math.abs(dy);
+
+          camState.targetTheta -= dx * 0.007;
+          camState.targetPhi = Math.max(0.12, Math.min(Math.PI - 0.12, camState.targetPhi - dy * 0.007));
+
+          camState.prevX = e.clientX;
+          camState.prevY = e.clientY;
+        }
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (camState.isDragging) {
+          camState.isDragging = false;
+          if (camState.dragDist < 6) {
+            raycaster.setFromCamera(mouse, camera);
+            const hits = raycaster.intersectObjects(nodeVisuals.map(v => v.hitMesh));
+            if (hits.length > 0) {
+              const pId = hits[0].object.userData.projectId;
+              const targetNode = projects.find(p => p.id === pId);
+              if (targetNode) selectProject(targetNode);
+            }
+          }
+        }
+      });
+
+      container.addEventListener('wheel', e => {
+        e.preventDefault();
+        camState.targetDistance = Math.max(50, Math.min(480, camState.targetDistance + e.deltaY * 0.75));
+      }, { passive: false });
+
+      container.addEventListener('mouseleave', () => {
+        isMouseInCanvas = false;
+        camState.isDragging = false;
+        tooltip.classList.remove('visible');
+        hoveredProject = null;
+      });
+
+      let touchDist = 0;
+      container.addEventListener('touchstart', e => {
+        if (e.touches.length === 1) {
+          camState.isDragging = true;
+          camState.prevX = e.touches[0].clientX;
+          camState.prevY = e.touches[0].clientY;
+          camState.dragDist = 0;
+        } else if (e.touches.length === 2) {
+          touchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+        }
+      }, { passive: true });
+
+      window.addEventListener('touchmove', e => {
+        if (e.touches.length === 1 && camState.isDragging) {
+          const cx = e.touches[0].clientX;
+          const cy = e.touches[0].clientY;
+          const dx = cx - camState.prevX;
+          const dy = cy - camState.prevY;
+          camState.dragDist += Math.abs(dx) + Math.abs(dy);
+
+          camState.targetTheta -= dx * 0.0085;
+          camState.targetPhi = Math.max(0.12, Math.min(Math.PI - 0.12, camState.targetPhi - dy * 0.0085));
+
+          camState.prevX = cx;
+          camState.prevY = cy;
+        } else if (e.touches.length === 2) {
+          const dist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+          const delta = (touchDist - dist) * 1.2;
+          camState.targetDistance = Math.max(50, Math.min(480, camState.targetDistance + delta));
+          touchDist = dist;
+        }
+      }, { passive: true });
+
+      window.addEventListener('touchend', e => {
+        if (camState.isDragging && camState.dragDist < 10 && e.changedTouches.length > 0) {
+          const t = e.changedTouches[0];
+          const rect = container.getBoundingClientRect();
+          mouse.x = ((t.clientX - rect.left) / width) * 2 - 1;
+          mouse.y = -((t.clientY - rect.top) / height) * 2 + 1;
+
+          raycaster.setFromCamera(mouse, camera);
+          const hits = raycaster.intersectObjects(nodeVisuals.map(v => v.hitMesh));
+          if (hits.length > 0) {
+            const pId = hits[0].object.userData.projectId;
+            const targetNode = projects.find(p => p.id === pId);
+            if (targetNode) selectProject(targetNode);
+          }
+        }
+        camState.isDragging = false;
+      }, { passive: true });
+
+      btnOpenAdd.addEventListener('click', () => {
+        addModal.classList.add('open');
+        document.getElementById('input-title').focus();
+      });
+
+      function closeAddModal() {
+        addModal.classList.remove('open');
+        addForm.reset();
+      }
+
+      btnCloseModal.addEventListener('click', closeAddModal);
+      btnCancelModal.addEventListener('click', closeAddModal);
+      addModal.addEventListener('click', e => {
+        if (e.target === addModal) closeAddModal();
+      });
+
+      addForm.addEventListener('submit', async e => {
+        e.preventDefault();
+        const title = document.getElementById('input-title').value.trim();
+        const desc = document.getElementById('input-desc').value.trim();
+        const type = document.getElementById('select-type').value;
+        const cat = document.getElementById('select-cat').value;
+        const tagStr = document.getElementById('input-tags').value.trim();
+        const demoUrl = document.getElementById('input-demo').value.trim();
+        const repoUrl = document.getElementById('input-repo').value.trim();
+
+        if (!title || !desc) return;
+
+        const tags = tagStr.split(',').map(t => t.trim()).filter(Boolean);
+        const newId = 'node-' + Date.now().toString(36);
+
+        const randomTarget = projects[Math.floor(Math.random() * projects.length)];
+        const connections = randomTarget ? [randomTarget.id] : [];
+
+        let position;
+        if (randomTarget) {
+          const angle = Math.random() * Math.PI * 2;
+          const dist = 50 + Math.random() * 25;
+          position = [
+            Math.round(randomTarget.position[0] + Math.cos(angle) * dist),
+            Math.round(randomTarget.position[1] + (Math.random() - 0.5) * 40),
+            Math.round(randomTarget.position[2] + Math.sin(angle) * dist),
+          ];
+        } else {
+          position = [
+            Math.round((Math.random() - 0.5) * 160),
+            Math.round((Math.random() - 0.5) * 80),
+            Math.round((Math.random() - 0.5) * 160),
+          ];
+        }
+
+        const newProject = {
+          id: newId,
+          type,
+          title,
+          description: desc,
+          category: cat,
+          tags: tags.length > 0 ? tags : ['TypeScript', 'Core Node'],
+          position,
+          connections,
+          status: type === 'live' ? 'Live System' : 'Active Project',
+          cluster: (projects.length % 3) + 1,
+          year: new Date().getFullYear().toString(),
+          architecture: 'Distributed Synaptic Mesh',
+          metrics: [
+            { label: 'Latency', value: type === 'live' ? '< 1ms' : '2.8ms' },
+            { label: 'Status', value: type === 'live' ? 'Live' : 'Static' },
+            { label: 'Synapse', value: '0.96' },
+          ],
+          repoUrl,
+          demoUrl
+        };
+
+        if (randomTarget && !randomTarget.connections.includes(newId)) {
+          randomTarget.connections.push(newId);
+        }
+
+        projects.push(newProject);
+        saveProjects();
+
+        try {
+          await fetch('/api/neural/projects', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newProject)
+          });
+        } catch (err) {}
+
+        rebuildCategoryFilters();
+        rebuildNeuralNetwork();
+        closeAddModal();
+        selectProject(newProject);
+        showToast(`Injected ${type.toUpperCase()} Node: "${newProject.title}"`);
+      });
+
+      btnCloseCard.addEventListener('click', closeProjectCard);
+      frostedBackdrop.addEventListener('click', closeProjectCard);
+
+      btnResetCam.addEventListener('click', () => {
+        closeProjectCard();
+        camState.targetTheta = 0.8;
+        camState.targetPhi = 1.25;
+        camState.targetDistance = 260;
+        camState.targetLookAt.set(0, 0, 0);
+        autoRotate = true;
+        btnToggleOrbit.classList.add('active');
+        iconPause.style.display = 'block';
+        iconPlay.style.display = 'none';
+        showToast('3D Camera Reset');
+      });
+
+      btnToggleOrbit.addEventListener('click', () => {
+        autoRotate = !autoRotate;
+        btnToggleOrbit.classList.toggle('active', autoRotate);
+        iconPause.style.display = autoRotate ? 'block' : 'none';
+        iconPlay.style.display = autoRotate ? 'none' : 'block';
+      });
+
+      btnToggleDir.addEventListener('click', () => {
+        dirDrawer.classList.toggle('open');
+        if (dirDrawer.classList.contains('open')) dirSearch.focus();
+      });
+      btnCloseDir.addEventListener('click', () => dirDrawer.classList.remove('open'));
+      dirSearch.addEventListener('input', renderDrawerList);
+
+      window.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+          if (addModal.classList.contains('open')) closeAddModal();
+          else if (dirDrawer.classList.contains('open')) dirDrawer.classList.remove('open');
+          else if (sideCard.classList.contains('open')) closeProjectCard();
+        }
+      });
+
+      window.addEventListener('resize', () => {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        renderer.setSize(width, height);
+      });
+
+      const clock = new THREE.Clock();
+
+      function animate() {
+        requestAnimationFrame(animate);
+
+        const delta = clock.getDelta();
+        const elapsed = clock.getElapsedTime();
+
+        if (autoRotate && !camState.isDragging && !selectedProject) {
+          camState.targetTheta += 0.0018;
+        }
+
+        camState.theta += (camState.targetTheta - camState.theta) * 0.12;
+        camState.phi += (camState.targetPhi - camState.phi) * 0.12;
+        camState.distance += (camState.targetDistance - camState.distance) * 0.14;
+        camState.lookAt.lerp(camState.targetLookAt, 0.08);
+
+        camera.position.x = camState.lookAt.x + camState.distance * Math.sin(camState.phi) * Math.sin(camState.theta);
+        camera.position.y = camState.lookAt.y + camState.distance * Math.cos(camState.phi);
+        camera.position.z = camState.lookAt.z + camState.distance * Math.sin(camState.phi) * Math.cos(camState.theta);
+        camera.lookAt(camState.lookAt);
+
+        nodeVisuals.forEach(vis => {
+          const bobSpeed = vis.isLive ? 2.4 : 1.5;
+          const floatY = Math.sin(elapsed * bobSpeed + vis.floatOffset) * (vis.isLive ? 1.8 : 1.4);
+          vis.group.position.y = vis.baseY + floatY;
+
+          if (vis.isLive) {
+            vis.ringMesh.rotation.z += 0.016;
+            vis.ringMesh.rotation.y += 0.009;
+            if (vis.secondaryRing) {
+              vis.secondaryRing.rotation.z -= 0.014;
+              vis.secondaryRing.rotation.x += 0.007;
+            }
+            if (vis.livePulseWave) {
+              const waveCycle = (elapsed * 1.8 + vis.floatOffset) % 1.0;
+              const waveScale = 1.0 + waveCycle * 1.8;
+              vis.livePulseWave.scale.set(waveScale, waveScale, 1.0);
+              vis.livePulseWave.material.opacity = Math.max(0, (1.0 - waveCycle) * 0.55);
+            }
+          } else {
+            vis.ringMesh.rotation.z += 0.008;
+            vis.ringMesh.rotation.y += 0.004;
+          }
+
+          const isSelected = selectedProject && selectedProject.id === vis.project.id;
+          const isHovered = hoveredProject && hoveredProject.id === vis.project.id;
+
+          if (isSelected) {
+            vis.coreMesh.scale.set(1.4, 1.4, 1.4);
+            vis.haloMesh.scale.set(1.6 + Math.sin(elapsed * 4) * 0.15, 1.6 + Math.sin(elapsed * 4) * 0.15, 1.6);
+            vis.haloMesh.material.opacity = vis.isLive ? 0.5 : 0.28;
+            vis.ringMesh.material.opacity = 0.95;
+          } else if (isHovered) {
+            vis.coreMesh.scale.set(1.25, 1.25, 1.25);
+            vis.haloMesh.scale.set(1.4, 1.4, 1.4);
+            vis.haloMesh.material.opacity = vis.isLive ? 0.4 : 0.22;
+            vis.ringMesh.material.opacity = 0.85;
+          } else {
+            vis.coreMesh.scale.set(1.0, 1.0, 1.0);
+            vis.haloMesh.scale.set(1.0, 1.0, 1.0);
+            vis.haloMesh.material.opacity = vis.isLive ? 0.3 : 0.1;
+            vis.ringMesh.material.opacity = vis.isLive ? 0.9 : 0.45;
+          }
+        });
+
+        pulsePackets.forEach(pulse => {
+          pulse.progress += pulse.speed;
+          if (pulse.progress > 1) pulse.progress = 0;
+          pulse.mesh.position.lerpVectors(pulse.from, pulse.to, pulse.progress);
+          const s = 0.8 + Math.sin(pulse.progress * Math.PI) * 0.5;
+          pulse.mesh.scale.set(s, s, s);
+        });
+
+        const activeId = selectedProject ? selectedProject.id : (hoveredProject ? hoveredProject.id : null);
+        edgeStructures.forEach(edge => {
+          if (activeId && (edge.fromId === activeId || edge.toId === activeId)) {
+            edge.material.color.setHex(0x000000);
+            edge.material.opacity = 0.95;
+          } else if (activeId) {
+            edge.material.color.setHex(0xcccccc);
+            edge.material.opacity = 0.3;
+          } else {
+            edge.material.color.setHex(edge.isBothLive ? 0x38bdf8 : 0x999999);
+            edge.material.opacity = 0.65;
+          }
+        });
+
+        if (isMouseInCanvas && !camState.isDragging && !sideCard.classList.contains('open') && window.innerWidth > 640) {
+          raycaster.setFromCamera(mouse, camera);
+          const hits = raycaster.intersectObjects(nodeVisuals.map(v => v.hitMesh));
+
+          if (hits.length > 0) {
+            const pId = hits[0].object.userData.projectId;
+            const targetVisual = nodeVisuals.find(v => v.project.id === pId);
+
+            if (targetVisual) {
+              container.style.cursor = 'pointer';
+              hoveredProject = targetVisual.project;
+
+              const screen = toScreen(targetVisual.group.position);
+              if (screen.visible) {
+                tooltipTitle.textContent = targetVisual.project.title;
+                tooltipCat.textContent = targetVisual.isLive ? `${targetVisual.project.category} • [LIVE APP]` : targetVisual.project.category;
+                
+                if (targetVisual.isLive) {
+                  tooltipDot.classList.add('live');
+                } else {
+                  tooltipDot.classList.remove('live');
+                }
+
+                tooltip.style.left = screen.x + 'px';
+                tooltip.style.top = (screen.y - 18) + 'px';
+                tooltip.classList.add('visible');
+              } else {
+                tooltip.classList.remove('visible');
+              }
+            }
+          } else {
+            container.style.cursor = 'grab';
+            hoveredProject = null;
+            tooltip.classList.remove('visible');
+          }
+        } else {
+          tooltip.classList.remove('visible');
+        }
+
+        renderer.render(scene, camera);
+      }
+
+      animate();
+      loadProjectsData();
+    })();
+  </script>
+</body>
+</html>

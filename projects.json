@@ -1,0 +1,121 @@
+[
+  {
+    "id": "cyanx-ai",
+    "type": "live",
+    "title": "CYANX AI",
+    "description": "Interactive AI companion built with a local Llama 3.1 LLM engine, FastAPI backend, and animated desktop interface.",
+    "category": "Artificial Intelligence",
+    "tags": ["FastAPI", "Ollama", "Llama 3.1", "Python", "PyWebView"],
+    "position": [0, 25, 0],
+    "connections": ["smart-phishing", "bug-tracker"],
+    "status": "Production",
+    "cluster": 1,
+    "year": "2026",
+    "architecture": "Decoupled Local Client-API",
+    "metrics": [
+      { "label": "Model", "value": "Llama 3.1" },
+      { "label": "Inference", "value": "Local GPU" },
+      { "label": "Latency", "value": "Sub-sec" }
+    ],
+    "repoUrl": "https://github.com",
+    "demoUrl": "https://example.com"
+  },
+  {
+    "id": "smart-phishing",
+    "type": "project",
+    "title": "Smart Phishing Detection",
+    "description": "Cybersecurity URL threat intelligence analyzer with real-time heuristic scoring, Chart.js metrics, and simulation engine.",
+    "category": "Cryptography & Security",
+    "tags": ["JavaScript", "Chart.js", "Threat Intel", "HTML5"],
+    "position": [70, -20, 40],
+    "connections": ["cyanx-ai", "bug-tracker"],
+    "status": "Active",
+    "cluster": 2,
+    "year": "2026",
+    "architecture": "Client-Side Threat Analyzer",
+    "metrics": [
+      { "label": "Accuracy", "value": "98.2%" },
+      { "label": "Scan Speed", "value": "35ms" },
+      { "label": "Signatures", "value": "10k+" }
+    ],
+    "repoUrl": "https://github.com",
+    "demoUrl": "https://example.com"
+  },
+  {
+    "id": "bug-tracker",
+    "type": "project",
+    "title": "BITS Bug Tracker",
+    "description": "Full-featured defect lifecycle management system with role-based routing, issue resolution telemetry, and lightweight SQLite persistence.",
+    "category": "Distributed Systems",
+    "tags": ["Python", "Flask", "SQLite", "REST API"],
+    "position": [-75, 30, -35],
+    "connections": ["cyanx-ai"],
+    "status": "Archived",
+    "cluster": 1,
+    "year": "2026",
+    "architecture": "MVC Web Service",
+    "metrics": [
+      { "label": "Queries", "value": "< 4ms" },
+      { "label": "State Flow", "value": "Strict Kanban" },
+      { "label": "Auth", "value": "Session RBAC" }
+    ],
+    "repoUrl": "https://github.com",
+    "demoUrl": ""
+  },
+  {
+    "id": "exotic-gb-hub",
+    "type": "live",
+    "title": "EXOTIC GB HUB",
+    "description": "Zero-cost database architecture for an exotic aquarium catalog featuring client-side Firebase Auth, Firestore real-time dynamic catalog indexing, and direct encrypted WhatsApp order dispatching.",
+    "category": "Web Applications",
+    "tags": [
+      "Firebase Auth",
+      "Firestore DB",
+      "Vanilla JavaScript",
+      "HTML5 & CSS3",
+      "WhatsApp API",
+      "Netlify"
+    ],
+    "position": [65, 20, -30],
+    "connections": ["g-plus-bengaluru"],
+    "status": "Production",
+    "cluster": 1,
+    "year": "2026",
+    "architecture": "Serverless Client-Side Architecture",
+    "metrics": [
+      { "label": "Latency", "value": "< 1ms" },
+      { "label": "Auth", "value": "Firebase JWT" },
+      { "label": "Orders", "value": "WhatsApp API" }
+    ],
+    "demoUrl": "https://exoticgbhub.netlify.app",
+    "repoUrl": "https://github.com"
+  },
+  {
+    "id": "g-plus-bengaluru",
+    "type": "project",
+    "title": "G+ Bengaluru",
+    "description": "Asynchronous geospatial analytics and citizen grievance routing platform using non-blocking FastAPI ASGI event loops, Leaflet GIS mapping, Spatial Postgres, and Gemini 1.5 LLM query triage.",
+    "category": "Artificial Intelligence",
+    "tags": [
+      "FastAPI",
+      "Python 3",
+      "GIS & Maps",
+      "Gemini 1.5 API",
+      "Spatial Postgres",
+      "Leaflet.js"
+    ],
+    "position": [-65, -15, 35],
+    "connections": ["exotic-gb-hub"],
+    "status": "Completed",
+    "cluster": 2,
+    "year": "2026",
+    "architecture": "Asynchronous Geospatial ASGI Microkernel",
+    "metrics": [
+      { "label": "Stream Latency", "value": "< 20ms" },
+      { "label": "Triage Engine", "value": "Gemini 1.5" },
+      { "label": "GIS Layers", "value": "GeoJSON" }
+    ],
+    "demoUrl": "",
+    "repoUrl": "https://github.com"
+  }
+]

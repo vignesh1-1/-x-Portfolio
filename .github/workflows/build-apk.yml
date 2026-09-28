@@ -19,33 +19,42 @@ jobs:
       - name: Install Cordova
         run: npm install -g cordova
 
-      - name: Create App with Custom Name & Icon
+      - name: Create Accelerated App
         run: |
-          # 1. Create the project
           cordova create myApp com.vignesh.portfolio "Vignesh Portfolio"
           cd myApp
-          
-          # 2. Copy the logo from your repository into the Cordova project
+
+          # Copy icon from repository
           cp ../Gemini_Generated_Image_ko64ocko64ocko64-removebg-preview.png ./icon.png
-          
-          # 3. Configure app name, URL, and app icon
+
           cat << 'EOF' > config.xml
           <?xml version='1.0' encoding='utf-8'?>
-          <widget id="com.vignesh.portfolio" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-              <!-- App name displayed on the phone screen -->
+          <widget id="com.vignesh.portfolio" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
               <name>Vignesh Portfolio</name>
-              
               <description>CYANX AI Portfolio Assistant</description>
               <author email="vigneshblrind@gmail.com">Vignesh P</author>
-              
-              <!-- Custom App Icon -->
+
               <icon src="icon.png" />
-              
               <content src="https://vignesh1-1.github.io/-x-Portfolio/" />
+
               <access origin="*" />
               <allow-navigation href="https://vignesh1-1.github.io/*" />
               <allow-navigation href="https://*.onrender.com/*" />
+
+              <!-- GPU HARDWARE ACCELERATION & WEBVIEW PERFORMANCE -->
+              <preference name="HardwareAcceleration" value="true" />
               <preference name="Orientation" value="portrait" />
+              <preference name="AppendUserAgent" value="CYANXNativeApp" />
+              <preference name="DisallowOverscroll" value="true" />
+              <preference name="android-minSdkVersion" value="24" />
+              <preference name="android-targetSdkVersion" value="34" />
+
+              <!-- Force enable hardware acceleration on the activity -->
+              <platform name="android">
+                  <edit-config file="AndroidManifest.xml" target="/manifest/application/activity[@android:name='MainActivity']" mode="merge">
+                      <activity android:hardwareAccelerated="true" android:largeHeap="true" />
+                  </edit-config>
+              </platform>
           </widget>
           EOF
 

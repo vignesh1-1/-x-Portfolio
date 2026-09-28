@@ -27,7 +27,7 @@ jobs:
               <name>CYANX AI</name>
               <description>CYANX AI Portfolio Assistant</description>
               <author email="vigneshblrind@gmail.com">Vignesh P</author>
-              <content src="https://vignesh1-1.github.io/" />
+              <content src="https://vignesh1-1.github.io/-x-Portfolio/" />
               <access origin="*" />
               <allow-navigation href="https://vignesh1-1.github.io/*" />
               <allow-navigation href="https://*.onrender.com/*" />

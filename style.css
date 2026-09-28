@@ -2467,3 +2467,35 @@ body:not(.loaded) .about {
   .primary-btn, .secondary-btn { padding: 10px 20px; font-size: 13px; }
   .home-image { margin-bottom: 20px; transform: scale(0.65); transform-origin: right center; }
 }
+
+/* =========================================
+   MOBILE HARDWARE ACCELERATION
+   ========================================= */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: none;
+}
+
+.chat-card,
+.project-card,
+.about-content,
+.contact-card,
+.terminal-container,
+.navbar {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+@media (max-width: 768px) {
+  /* Reduce heavy blur computations on mobile GPU */
+  .navbar, .chat-card, .contact-card {
+    backdrop-filter: blur(6px) !important;
+    -webkit-backdrop-filter: blur(6px) !important;
+  }
+}

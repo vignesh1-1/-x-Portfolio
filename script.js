@@ -110,7 +110,6 @@ const RENDER_API_URL = "https://portfolio-backend-iua6.onrender.com";
 let ACTIVE_API_URL = LOCAL_API_URL;
 
 async function resolveActiveBackend() {
-  // If running locally in your browser/Live Server, bind directly to localhost
   const isLocalEnv = window.location.hostname === "localhost" || 
                      window.location.hostname === "127.0.0.1" || 
                      window.location.protocol === "file:";
@@ -120,7 +119,6 @@ async function resolveActiveBackend() {
     return ACTIVE_API_URL;
   }
 
-  // If deployed on web (GitHub Pages), verify if localhost is reachable first
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 700);
@@ -136,7 +134,7 @@ async function resolveActiveBackend() {
       return ACTIVE_API_URL;
     }
   } catch (err) {
-    // Localhost not available, default to Render
+    // Localhost unavailable, fallback to Render
   }
 
   ACTIVE_API_URL = RENDER_API_URL;
@@ -157,7 +155,6 @@ async function wakeUpBackend() {
   faceText.textContent = '🌐';
 
   const baseUrl = await resolveActiveBackend();
-  console.log("🔍 Active backend target resolved to:", baseUrl);
 
   try {
     const response = await fetch(`${baseUrl}/`);
@@ -215,13 +212,13 @@ document.querySelectorAll("a").forEach(link => {
 
     e.preventDefault(); 
     const overlay = document.getElementById("loadingOverlay");
-    if(overlay) overlay.classList.add("active");
+    if (overlay) overlay.classList.add("active");
 
     const isNewTab = this.getAttribute("target") === "_blank";
     setTimeout(() => {
       if (isNewTab) {
         window.open(target, "_blank"); 
-        if(overlay) overlay.classList.remove("active"); 
+        if (overlay) overlay.classList.remove("active"); 
       } else {
         window.location.href = target; 
       }
@@ -246,86 +243,97 @@ const observer = new IntersectionObserver((entries) => {
 
 sections.forEach((section) => observer.observe(section));
 
-// Canvas Background
-const canvas = document.getElementById("neural-network");
-const ctx = canvas.getContext("2d");
+// ==========================================
+// HARDWARE-ACCELERATED MOBILE CANVAS BACKGROUND
+// ==========================================
+(function() {
+  const bgCanvas = document.getElementById("neural-network");
+  if (!bgCanvas) return;
+  const bgCtx = bgCanvas.getContext("2d");
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+  bgCanvas.width = window.innerWidth;
+  bgCanvas.height = window.innerHeight;
 
-let particles = [];
-const particleCount = 100;
+  const isMobile = window.innerWidth < 768 || /Android|iPhone|iPad/i.test(navigator.userAgent);
+  const count = isMobile ? 26 : 85;
+  const maxDistSq = isMobile ? 7000 : 13000;
+  const netParticles = [];
 
-class Particle {
-  constructor() {
-    this.x = Math.random() * canvas.width;
-    this.y = Math.random() * canvas.height;
-    this.vx = (Math.random() - 0.5) * 0.7;
-    this.vy = (Math.random() - 0.5) * 0.7;
-    this.size = 2;
+  class BgParticle {
+    constructor() {
+      this.x = Math.random() * bgCanvas.width;
+      this.y = Math.random() * bgCanvas.height;
+      this.vx = (Math.random() - 0.5) * (isMobile ? 0.4 : 0.7);
+      this.vy = (Math.random() - 0.5) * (isMobile ? 0.4 : 0.7);
+      this.size = 2;
+    }
+    move() {
+      this.x += this.vx;
+      this.y += this.vy;
+      if (this.x < 0 || this.x > bgCanvas.width) this.vx *= -1;
+      if (this.y < 0 || this.y > bgCanvas.height) this.vy *= -1;
+    }
+    draw() {
+      bgCtx.beginPath();
+      bgCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      bgCtx.fillStyle = "#000000";
+      bgCtx.fill();
+    }
   }
-  move() {
-    this.x += this.vx;
-    this.y += this.vy;
-    if(this.x < 0 || this.x > canvas.width) this.vx *= -1;
-    if(this.y < 0 || this.y > canvas.height) this.vy *= -1;
-  }
-  draw() {
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
-    ctx.fillStyle = "#000000";
-    ctx.fill();
-  }
-}
 
-for(let i=0; i<particleCount; i++) {
-  particles.push(new Particle());
-}
+  for (let i = 0; i < count; i++) {
+    netParticles.push(new BgParticle());
+  }
 
-function connect() {
-  for(let a=0; a<particles.length; a++) {
-    for(let b=a; b<particles.length; b++) {
-      let dx = particles[a].x - particles[b].x;
-      let dy = particles[a].y - particles[b].y;
-      let distance = dx*dx + dy*dy;
-      if(distance < 14000) {
-        ctx.beginPath();
-        ctx.strokeStyle = "rgba(0,0,0,0.14)";
-        ctx.lineWidth = 1;
-        ctx.moveTo(particles[a].x, particles[a].y);
-        ctx.lineTo(particles[b].x, particles[b].y);
-        ctx.stroke();
+  function connectParticles() {
+    for (let a = 0; a < netParticles.length; a++) {
+      for (let b = a + 1; b < netParticles.length; b++) {
+        const dx = netParticles[a].x - netParticles[b].x;
+        const dy = netParticles[a].y - netParticles[b].y;
+        const distance = dx * dx + dy * dy;
+        if (distance < maxDistSq) {
+          bgCtx.beginPath();
+          bgCtx.strokeStyle = "rgba(0,0,0,0.12)";
+          bgCtx.lineWidth = 1;
+          bgCtx.moveTo(netParticles[a].x, netParticles[a].y);
+          bgCtx.lineTo(netParticles[b].x, netParticles[b].y);
+          bgCtx.stroke();
+        }
       }
     }
   }
-}
 
-function animate() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  particles.forEach(p => { p.move(); p.draw(); });
-  connect();
-  requestAnimationFrame(animate);
-}
-animate();
+  function renderLoop() {
+    bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+    netParticles.forEach(p => { p.move(); p.draw(); });
+    connectParticles();
+    requestAnimationFrame(renderLoop);
+  }
+  renderLoop();
 
-window.addEventListener("resize", () => {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-});
+  window.addEventListener("resize", () => {
+    bgCanvas.width = window.innerWidth;
+    bgCanvas.height = window.innerHeight;
+  });
+})();
 
 // Popups
 function showPopup(event) {
   event.preventDefault();
   const popup = document.getElementById("glass-popup");
-  popup.classList.add("show");
-  setTimeout(() => { popup.classList.remove("show"); }, 4000);
+  if (popup) {
+    popup.classList.add("show");
+    setTimeout(() => { popup.classList.remove("show"); }, 4000);
+  }
 }
 
 function showLivePopup(event) {
   event.preventDefault();
   let popup = document.getElementById("livePopup");
-  popup.classList.add("show");
-  setTimeout(() => { popup.classList.remove("show"); }, 5000);
+  if (popup) {
+    popup.classList.add("show");
+    setTimeout(() => { popup.classList.remove("show"); }, 5000);
+  }
 }
 
 function showPopupp(event, popupId) {
@@ -610,7 +618,7 @@ const counterObserver = new IntersectionObserver((entries, observer) => {
 counters.forEach(counter => counterObserver.observe(counter));
 
 // ==============================================================
-// ACCURATE AI ASSISTANT LOGIC (PROVEN SCORE BINDING)
+// ACCURATE AI ASSISTANT LOGIC (DYNAMIC SCORE BINDING)
 // ==============================================================
 const chatInputArea = document.querySelector('.chat-input-area textarea');
 const sendButton = document.querySelector('.send-btn');
@@ -685,7 +693,6 @@ async function sendChatMessage() {
     const currentContext = activeNav ? activeNav.getAttribute('href').substring(1) : 'unknown';
 
     const targetUrl = await resolveActiveBackend();
-    console.log("➡️ Dispatched chat request to:", `${targetUrl}/chat`);
 
     const response = await fetch(`${targetUrl}/chat`, {
       method: "POST",
@@ -696,11 +703,9 @@ async function sendChatMessage() {
     if (!response.ok) throw new Error("Server offline");
 
     const data = await response.json();
-    console.log("⬅️ Server Response Payload:", data);
 
     const replyText = data.reply;
     
-    // Accurate server response metrics with non-zero fallback
     const calcTime = ((performance.now() - startTime) / 1000).toFixed(2);
     const responseTimeSec = data.time_ms ? (data.time_ms / 1000).toFixed(2) + "s" : calcTime + "s";
     
@@ -722,7 +727,6 @@ async function sendChatMessage() {
       await sleep(12); 
     }
     
-    // Telemetry chip (Stacked layout on mobile, inline on desktop)
     const telemetry = document.createElement('div');
     telemetry.className = 'ai-telemetry-badge';
     telemetry.innerHTML = `
@@ -771,9 +775,7 @@ function showNextNotification() {
   }
 }
 
-// =========================================================================
-// =============== COOKIES PREFERENCES =====================================
-// =========================================================================
+// =============== COOKIES PREFERENCES ===============
 document.addEventListener("DOMContentLoaded", () => {
   const cookiePanel = document.getElementById("cookiePreferencesPanel");
   const btnAcceptAll = document.getElementById("btn-accept-all");
@@ -815,9 +817,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// =========================================================================
-// =============== COMIC POINTS POPUP ======================================
-// =========================================================================
+// =============== COMIC POINTS POPUP ===============
 function initPointsPopup() {
   const popup = document.getElementById("navPointsPopup");
   const pointsText = document.getElementById("bubblePointsText");
@@ -857,9 +857,7 @@ function initPointsPopup() {
   setTimeout(popupCycle, 600);
 }
 
-// ==============================================================
-// ADVANCED TERMINAL (v2.4.0) WITH PAGE CONTROL & COMMAND ARSENAL
-// ==============================================================
+// =============== ADVANCED TERMINAL (v2.4.0) ===============
 window.insertTerminalCmd = function(cmd) {
   const terminalInput = document.getElementById("terminalInput");
   if (terminalInput) {
@@ -1210,9 +1208,7 @@ if (terminalInput && terminalBody) {
   });
 }
 
-// =========================================================================
-// =============== ON-CLICK FEED-FORWARD ACTIVATION =========================
-// =========================================================================
+// =============== FEED-FORWARD NETWORK CANVAS ===============
 const ffCanvas = document.getElementById('ffNetworkCanvas');
 if (ffCanvas) {
   const ffCtx = ffCanvas.getContext('2d');
@@ -1487,9 +1483,7 @@ if (ffCanvas) {
   animateNetwork();
 }
 
-// =========================================================================
-// =============== ARCHITECTURE DRAWER & TECHNOLOGIES ======================
-// =========================================================================
+// =============== ARCHITECTURE DRAWER ===============
 const architectureRegistry = {
   "exotic-hub": {
     title: "EXOTIC GB HUB | Architecture",
@@ -1697,9 +1691,7 @@ window.addEventListener("keydown", (e) => {
   }
 });
 
-// =========================================================================
-// =============== CUSTOM SCROLLBAR LOGIC FOR AI CHAT ======================
-// =========================================================================
+// =============== CUSTOM SCROLLBAR FOR CHAT ===============
 const chatContent = document.getElementById('chatScrollContent');
 const trackWrap = document.querySelector('.scrollbar-track-wrap');
 const trackBody = document.getElementById('trackBody');

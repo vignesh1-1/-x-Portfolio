@@ -50,6 +50,40 @@
       color: #ffffff;
     }
 
+    /* GPU-Accelerated Smooth Entrance Animations */
+    @keyframes gpuSmoothFadeIn {
+      0% {
+        opacity: 0;
+        transform: scale3d(0.97, 0.97, 1) translate3d(0, 0, 0);
+      }
+      100% {
+        opacity: 1;
+        transform: scale3d(1, 1, 1) translate3d(0, 0, 0);
+      }
+    }
+
+    @keyframes gpuHudSlideDown {
+      0% {
+        opacity: 0;
+        transform: translate3d(0, -18px, 0);
+      }
+      100% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+      }
+    }
+
+    @keyframes gpuHudSlideUp {
+      0% {
+        opacity: 0;
+        transform: translate3d(0, 18px, 0);
+      }
+      100% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+      }
+    }
+
     #canvas-container {
       position: absolute;
       top: 0;
@@ -58,6 +92,11 @@
       height: 100%;
       cursor: grab;
       z-index: 1;
+      will-change: transform, opacity;
+      transform: translate3d(0, 0, 0);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      animation: gpuSmoothFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
     #canvas-container:active {
       cursor: grabbing;
@@ -81,6 +120,11 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
+      will-change: transform, opacity;
+      transform: translate3d(0, 0, 0);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      animation: gpuHudSlideDown 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.15s backwards;
     }
 
     .top-bar {
@@ -799,6 +843,11 @@
       justify-content: space-between;
       align-items: center;
       gap: 8px;
+      will-change: transform, opacity;
+      transform: translate3d(0, 0, 0);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      animation: gpuHudSlideUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.15s backwards;
     }
     .hud-badge {
       background: rgba(255, 255, 255, 0.94);

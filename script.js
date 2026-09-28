@@ -27,7 +27,7 @@ function triggerArcadeRedirect() {
     if (overlay) overlay.classList.add("active");
     setTimeout(() => {
         window.location.href = 'game.html';
-    }, 400); 
+    }, 200); 
 }
 
 // =============== MOBILE MENU TOGGLE FIX ===============
@@ -133,9 +133,7 @@ async function resolveActiveBackend() {
       ACTIVE_API_URL = LOCAL_API_URL;
       return ACTIVE_API_URL;
     }
-  } catch (err) {
-    // Localhost unavailable, fallback to Render
-  }
+  } catch (err) {}
 
   ACTIVE_API_URL = RENDER_API_URL;
   return ACTIVE_API_URL;
@@ -186,15 +184,17 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
       overlay.classList.remove("active");
       document.body.classList.add("loaded"); 
-      setTimeout(typeEffect, 400);
+      setTimeout(typeEffect, 250);
       revealElements.forEach(el => revealObserver.observe(el));
       initPointsPopup();
-    }, 450);
+      loadStoredChatHistory();
+    }, 250);
   } else {
     document.body.classList.add("loaded");
-    setTimeout(typeEffect, 400);
+    setTimeout(typeEffect, 250);
     revealElements.forEach(el => revealObserver.observe(el));
     initPointsPopup();
+    loadStoredChatHistory();
   }
 
   wakeUpBackend();
@@ -206,7 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
 document.querySelectorAll("a").forEach(link => {
   link.addEventListener("click", function(e) {
     const target = this.getAttribute("href");
-    if (!target || target === "#" || target.startsWith("#") || target.startsWith("mailto:") || target.startsWith("tel:") || this.hasAttribute('onclick')) {
+    if (!target || target === "#" || target.startsWith("#") || target.startsWith("javascript:") || target.startsWith("mailto:") || target.startsWith("tel:") || this.hasAttribute('onclick')) {
       return; 
     }
 
@@ -222,7 +222,7 @@ document.querySelectorAll("a").forEach(link => {
       } else {
         window.location.href = target; 
       }
-    }, 350);
+    }, 200);
   });
 });
 
@@ -618,7 +618,7 @@ const counterObserver = new IntersectionObserver((entries, observer) => {
 counters.forEach(counter => counterObserver.observe(counter));
 
 // ==============================================================
-// ACCURATE AI ASSISTANT LOGIC (DYNAMIC SCORE BINDING)
+// AI CHAT HISTORY STORAGE & CLEAR LOGIC
 // ==============================================================
 const chatInputArea = document.querySelector('.chat-input-area textarea');
 const sendButton = document.querySelector('.send-btn');
@@ -626,6 +626,57 @@ const chatWin = document.getElementById('chatScrollContent');
 const chatErrorBanner = document.getElementById('chatError');
 const quickPrompts = document.querySelectorAll('.sq-btn');
 const apiBadge = document.getElementById('apiBadge');
+
+function canStoreAiHistory() {
+  return localStorage.getItem("aiCookies") === "true";
+}
+
+function saveChatMessageToStorage(role, text, telemetryHtml = null) {
+  if (!canStoreAiHistory()) return;
+  try {
+    const history = JSON.parse(localStorage.getItem("cyanx_chat_history") || "[]");
+    history.push({ role, text, telemetryHtml });
+    if (history.length > 50) history.shift();
+    localStorage.setItem("cyanx_chat_history", JSON.stringify(history));
+  } catch (e) {}
+}
+
+function loadStoredChatHistory() {
+  if (!canStoreAiHistory() || !chatWin) return;
+  try {
+    const raw = localStorage.getItem("cyanx_chat_history");
+    if (!raw) return;
+    const history = JSON.parse(raw);
+    if (!Array.isArray(history) || history.length === 0) return;
+
+    chatWin.innerHTML = '';
+    history.forEach(item => {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `chat-message ${item.role}`;
+      msgDiv.textContent = item.text;
+      if (item.telemetryHtml) {
+        msgDiv.appendChild(document.createElement('br'));
+        const telDiv = document.createElement('div');
+        telDiv.innerHTML = item.telemetryHtml;
+        msgDiv.appendChild(telDiv.firstElementChild);
+      }
+      chatWin.appendChild(msgDiv);
+    });
+    chatWin.scrollTop = chatWin.scrollHeight;
+  } catch (e) {}
+}
+
+function clearChatHistory() {
+  localStorage.removeItem("cyanx_chat_history");
+  if (chatWin) {
+    chatWin.innerHTML = `
+      <div class="chat-message bot">
+        Chat history cleared. Hey there! Ask me anything about projects, skills, or experience.
+      </div>
+    `;
+    chatWin.scrollTop = 0;
+  }
+}
 
 if (chatInputArea) {
   chatInputArea.addEventListener('input', playTypingSound);
@@ -649,12 +700,20 @@ async function sendChatMessage() {
   const message = chatInputArea.value.trim();
   if (!message) return;
 
+  // Clear command intercept
+  if (message.toLowerCase() === "/clear") {
+    chatInputArea.value = '';
+    clearChatHistory();
+    return;
+  }
+
   chatErrorBanner.style.display = 'none';
 
   const userMsg = document.createElement('div');
   userMsg.className = 'chat-message user';
   userMsg.textContent = message;
   chatWin.appendChild(userMsg);
+  saveChatMessageToStorage("user", message);
 
   chatInputArea.value = '';
   chatWin.scrollTop = chatWin.scrollHeight;
@@ -703,7 +762,6 @@ async function sendChatMessage() {
     if (!response.ok) throw new Error("Server offline");
 
     const data = await response.json();
-
     const replyText = data.reply;
     
     const calcTime = ((performance.now() - startTime) / 1000).toFixed(2);
@@ -729,13 +787,16 @@ async function sendChatMessage() {
     
     const telemetry = document.createElement('div');
     telemetry.className = 'ai-telemetry-badge';
-    telemetry.innerHTML = `
+    const telemetryInnerHtml = `
       <span class="telemetry-item">⏱️ Response time: <strong>${responseTimeSec}</strong></span>
       <span class="telemetry-sep">|</span>
       <span class="telemetry-item">🧠 Search score: <strong>${verifiedScore}</strong></span>
     `;
+    telemetry.innerHTML = telemetryInnerHtml;
     botMsg.appendChild(document.createElement('br'));
     botMsg.appendChild(telemetry);
+
+    saveChatMessageToStorage("bot", replyText, telemetry.outerHTML);
 
     faceText.textContent = '◕⁠‿⁠◕';
     showNextNotification();
@@ -775,16 +836,34 @@ function showNextNotification() {
   }
 }
 
-// =============== COOKIES PREFERENCES ===============
+// =============== COOKIES PREFERENCES (WEEKLY TRIGGER & EDIT LINK) ===============
 document.addEventListener("DOMContentLoaded", () => {
   const cookiePanel = document.getElementById("cookiePreferencesPanel");
   const btnAcceptAll = document.getElementById("btn-accept-all");
   const btnAcceptNecessary = document.getElementById("btn-accept-necessary");
   const aiToggle = document.getElementById("cookie-ai");
+  const openCookiePreferencesLink = document.getElementById("openCookiePreferencesLink");
 
-  setTimeout(() => {
-    if (cookiePanel) cookiePanel.classList.add("show");
-  }, 2000); 
+  const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+  const lastPromptTime = parseInt(localStorage.getItem("cookie_last_prompt_time") || "0", 10);
+  const now = Date.now();
+
+  // Show panel if a week has passed or never decided
+  if (now - lastPromptTime > ONE_WEEK_MS) {
+    setTimeout(() => {
+      if (cookiePanel) cookiePanel.classList.add("show");
+    }, 1500);
+  }
+
+  // Open & edit cookies on click
+  if (openCookiePreferencesLink) {
+    openCookiePreferencesLink.addEventListener("click", () => {
+      if (aiToggle) {
+        aiToggle.checked = localStorage.getItem("aiCookies") === "true";
+      }
+      if (cookiePanel) cookiePanel.classList.add("show");
+    });
+  }
 
   window.openCookieModal = function(title, description) {
     document.getElementById("cookieInfoTitle").innerText = title;
@@ -801,6 +880,7 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.setItem("cookieConsent", "all");
       localStorage.setItem("functionalCookies", "true");
       localStorage.setItem("aiCookies", "true");
+      localStorage.setItem("cookie_last_prompt_time", Date.now().toString());
       if (aiToggle) aiToggle.checked = true;
       if (cookiePanel) cookiePanel.classList.remove("show");
     });
@@ -811,28 +891,57 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.setItem("cookieConsent", "necessary");
       localStorage.setItem("functionalCookies", "false");
       localStorage.setItem("aiCookies", "false");
+      localStorage.setItem("cookie_last_prompt_time", Date.now().toString());
+      localStorage.removeItem("cyanx_chat_history"); // Purge history if consent rejected
       if (aiToggle) aiToggle.checked = false;
       if (cookiePanel) cookiePanel.classList.remove("show");
     });
   }
 });
 
-// =============== COMIC POINTS POPUP ===============
+// =============== EXACT DEVICE GAME SCORES ===============
+function getExactDeviceArcadeData() {
+  const games = [
+    { id: "snake", name: "Cyber Snake", key: "cyanx_snake_score", altKey: "cyanx_snake_best" },
+    { id: "memory", name: "Memory Matrix", key: "cyanx_memory_score", altKey: "cyanx_memory_best" },
+    { id: "dodge", name: "Neural Reflex", key: "cyanx_dodge_score", altKey: "cyanx_dodge_best" },
+    { id: "pong", name: "Quantum Pong", key: "cyanx_pong_score", altKey: "cyanx_pong_best" }
+  ];
+
+  let totalExactScore = 0;
+  const records = [];
+
+  games.forEach(g => {
+    const s1 = parseInt(localStorage.getItem(g.key), 10) || 0;
+    const s2 = parseInt(localStorage.getItem(g.altKey), 10) || 0;
+    const best = Math.max(s1, s2);
+    totalExactScore += best;
+    records.push({ name: g.name, score: best });
+  });
+
+  // Check any other customized game scores stored under cyanx_
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith("cyanx_") && !games.some(g => g.key === key || g.altKey === key)) {
+      if (key.includes("score") || key.includes("best")) {
+        const val = parseInt(localStorage.getItem(key), 10) || 0;
+        totalExactScore += val;
+        records.push({ name: key.replace("cyanx_", "").replace(/_/g, " ").toUpperCase(), score: val });
+      }
+    }
+  }
+
+  return { totalScore: totalExactScore, records };
+}
+
 function initPointsPopup() {
   const popup = document.getElementById("navPointsPopup");
   const pointsText = document.getElementById("bubblePointsText");
   if (!popup) return;
 
-  let totalScore = 0;
-  for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i);
-    if (key && key.startsWith("cyanx_") && (key.includes("best") || key.includes("score"))) {
-      const score = parseInt(localStorage.getItem(key), 10) || 0;
-      totalScore += score;
-    }
-  }
+  const data = getExactDeviceArcadeData();
+  const displayScore = data.totalScore.toLocaleString();
 
-  const displayScore = totalScore > 0 ? totalScore.toLocaleString() : "11,235";
   if (pointsText) {
     pointsText.textContent = `Arcade: ${displayScore} pts`;
   }
@@ -842,9 +951,27 @@ function initPointsPopup() {
     if (modal) {
       const modalTotal = document.getElementById("arcadeModalTotal");
       if (modalTotal) modalTotal.textContent = `Total Record: ${displayScore} pts`;
+      
+      const recordsContainer = document.getElementById("arcadeGameRecords");
+      if (recordsContainer) {
+        recordsContainer.innerHTML = data.records.map(r => `
+          <div class="game-record-row">
+            <span class="game-record-name">${r.name}</span>
+            <span class="game-record-score">${r.score.toLocaleString()} pts</span>
+          </div>
+        `).join('');
+      }
+
       modal.classList.add("show");
     }
   });
+
+  const closeArcadeModalBtn = document.getElementById("closeArcadeModal");
+  if (closeArcadeModalBtn) {
+    closeArcadeModalBtn.addEventListener("click", () => {
+      document.getElementById("arcadeModal")?.classList.remove("show");
+    });
+  }
 
   function popupCycle() {
     popup.classList.add("visible");
@@ -1187,7 +1314,7 @@ if (terminalInput && terminalBody) {
         responseLine.innerHTML = "Executing Neural Vision protocol... Redirecting...";
         const overlay = document.getElementById("loadingOverlay");
         if (overlay) overlay.classList.add("active");
-        setTimeout(() => window.location.href = 'rcb.html', 400);
+        setTimeout(() => window.location.href = 'rcb.html', 200);
 
       } else if (lowerCmd === "whoami") {
         responseLine.innerHTML = "guest_recruiter_looking_for_top_talent";

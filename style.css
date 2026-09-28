@@ -129,13 +129,13 @@ html { scroll-behavior: smooth; }
   width: 100%;
   height: 100%;
   background: rgba(0,0,0,0.5);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(8px);
   display: flex;
   justify-content: center;
   align-items: center;
   opacity: 0;
   visibility: hidden;
-  transition: 0.3s;
+  transition: 0.15s ease-out;
   z-index: 9999;
 }
 
@@ -145,12 +145,12 @@ html { scroll-behavior: smooth; }
 }
 
 .loader {
-  width: 60px;
-  height: 60px;
-  border: 5px solid rgba(255,255,255,0.2);
-  border-top: 5px solid #7594fa;
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(255,255,255,0.2);
+  border-top: 4px solid #7594fa;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: spin 0.45s linear infinite;
 }
 
 /* ==============================================================
@@ -2273,7 +2273,6 @@ body:not(.loaded) .about {
     opacity: 0.32 !important;
   }
 
-  /* Clean stacked mobile alignment for response time & match score */
   .ai-telemetry-badge {
     display: flex !important;
     flex-direction: column !important;
@@ -2498,7 +2497,6 @@ html, body {
 }
 
 @media (max-width: 768px) {
-  /* Reduce heavy blur computations on mobile GPU */
   .navbar, .chat-card, .contact-card {
     backdrop-filter: blur(6px) !important;
     -webkit-backdrop-filter: blur(6px) !important;

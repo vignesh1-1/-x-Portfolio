@@ -7,6 +7,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
@@ -16,17 +19,28 @@ jobs:
       - name: Install Cordova
         run: npm install -g cordova
 
-      - name: Create App Pointing to Live URL
+      - name: Create App with Custom Name & Icon
         run: |
-          cordova create myApp com.vignesh.portfolio "CYANX AI"
+          # 1. Create the project
+          cordova create myApp com.vignesh.portfolio "Vignesh Portfolio"
           cd myApp
           
+          # 2. Copy the logo from your repository into the Cordova project
+          cp ../Gemini_Generated_Image_ko64ocko64ocko64-removebg-preview.png ./icon.png
+          
+          # 3. Configure app name, URL, and app icon
           cat << 'EOF' > config.xml
           <?xml version='1.0' encoding='utf-8'?>
           <widget id="com.vignesh.portfolio" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-              <name>CYANX AI</name>
+              <!-- App name displayed on the phone screen -->
+              <name>Vignesh Portfolio</name>
+              
               <description>CYANX AI Portfolio Assistant</description>
               <author email="vigneshblrind@gmail.com">Vignesh P</author>
+              
+              <!-- Custom App Icon -->
+              <icon src="icon.png" />
+              
               <content src="https://vignesh1-1.github.io/-x-Portfolio/" />
               <access origin="*" />
               <allow-navigation href="https://vignesh1-1.github.io/*" />
@@ -41,5 +55,5 @@ jobs:
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: CYANX-AI-App
+          name: Vignesh-Portfolio-App
           path: myApp/platforms/android/app/build/outputs/apk/debug/*.apk

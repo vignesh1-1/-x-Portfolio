@@ -1,0 +1,45 @@
+name: Build Android APK (Live URL)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Install Cordova
+        run: npm install -g cordova
+
+      - name: Create App Pointing to Live URL
+        run: |
+          cordova create myApp com.vignesh.portfolio "CYANX AI"
+          cd myApp
+          
+          cat << 'EOF' > config.xml
+          <?xml version='1.0' encoding='utf-8'?>
+          <widget id="com.vignesh.portfolio" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+              <name>CYANX AI</name>
+              <description>CYANX AI Portfolio Assistant</description>
+              <author email="vigneshblrind@gmail.com">Vignesh P</author>
+              <content src="https://vignesh1-1.github.io/" />
+              <access origin="*" />
+              <allow-navigation href="https://vignesh1-1.github.io/*" />
+              <allow-navigation href="https://*.onrender.com/*" />
+              <preference name="Orientation" value="portrait" />
+          </widget>
+          EOF
+
+          cordova platform add android
+          cordova build android --debug
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CYANX-AI-App
+          path: myApp/platforms/android/app/build/outputs/apk/debug/*.apk

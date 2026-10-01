@@ -28,7 +28,7 @@
     "category": "Cryptography & Security",
     "tags": ["JavaScript", "Chart.js", "Threat Intel", "HTML5"],
     "position": [70, -20, 40],
-    "connections": ["cyanx-ai", "bug-tracker"],
+    "connections": ["cyanx-ai", "bug-tracker", "bmrta-dashboard"],
     "status": "Active",
     "cluster": 2,
     "year": "2026",
@@ -105,7 +105,7 @@
       "Leaflet.js"
     ],
     "position": [-65, -15, 35],
-    "connections": ["exotic-gb-hub"],
+    "connections": ["exotic-gb-hub", "bmrta-dashboard"],
     "status": "Completed",
     "cluster": 2,
     "year": "2026",
@@ -117,5 +117,33 @@
     ],
     "demoUrl": "",
     "repoUrl": "https://github.com"
+  },
+  {
+    "id": "BMRTA",
+    "type": "live",
+    "title": "BMRTA Transit Hub",
+    "description": "Unified multimodal transit & fleet operations platform with real-time Leaflet GIS mapping, dynamic route pathfinding across Metro/Suburban/BMTC networks, live fleet tracking simulation, and carbon credit gamification.",
+    "category": "Geospatial & Web Applications",
+    "tags": [
+      "JavaScript (ES6+)",
+      "Leaflet.js",
+      "Turf.js",
+      "GIS & GeoJSON",
+      "OpenStreetMap",
+      "HTML5 & CSS3"
+    ],
+    "position": [20, -35, -40],
+    "connections": ["g-plus-bengaluru", "smart-phishing"],
+    "status": "Production",
+    "cluster": 2,
+    "year": "2026",
+    "architecture": "Client-Side Geospatial Event Engine",
+    "metrics": [
+      { "label": "Fleet Loop", "value": "1s Tick" },
+      { "label": "Transit Layers", "value": "4 Networks" },
+      { "label": "Mapping", "value": "Leaflet GIS" }
+    ],
+    "repoUrl": "https://github.com",
+    "demoUrl": "https://example.com"
   }
 ]

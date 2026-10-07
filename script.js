@@ -6,28 +6,28 @@ let logoClicks = 0;
 let logoClickTimer;
 
 if (navLogo) {
-    navLogo.addEventListener('click', (e) => {
-        e.preventDefault(); 
-        logoClicks++;
-        
-        if (logoClicks === 5) {
-            triggerArcadeRedirect();
-            logoClicks = 0; 
-        }
-        
-        clearTimeout(logoClickTimer);
-        logoClickTimer = setTimeout(() => {
-            logoClicks = 0;
-        }, 2000);
-    });
+  navLogo.addEventListener('click', (e) => {
+    e.preventDefault(); 
+    logoClicks++;
+    
+    if (logoClicks === 5) {
+      triggerArcadeRedirect();
+      logoClicks = 0; 
+    }
+    
+    clearTimeout(logoClickTimer);
+    logoClickTimer = setTimeout(() => {
+      logoClicks = 0;
+    }, 2000);
+  });
 }
 
 function triggerArcadeRedirect() {
-    const overlay = document.getElementById("loadingOverlay");
-    if (overlay) overlay.classList.add("active");
-    setTimeout(() => {
-        window.location.href = 'game.html';
-    }, 200); 
+  const overlay = document.getElementById("loadingOverlay");
+  if (overlay) overlay.classList.add("active");
+  setTimeout(() => {
+    window.location.href = 'game.html';
+  }, 200); 
 }
 
 // =============== MOBILE MENU TOGGLE FIX ===============
@@ -36,32 +36,32 @@ const navLinksContainer = document.querySelector('.nav-links');
 
 if (menuBtn && navLinksContainer) {
   menuBtn.addEventListener('click', (event) => {
-      navLinksContainer.classList.toggle('show-mobile');
-      event.stopPropagation();
+    navLinksContainer.classList.toggle('show-mobile');
+    event.stopPropagation();
   });
 
   document.querySelectorAll('.nav-links a').forEach(link => {
-      link.addEventListener('click', () => {
-          navLinksContainer.classList.remove('show-mobile');
-      });
+    link.addEventListener('click', () => {
+      navLinksContainer.classList.remove('show-mobile');
+    });
   });
 
   document.addEventListener('click', (event) => {
-      if (!navLinksContainer.contains(event.target) && !menuBtn.contains(event.target)) {
-          navLinksContainer.classList.remove('show-mobile');
-      }
+    if (!navLinksContainer.contains(event.target) && !menuBtn.contains(event.target)) {
+      navLinksContainer.classList.remove('show-mobile');
+    }
   });
 }
 
 // =============== SCROLL PROGRESS BAR ===============
 window.addEventListener('scroll', () => {
-    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    const scrolled = (winScroll / height) * 100;
-    const scrollBar = document.getElementById('scrollBar');
-    if (scrollBar) {
-        scrollBar.style.width = scrolled + "%";
-    }
+  const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+  const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+  const scrollBar = document.getElementById('scrollBar');
+  if (scrollBar) {
+    scrollBar.style.width = scrolled + "%";
+  }
 });
 
 // =============== FLOATING BUTTONS LOGIC ===============
@@ -73,34 +73,36 @@ window.addEventListener("scroll", () => {
   const scrollY = window.scrollY;
   
   if (scrollY > 500) {
-    scrollTopBtn.classList.add("show");
+    scrollTopBtn?.classList.add("show");
   } else {
-    scrollTopBtn.classList.remove("show");
+    scrollTopBtn?.classList.remove("show");
   }
 
   if (aiSection) {
     const aiRect = aiSection.getBoundingClientRect();
     if (aiRect.top < window.innerHeight * 0.7 && aiRect.bottom > window.innerHeight * 0.3) {
-      aiNavBtn.classList.remove("show");
+      aiNavBtn?.classList.remove("show");
     } else {
-      aiNavBtn.classList.add("show");
+      aiNavBtn?.classList.add("show");
     }
   } else {
-      aiNavBtn.classList.add("show");
+    aiNavBtn?.classList.add("show");
   }
 });
 
 window.dispatchEvent(new Event('scroll'));
 
-scrollTopBtn.addEventListener("click", () => {
-  window.scrollTo({ top: 0, behavior: "smooth" });
-});
+if (scrollTopBtn) {
+  scrollTopBtn.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+}
 
-aiNavBtn.addEventListener("click", () => {
-  if (aiSection) {
+if (aiNavBtn && aiSection) {
+  aiNavBtn.addEventListener("click", () => {
     aiSection.scrollIntoView({ behavior: "smooth" });
-  }
-});
+  });
+}
 
 // ==========================================
 // DYNAMIC BASE URL: LOCALHOST DETECTION & RENDER FALLBACK
@@ -226,10 +228,40 @@ document.querySelectorAll("a").forEach(link => {
   });
 });
 
-// Active Link Observer
+// ==========================================
+// ACTIVE LINK OBSERVER & AI CHAT CONTEXT CHIPS
+// ==========================================
 const sections = document.querySelectorAll("section");
 const navLinksList = document.querySelectorAll("nav a");
+const chatContextChips = document.getElementById("chatContextChips");
 const observerOptions = { root: null, rootMargin: "-20% 0px -60% 0px", threshold: 0 }; 
+
+const sectionContextMap = {
+  "home": ["What is your strongest AI project?", "How do you deploy models?"],
+  "about": ["What are your core tech stack tools?", "How do you approach system engineering?"],
+  "experience": ["Tell me about the Technglobal internship", "What was your role in BITS RADAR?"],
+  "projects": ["Explain BITS RADAR's RBAC", "How does G+ use Gemini AI?"],
+  "ai-assistant": ["What embedding model do you use?", "How does this semantic search work?"],
+  "contact": ["What kind of roles are you looking for?", "Are you open to contract work?"]
+};
+
+function updateContextChips(sectionId) {
+  if (!chatContextChips) return;
+  const recommendations = sectionContextMap[sectionId] || sectionContextMap["home"];
+  chatContextChips.innerHTML = recommendations.map(rec => 
+    `<span class="context-chip">${rec}</span>`
+  ).join('');
+
+  chatContextChips.querySelectorAll('.context-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const chatInput = document.querySelector('.chat-input-area textarea');
+      if (chatInput) {
+        chatInput.value = chip.textContent;
+        chatInput.focus();
+      }
+    });
+  });
+}
 
 const observer = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
@@ -237,6 +269,7 @@ const observer = new IntersectionObserver((entries) => {
       navLinksList.forEach((link) => link.classList.remove("active"));
       const activeLink = document.querySelector(`nav a[href="#${entry.target.id}"]`);
       if (activeLink) activeLink.classList.add("active");
+      updateContextChips(entry.target.id);
     }
   });
 }, observerOptions);
@@ -273,10 +306,10 @@ sections.forEach((section) => observer.observe(section));
       if (this.x < 0 || this.x > bgCanvas.width) this.vx *= -1;
       if (this.y < 0 || this.y > bgCanvas.height) this.vy *= -1;
     }
-    draw() {
+    draw(isDark) {
       bgCtx.beginPath();
       bgCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      bgCtx.fillStyle = "#000000";
+      bgCtx.fillStyle = isDark ? "#ffffff" : "#000000";
       bgCtx.fill();
     }
   }
@@ -285,7 +318,9 @@ sections.forEach((section) => observer.observe(section));
     netParticles.push(new BgParticle());
   }
 
-  function connectParticles() {
+  function connectParticles(isDark) {
+    bgCtx.lineWidth = 1;
+    bgCtx.strokeStyle = isDark ? "rgba(255, 255, 255, 0.15)" : "rgba(0, 0, 0, 0.12)";
     for (let a = 0; a < netParticles.length; a++) {
       for (let b = a + 1; b < netParticles.length; b++) {
         const dx = netParticles[a].x - netParticles[b].x;
@@ -293,8 +328,6 @@ sections.forEach((section) => observer.observe(section));
         const distance = dx * dx + dy * dy;
         if (distance < maxDistSq) {
           bgCtx.beginPath();
-          bgCtx.strokeStyle = "rgba(0,0,0,0.12)";
-          bgCtx.lineWidth = 1;
           bgCtx.moveTo(netParticles[a].x, netParticles[a].y);
           bgCtx.lineTo(netParticles[b].x, netParticles[b].y);
           bgCtx.stroke();
@@ -305,8 +338,9 @@ sections.forEach((section) => observer.observe(section));
 
   function renderLoop() {
     bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-    netParticles.forEach(p => { p.move(); p.draw(); });
-    connectParticles();
+    const isDark = document.body.classList.contains('dark-mode');
+    netParticles.forEach(p => { p.move(); p.draw(isDark); });
+    connectParticles(isDark);
     requestAnimationFrame(renderLoop);
   }
   renderLoop();
@@ -317,31 +351,34 @@ sections.forEach((section) => observer.observe(section));
   });
 })();
 
-// Popups
+// =============== POPUPS WITH TAP-TO-DISMISS ===============
 function showPopup(event) {
-  event.preventDefault();
+  event?.preventDefault();
   const popup = document.getElementById("glass-popup");
   if (popup) {
     popup.classList.add("show");
-    setTimeout(() => { popup.classList.remove("show"); }, 4000);
+    popup.onclick = () => popup.classList.remove("show");
+    setTimeout(() => popup.classList.remove("show"), 4000);
   }
 }
 
 function showLivePopup(event) {
-  event.preventDefault();
-  let popup = document.getElementById("livePopup");
+  event?.preventDefault();
+  const popup = document.getElementById("livePopup");
   if (popup) {
     popup.classList.add("show");
-    setTimeout(() => { popup.classList.remove("show"); }, 5000);
+    popup.onclick = () => popup.classList.remove("show");
+    setTimeout(() => popup.classList.remove("show"), 4500);
   }
 }
 
 function showPopupp(event, popupId) {
-  event.preventDefault();
-  let popup = document.getElementById(popupId);
+  event?.preventDefault();
+  const popup = document.getElementById(popupId);
   if (popup) {
     popup.classList.add("show");
-    setTimeout(() => { popup.classList.remove("show"); }, 5000);
+    popup.onclick = () => popup.classList.remove("show");
+    setTimeout(() => popup.classList.remove("show"), 4500);
   }
 }
 
@@ -426,24 +463,29 @@ processCards.forEach(card => {
     const phase = card.getAttribute('data-phase');
 
     if (phase === 'quote') {
-      emptyState.style.display = 'none';
-      processContentView.classList.remove('visible');
-      processQuoteView.classList.remove('visible');
-      void processQuoteView.offsetWidth;
-      processQuoteView.classList.add('visible');
+      if (emptyState) emptyState.style.display = 'none';
+      processContentView?.classList.remove('visible');
+      processQuoteView?.classList.remove('visible');
+      if (processQuoteView) {
+        void processQuoteView.offsetWidth;
+        processQuoteView.classList.add('visible');
+      }
     } else {
       const data = processData[phase];
+      if (!data) return;
 
-      processIcon.innerHTML = data.icon;
-      processTitle.textContent = data.title;
-      processDesc.textContent = data.desc;
-      processList.innerHTML = data.list.map(item => `<li>${item}</li>`).join('');
+      if (processIcon) processIcon.innerHTML = data.icon;
+      if (processTitle) processTitle.textContent = data.title;
+      if (processDesc) processDesc.textContent = data.desc;
+      if (processList) processList.innerHTML = data.list.map(item => `<li>${item}</li>`).join('');
 
-      emptyState.style.display = 'none';
-      processQuoteView.classList.remove('visible');
-      processContentView.classList.remove('visible');
-      void processContentView.offsetWidth;
-      processContentView.classList.add('visible');
+      if (emptyState) emptyState.style.display = 'none';
+      processQuoteView?.classList.remove('visible');
+      processContentView?.classList.remove('visible');
+      if (processContentView) {
+        void processContentView.offsetWidth;
+        processContentView.classList.add('visible');
+      }
     }
   });
 });
@@ -454,6 +496,7 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
   scrollers.forEach((scroller) => {
     scroller.setAttribute("data-animated", true);
     const scrollerInner = scroller.querySelector(".scroller__inner");
+    if (!scrollerInner) return;
     const scrollerContent = Array.from(scrollerInner.children);
     scrollerContent.forEach((item) => {
       const duplicatedItem = item.cloneNode(true);
@@ -465,9 +508,9 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
 
 // =============== HIDE BROKEN IMAGES ===============
 document.addEventListener('error', function(event) {
-    if (event.target.tagName.toLowerCase() === 'img') {
-        event.target.style.display = 'none';
-    }
+  if (event.target.tagName.toLowerCase() === 'img') {
+    event.target.style.display = 'none';
+  }
 }, true); 
 
 // =============== TYPING SOUND CONTROLLER & HOME EFFECT ===============
@@ -510,11 +553,11 @@ if (audioToggleBtn) {
     isAudioEnabled = !isAudioEnabled;
     const icon = audioToggleBtn.querySelector("i");
     if (isAudioEnabled) {
-      icon.classList.remove("fa-volume-mute");
-      icon.classList.add("fa-volume-up");
+      icon?.classList.remove("fa-volume-mute");
+      icon?.classList.add("fa-volume-up");
     } else {
-      icon.classList.remove("fa-volume-up");
-      icon.classList.add("fa-volume-mute");
+      icon?.classList.remove("fa-volume-up");
+      icon?.classList.add("fa-volume-mute");
       if (!keySound.paused) {
         keySound.pause();
         keySound.currentTime = 0;
@@ -524,108 +567,133 @@ if (audioToggleBtn) {
 }
 
 ['click', 'touchstart', 'keydown'].forEach(eventType => {
-    document.body.addEventListener(eventType, () => {
-        if (!audioUnlocked) {
-            keySound.play().then(() => {
-                keySound.pause(); 
-                keySound.currentTime = 0;
-                audioUnlocked = true;
-            }).catch(() => {});
-        }
-    }, { once: true });
+  document.body.addEventListener(eventType, () => {
+    if (!audioUnlocked) {
+      keySound.play().then(() => {
+        keySound.pause(); 
+        keySound.currentTime = 0;
+        audioUnlocked = true;
+      }).catch(() => {});
+    }
+  }, { once: true });
 });
 
 let pauseIndices = [];
 
 function typeEffect() {
-    if (!typingTextElement) return;
-    const currentWord = typingWords[typingIndex];
-    
-    if (!isDeleting && charIndex === 0 && pauseIndices.length === 0) {
-        if (currentWord.length > 3) {
-            let p1 = Math.floor(Math.random() * (currentWord.length - 2)) + 1;
-            let p2 = Math.floor(Math.random() * (currentWord.length - 2)) + 1;
-            pauseIndices.push(p1, p2);
-        }
+  if (!typingTextElement) return;
+  const currentWord = typingWords[typingIndex];
+  
+  if (!isDeleting && charIndex === 0 && pauseIndices.length === 0) {
+    if (currentWord.length > 3) {
+      let p1 = Math.floor(Math.random() * (currentWord.length - 2)) + 1;
+      let p2 = Math.floor(Math.random() * (currentWord.length - 2)) + 1;
+      pauseIndices.push(p1, p2);
     }
+  }
 
-    if (isDeleting) {
-        typingTextElement.textContent = currentWord.substring(0, charIndex - 1);
-        charIndex--;
-    } else {
-        typingTextElement.textContent = currentWord.substring(0, charIndex + 1);
-        charIndex++;
-    }
+  if (isDeleting) {
+    typingTextElement.textContent = currentWord.substring(0, charIndex - 1);
+    charIndex--;
+  } else {
+    typingTextElement.textContent = currentWord.substring(0, charIndex + 1);
+    charIndex++;
+  }
 
-    let typingSpeed = isDeleting ? 40 : 100;
-    if (!isDeleting && pauseIndices.includes(charIndex)) {
-        typingSpeed += 250; 
-    }
+  let typingSpeed = isDeleting ? 40 : 100;
+  if (!isDeleting && pauseIndices.includes(charIndex)) {
+    typingSpeed += 250; 
+  }
 
-    if (!isDeleting && charIndex === currentWord.length) {
-        typingSpeed = 2000; 
-        isDeleting = true;
-    } else if (isDeleting && charIndex === 0) {
-        isDeleting = false;
-        typingIndex = (typingIndex + 1) % typingWords.length;
-        typingSpeed = 500; 
-        pauseIndices = []; 
-    }
+  if (!isDeleting && charIndex === currentWord.length) {
+    typingSpeed = 2000; 
+    isDeleting = true;
+  } else if (isDeleting && charIndex === 0) {
+    isDeleting = false;
+    typingIndex = (typingIndex + 1) % typingWords.length;
+    typingSpeed = 500; 
+    pauseIndices = []; 
+  }
 
-    setTimeout(typeEffect, typingSpeed);
+  setTimeout(typeEffect, typingSpeed);
 }
 
 // =============== SCROLL REVEAL ANIMATIONS ===============
 const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
 const revealObserver = new IntersectionObserver((entries, observer) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('active');
-            observer.unobserve(entry.target); 
-        }
-    });
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('active');
+      observer.unobserve(entry.target); 
+    }
+  });
 }, { threshold: 0.1 }); 
 
 // =============== NUMBER COUNTER ANIMATION ===============
 const counters = document.querySelectorAll('.counter');
 const counterObserver = new IntersectionObserver((entries, observer) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const counter = entry.target;
-            const target = +counter.getAttribute('data-target');
-            const suffix = counter.getAttribute('data-suffix') || '';
-            const prefix = counter.getAttribute('data-prefix') || '';
-            const duration = 2000; 
-            
-            let startTimestamp = null;
-            const step = (timestamp) => {
-                if (!startTimestamp) startTimestamp = timestamp;
-                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                const current = Math.floor(progress * target);
-                counter.innerText = prefix + current + suffix;
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
-                } else {
-                    counter.innerText = prefix + target + suffix;
-                }
-            };
-            window.requestAnimationFrame(step);
-            observer.unobserve(counter); 
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const counter = entry.target;
+      const target = +counter.getAttribute('data-target');
+      const suffix = counter.getAttribute('data-suffix') || '';
+      const prefix = counter.getAttribute('data-prefix') || '';
+      const duration = 2000; 
+      
+      let startTimestamp = null;
+      const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        const current = Math.floor(progress * target);
+        counter.innerText = prefix + current + suffix;
+        if (progress < 1) {
+          window.requestAnimationFrame(step);
+        } else {
+          counter.innerText = prefix + target + suffix;
         }
-    });
+      };
+      window.requestAnimationFrame(step);
+      observer.unobserve(counter); 
+    }
+  });
 }, { threshold: 0.5 }); 
 
 counters.forEach(counter => counterObserver.observe(counter));
 
+// =============== PROJECT MATRIX FILTER ===============
+const filterBtns = document.querySelectorAll('.filter-btn');
+const projectCardsGrid = document.querySelectorAll('.project-card[data-tags]');
+
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    const filterValue = btn.getAttribute('data-filter');
+    
+    projectCardsGrid.forEach(card => {
+      if (filterValue === 'all') {
+        card.classList.remove('hidden-project');
+      } else {
+        const tags = (card.getAttribute('data-tags') || '').split(' ');
+        if (tags.includes(filterValue)) {
+          card.classList.remove('hidden-project');
+        } else {
+          card.classList.add('hidden-project');
+        }
+      }
+    });
+  });
+});
+
 // ==============================================================
-// AI CHAT HISTORY STORAGE & CLEAR LOGIC
+// AI CHATBOT LOGIC WITH NON-INTRUSIVE AUTO-SCROLL
 // ==============================================================
 const chatInputArea = document.querySelector('.chat-input-area textarea');
 const sendButton = document.querySelector('.send-btn');
 const chatWin = document.getElementById('chatScrollContent');
 const chatErrorBanner = document.getElementById('chatError');
 const quickPrompts = document.querySelectorAll('.sq-btn');
-const apiBadge = document.getElementById('apiBadge');
 
 function canStoreAiHistory() {
   return localStorage.getItem("aiCookies") === "true";
@@ -689,25 +757,27 @@ if (chatInputArea) {
 
 quickPrompts.forEach(btn => {
   btn.addEventListener('click', () => {
-    chatInputArea.value = btn.textContent.trim();
-    chatInputArea.focus();
+    if (chatInputArea) {
+      chatInputArea.value = btn.textContent.trim();
+      chatInputArea.focus();
+    }
   });
 });
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 async function sendChatMessage() {
+  if (!chatInputArea || !chatWin) return;
   const message = chatInputArea.value.trim();
   if (!message) return;
 
-  // Clear command intercept
   if (message.toLowerCase() === "/clear") {
     chatInputArea.value = '';
     clearChatHistory();
     return;
   }
 
-  chatErrorBanner.style.display = 'none';
+  if (chatErrorBanner) chatErrorBanner.style.display = 'none';
 
   const userMsg = document.createElement('div');
   userMsg.className = 'chat-message user';
@@ -743,7 +813,7 @@ async function sendChatMessage() {
   chatWin.scrollTop = chatWin.scrollHeight;
 
   const faceText = document.getElementById('faceText');
-  faceText.textContent = '🤔';
+  if (faceText) faceText.textContent = '🤔';
 
   const startTime = performance.now();
 
@@ -772,45 +842,60 @@ async function sendChatMessage() {
       verifiedScore = `${data.score}% Match`;
     }
 
-    apiBadge.className = 'api-badge success';
-    const isLocal = targetUrl.includes("127.0.0.1") || targetUrl.includes("localhost");
-    apiBadge.innerHTML = isLocal 
-      ? '<i class="fa-solid fa-check"></i> LOCALHOST ACTIVE' 
-      : '<i class="fa-solid fa-check"></i> API ACTIVE';
+    const apiBadge = document.getElementById('apiBadge');
+    if (apiBadge) {
+      apiBadge.className = 'api-badge success';
+      const isLocal = targetUrl.includes("127.0.0.1") || targetUrl.includes("localhost");
+      apiBadge.innerHTML = isLocal 
+        ? '<i class="fa-solid fa-check"></i> LOCALHOST ACTIVE' 
+        : '<i class="fa-solid fa-check"></i> API ACTIVE';
+    }
 
     botMsg.textContent = ''; 
     for (let i = 0; i < replyText.length; i++) {
       botMsg.textContent += replyText.charAt(i);
-      chatWin.scrollTop = chatWin.scrollHeight;
+
+      // Smart Auto-Scroll: Stick to bottom only if reading along
+      const distanceFromBottom = chatWin.scrollHeight - chatWin.scrollTop - chatWin.clientHeight;
+      if (distanceFromBottom <= 80) {
+        chatWin.scrollTop = chatWin.scrollHeight;
+      }
       await sleep(12); 
     }
     
     const telemetry = document.createElement('div');
     telemetry.className = 'ai-telemetry-badge';
-    const telemetryInnerHtml = `
+    telemetry.innerHTML = `
       <span class="telemetry-item">⏱️ Response time: <strong>${responseTimeSec}</strong></span>
       <span class="telemetry-sep">|</span>
       <span class="telemetry-item">🧠 Search score: <strong>${verifiedScore}</strong></span>
     `;
-    telemetry.innerHTML = telemetryInnerHtml;
     botMsg.appendChild(document.createElement('br'));
     botMsg.appendChild(telemetry);
 
     saveChatMessageToStorage("bot", replyText, telemetry.outerHTML);
 
-    faceText.textContent = '◕⁠‿⁠◕';
+    if (faceText) faceText.textContent = '◕⁠‿⁠◕';
     showNextNotification();
     
   } catch (error) {
     botMsg.remove(); 
-    chatErrorBanner.style.display = 'block'; 
-    chatErrorBanner.textContent = 'Failed to fetch API';
-    apiBadge.className = 'api-badge error';
-    apiBadge.innerHTML = '<i class="fa-solid fa-xmark"></i> ERROR FETCHING API';
-    faceText.textContent = 'x_x';
+    if (chatErrorBanner) {
+      chatErrorBanner.style.display = 'block'; 
+      chatErrorBanner.textContent = 'Failed to fetch API';
+    }
+    const apiBadge = document.getElementById('apiBadge');
+    if (apiBadge) {
+      apiBadge.className = 'api-badge error';
+      apiBadge.innerHTML = '<i class="fa-solid fa-xmark"></i> ERROR FETCHING API';
+    }
+    if (faceText) faceText.textContent = 'x_x';
   }
   
-  chatWin.scrollTop = chatWin.scrollHeight;
+  const finalDistance = chatWin.scrollHeight - chatWin.scrollTop - chatWin.clientHeight;
+  if (finalDistance <= 120) {
+    chatWin.scrollTop = chatWin.scrollHeight;
+  }
 }
 
 if (sendButton) sendButton.addEventListener('click', sendChatMessage);
@@ -836,43 +921,47 @@ function showNextNotification() {
   }
 }
 
-// =============== COOKIES PREFERENCES (WEEKLY TRIGGER & EDIT LINK) ===============
+// =============== COOKIES PREFERENCES PANEL ===============
 document.addEventListener("DOMContentLoaded", () => {
   const cookiePanel = document.getElementById("cookiePreferencesPanel");
   const btnAcceptAll = document.getElementById("btn-accept-all");
   const btnAcceptNecessary = document.getElementById("btn-accept-necessary");
   const aiToggle = document.getElementById("cookie-ai");
+  const themeToggleBtn = document.getElementById("cookie-theme");
   const openCookiePreferencesLink = document.getElementById("openCookiePreferencesLink");
 
   const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
   const lastPromptTime = parseInt(localStorage.getItem("cookie_last_prompt_time") || "0", 10);
   const now = Date.now();
 
-  // Show panel if a week has passed or never decided
   if (now - lastPromptTime > ONE_WEEK_MS) {
     setTimeout(() => {
       if (cookiePanel) cookiePanel.classList.add("show");
     }, 1500);
   }
 
-  // Open & edit cookies on click
   if (openCookiePreferencesLink) {
     openCookiePreferencesLink.addEventListener("click", () => {
       if (aiToggle) {
         aiToggle.checked = localStorage.getItem("aiCookies") === "true";
+      }
+      if (themeToggleBtn) {
+        themeToggleBtn.checked = localStorage.getItem("themeCookies") === "true" || localStorage.getItem("cookieConsent") === "all";
       }
       if (cookiePanel) cookiePanel.classList.add("show");
     });
   }
 
   window.openCookieModal = function(title, description) {
-    document.getElementById("cookieInfoTitle").innerText = title;
-    document.getElementById("cookieInfoDesc").innerText = description;
-    document.getElementById("cookieInfoModal").classList.add("show");
+    const t = document.getElementById("cookieInfoTitle");
+    const d = document.getElementById("cookieInfoDesc");
+    if (t) t.innerText = title;
+    if (d) d.innerText = description;
+    document.getElementById("cookieInfoModal")?.classList.add("show");
   };
 
   window.closeCookieModal = function() {
-    document.getElementById("cookieInfoModal").classList.remove("show");
+    document.getElementById("cookieInfoModal")?.classList.remove("show");
   };
 
   if (btnAcceptAll) {
@@ -880,8 +969,10 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.setItem("cookieConsent", "all");
       localStorage.setItem("functionalCookies", "true");
       localStorage.setItem("aiCookies", "true");
+      localStorage.setItem("themeCookies", "true");
       localStorage.setItem("cookie_last_prompt_time", Date.now().toString());
       if (aiToggle) aiToggle.checked = true;
+      if (themeToggleBtn) themeToggleBtn.checked = true;
       if (cookiePanel) cookiePanel.classList.remove("show");
     });
   }
@@ -891,13 +982,73 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.setItem("cookieConsent", "necessary");
       localStorage.setItem("functionalCookies", "false");
       localStorage.setItem("aiCookies", "false");
+      localStorage.setItem("themeCookies", "false");
       localStorage.setItem("cookie_last_prompt_time", Date.now().toString());
-      localStorage.removeItem("cyanx_chat_history"); // Purge history if consent rejected
+      localStorage.removeItem("cyanx_chat_history");
+      localStorage.removeItem("cyanx_theme");
       if (aiToggle) aiToggle.checked = false;
+      if (themeToggleBtn) themeToggleBtn.checked = false;
       if (cookiePanel) cookiePanel.classList.remove("show");
     });
   }
 });
+
+// ==========================================
+// DARK MODE TOGGLE & PERSISTENCE
+// ==========================================
+const themeToggleCheckbox = document.getElementById('themeToggleCheckbox');
+const cookieTheme = document.getElementById('cookie-theme');
+
+function canStoreThemePref() {
+  return localStorage.getItem("cookieConsent") === "all" || localStorage.getItem("themeCookies") === "true";
+}
+
+function applyTheme(isDark) {
+  if (isDark) {
+    document.body.classList.add('dark-mode');
+    document.documentElement.classList.add('dark-mode');
+    if (themeToggleCheckbox) themeToggleCheckbox.checked = true;
+  } else {
+    document.body.classList.remove('dark-mode');
+    document.documentElement.classList.remove('dark-mode');
+    if (themeToggleCheckbox) themeToggleCheckbox.checked = false;
+  }
+}
+
+if (themeToggleCheckbox) {
+  themeToggleCheckbox.addEventListener('change', (e) => {
+    const isDark = e.target.checked;
+    applyTheme(isDark);
+    if (canStoreThemePref()) {
+      localStorage.setItem("cyanx_theme", isDark ? "dark" : "light");
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (canStoreThemePref()) {
+    const storedTheme = localStorage.getItem("cyanx_theme");
+    if (storedTheme === "dark") {
+      applyTheme(true);
+    } else if (storedTheme === "light") {
+      applyTheme(false);
+    }
+  }
+});
+
+if (cookieTheme) {
+  cookieTheme.addEventListener('change', (e) => {
+    if (e.target.checked) {
+      localStorage.setItem("themeCookies", "true");
+      if (themeToggleCheckbox) {
+        localStorage.setItem("cyanx_theme", themeToggleCheckbox.checked ? "dark" : "light");
+      }
+    } else {
+      localStorage.setItem("themeCookies", "false");
+      localStorage.removeItem("cyanx_theme");
+    }
+  });
+}
 
 // =============== EXACT DEVICE GAME SCORES ===============
 function getExactDeviceArcadeData() {
@@ -919,7 +1070,6 @@ function getExactDeviceArcadeData() {
     records.push({ name: g.name, score: best });
   });
 
-  // Check any other customized game scores stored under cyanx_
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
     if (key && key.startsWith("cyanx_") && !games.some(g => g.key === key || g.altKey === key)) {
@@ -984,7 +1134,7 @@ function initPointsPopup() {
   setTimeout(popupCycle, 600);
 }
 
-// =============== ADVANCED TERMINAL (v2.4.0) ===============
+// =============== ADVANCED TERMINAL WITH THEME RESTORE ===============
 window.insertTerminalCmd = function(cmd) {
   const terminalInput = document.getElementById("terminalInput");
   if (terminalInput) {
@@ -1205,7 +1355,8 @@ if (terminalInput && terminalBody) {
           • GitHub: <a href="https://github.com/vignesh1-1" target="_blank" style="color:#0969da;">github.com/vignesh1-1</a><br>
           • LinkedIn: <a href="https://linkedin.com/in/vigneshp05" target="_blank" style="color:#0969da;">linkedin.com/in/vigneshp05</a><br>
           • X (Twitter): <a href="https://x.com/Vignesh6622" target="_blank" style="color:#0969da;">x.com/Vignesh6622</a><br>
-          • VSCO: <a href="https://vsco.co/vcenzo1" target="_blank" style="color:#0969da;">vsco.co/vcenzo1</a>
+          • VSCO: <a href="https://vsco.co/vcenzo1" target="_blank" style="color:#0969da;">vsco.co/vcenzo1</a><br>
+          • Instagram: <a href="https://www.instagram.com/viggh_____01" target="_blank" style="color:#0969da;">instagram.com/viggh_____01</a>
         `;
 
       } else if (lowerCmd === "resume") {
@@ -1224,8 +1375,8 @@ if (terminalInput && terminalBody) {
         terminalBody.style.backgroundColor = "#021a07";
         terminalBody.style.color = "#39ff14";
         setTimeout(() => {
-          terminalBody.style.backgroundColor = "#ffffff";
-          terminalBody.style.color = "#24292f";
+          terminalBody.style.backgroundColor = "";
+          terminalBody.style.color = "";
         }, 1800);
 
       } else if (lowerCmd === "date") {
@@ -1271,8 +1422,8 @@ if (terminalInput && terminalBody) {
         responseLine.style.color = "#ff5f56";
         const termContainer = document.querySelector(".terminal-container");
         if (termContainer) {
-            termContainer.classList.add("glitch-shake");
-            setTimeout(() => termContainer.classList.remove("glitch-shake"), 500);
+          termContainer.classList.add("glitch-shake");
+          setTimeout(() => termContainer.classList.remove("glitch-shake"), 500);
         }
 
       } else if (lowerCmd === "/sudo download_resume") {
@@ -1350,23 +1501,15 @@ if (ffCanvas) {
   let hoveredNode = null;
 
   function getPulseColor(layerIndex) {
-    if (layerIndex === 0 || layerIndex === 1) {
-      return "#00e5ff"; 
-    } else if (layerIndex === 2 || layerIndex === 3) {
-      return "#1d4ed8"; 
-    } else {
-      return "#c084fc"; 
-    }
+    if (layerIndex === 0 || layerIndex === 1) return "#00e5ff"; 
+    if (layerIndex === 2 || layerIndex === 3) return "#1d4ed8"; 
+    return "#c084fc"; 
   }
 
   function getNodeGlowColor(layerIndex, alpha) {
-    if (layerIndex <= 1) {
-      return `rgba(0, 229, 255, ${alpha})`; 
-    } else if (layerIndex <= 3) {
-      return `rgba(29, 78, 216, ${alpha})`; 
-    } else {
-      return `rgba(192, 132, 252, ${alpha})`; 
-    }
+    if (layerIndex <= 1) return `rgba(0, 229, 255, ${alpha})`; 
+    if (layerIndex <= 3) return `rgba(29, 78, 216, ${alpha})`; 
+    return `rgba(192, 132, 252, ${alpha})`; 
   }
 
   function resizeCanvas() {
@@ -1486,12 +1629,13 @@ if (ffCanvas) {
 
   function animateNetwork() {
     ffCtx.clearRect(0, 0, ffWidth, ffHeight);
+    const isDark = document.body.classList.contains("dark-mode");
 
     edges.forEach(edge => {
       ffCtx.beginPath();
       ffCtx.moveTo(edge.start.x, edge.start.y);
       ffCtx.lineTo(edge.end.x, edge.end.y);
-      ffCtx.strokeStyle = "rgba(0, 0, 0, 0.08)"; 
+      ffCtx.strokeStyle = isDark ? "rgba(200, 210, 225, 0.25)" : "rgba(0, 0, 0, 0.08)"; 
       ffCtx.lineWidth = 0.8;
       ffCtx.stroke();
 
@@ -1503,7 +1647,7 @@ if (ffCanvas) {
       
       ffCtx.beginPath();
       ffCtx.arc(dotX, dotY, 1.4, 0, Math.PI * 2);
-      ffCtx.fillStyle = "#cbd5e1"; 
+      ffCtx.fillStyle = isDark ? "#e2e8f0" : "#cbd5e1"; 
       ffCtx.fill();
     });
 
@@ -1588,12 +1732,12 @@ if (ffCanvas) {
 
       ffCtx.beginPath();
       ffCtx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
-      ffCtx.fillStyle = "#000000";
+      ffCtx.fillStyle = isDark ? "#ffffff" : "#000000";
       ffCtx.fill();
     });
 
     ffCtx.font = "600 11.5px 'Inter', sans-serif";
-    ffCtx.fillStyle = "#64748b";
+    ffCtx.fillStyle = isDark ? "#cbd5e1" : "#475569";
     ffCtx.textAlign = "center";
     
     layers.forEach((nodeCount, layerIndex) => {
@@ -1610,34 +1754,23 @@ if (ffCanvas) {
   animateNetwork();
 }
 
-// =============== ARCHITECTURE DRAWER ===============
+// =============== ARCHITECTURE DRAWER (Interactive Node Graph) ===============
 const architectureRegistry = {
   "exotic-hub": {
     title: "EXOTIC GB HUB | Architecture",
     technologies: ["Firebase Auth", "Firestore DB", "Vanilla JavaScript", "HTML5 & CSS3", "WhatsApp API", "Netlify"],
-    diagramSvg: `
-      <svg viewBox="0 0 460 130" fill="none" class="diagram-svg">
-        <rect x="10" y="45" width="90" height="40" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5"/>
-        <text x="55" y="70" fill="#ffffff" font-size="11" font-weight="700" text-anchor="middle">CLIENT UI</text>
-        <path d="M 100 65 L 145 65" stroke="#64748b" stroke-width="1.5"/>
-        <rect x="150" y="15" width="130" height="40" rx="8" fill="#1e293b" stroke="#f59e0b" stroke-width="1.5"/>
-        <text x="215" y="39" fill="#ffffff" font-size="10.5" font-weight="700" text-anchor="middle">FIREBASE AUTH</text>
-        <rect x="150" y="75" width="130" height="40" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="1.5"/>
-        <text x="215" y="99" fill="#ffffff" font-size="10.5" font-weight="700" text-anchor="middle">STORAGE / DB</text>
-        <path d="M 280 95 L 325 95" stroke="#64748b" stroke-width="1.5"/>
-        <rect x="330" y="45" width="120" height="40" rx="8" fill="#1e293b" stroke="#22c55e" stroke-width="1.5"/>
-        <text x="390" y="70" fill="#ffffff" font-size="10" font-weight="700" text-anchor="middle">WHATSAPP API</text>
-      </svg>
-    `,
+    graphData: [
+      { data: { id: 'client', label: 'Client UI' } },
+      { data: { id: 'auth', label: 'Firebase Auth' } },
+      { data: { id: 'db', label: 'Storage / DB' } },
+      { data: { id: 'wa', label: 'WhatsApp API' } },
+      { data: { id: 'e1', source: 'client', target: 'auth' } },
+      { data: { id: 'e2', source: 'client', target: 'db' } },
+      { data: { id: 'e3', source: 'db', target: 'wa' } }
+    ],
     tradeoffs: [
-      {
-        heading: "Why Firebase over Custom Backend",
-        desc: "Opted for Google Firebase to eliminate cold-start container delays and manage zero-cost database persistence for an exotic aquarium catalog. Client-side authentication hooks handle token lifecycles out-of-the-box."
-      },
-      {
-        heading: "WhatsApp Direct Ordering vs. Payment Gateway",
-        desc: "Bypassed standard merchant payment processors to avoid drop-off in niche regional buyers. WhatsApp ordering directly transmits sanitized order metadata into an encrypted messaging thread."
-      }
+      { heading: "Why Firebase over Custom Backend", desc: "Opted for Google Firebase to eliminate cold-start container delays and manage zero-cost database persistence for an exotic aquarium catalog." },
+      { heading: "WhatsApp Direct Ordering vs. Payment Gateway", desc: "Bypassed standard merchant payment processors to avoid drop-off in niche regional buyers." }
     ],
     routes: [
       { method: "GET", path: "/api/products/catalog", desc: "Realtime dynamic catalog fetching" },
@@ -1649,30 +1782,18 @@ const architectureRegistry = {
   "g-plus": {
     title: "G+ Bengaluru | Architecture",
     technologies: ["FastAPI", "Python 3", "GIS & Maps", "Gemini 1.5 API", "Spatial Postgres", "Leaflet.js"],
-    diagramSvg: `
-      <svg viewBox="0 0 460 130" fill="none" class="diagram-svg">
-        <rect x="10" y="45" width="90" height="40" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5"/>
-        <text x="55" y="70" fill="#ffffff" font-size="10" font-weight="700" text-anchor="middle">GIS / LEAFLET</text>
-        <path d="M 100 65 L 140 65" stroke="#64748b" stroke-width="1.5"/>
-        <rect x="145" y="45" width="130" height="40" rx="8" fill="#1e293b" stroke="#0284c7" stroke-width="1.5"/>
-        <text x="210" y="70" fill="#ffffff" font-size="10.5" font-weight="700" text-anchor="middle">FASTAPI ASYNC</text>
-        <path d="M 275 65 L 320 35" stroke="#64748b" stroke-width="1.5"/>
-        <path d="M 275 65 L 320 95" stroke="#64748b" stroke-width="1.5"/>
-        <rect x="325" y="15" width="125" height="38" rx="8" fill="#1e293b" stroke="#a855f7" stroke-width="1.5"/>
-        <text x="387" y="39" fill="#ffffff" font-size="10.5" font-weight="700" text-anchor="middle">GEMINI 1.5 LLM</text>
-        <rect x="325" y="75" width="125" height="38" rx="8" fill="#1e293b" stroke="#f43f5e" stroke-width="1.5"/>
-        <text x="387" y="99" fill="#ffffff" font-size="10.5" font-weight="700" text-anchor="middle">SPATIAL POSTGRES</text>
-      </svg>
-    `,
+    graphData: [
+      { data: { id: 'ui', label: 'GIS / Leaflet' } },
+      { data: { id: 'api', label: 'FastAPI Async' } },
+      { data: { id: 'llm', label: 'Gemini 1.5 LLM' } },
+      { data: { id: 'db', label: 'Spatial Postgres' } },
+      { data: { id: 'e1', source: 'ui', target: 'api' } },
+      { data: { id: 'e2', source: 'api', target: 'llm' } },
+      { data: { id: 'e3', source: 'api', target: 'db' } }
+    ],
     tradeoffs: [
-      {
-        heading: "Asynchronous Python FastAPI Core",
-        desc: "FastAPI with ASGI non-blocking event loops was selected over Django to stream high-density GeoJSON geospatial vectors with sub-20ms latency to city telemetry dashboards."
-      },
-      {
-        heading: "Gemini 1.5 AI Query Triage",
-        desc: "Offloaded citizen grievance routing to Google Gemini API, transforming unstructured complaint texts into categorized SQL spatial tags without manual human dispatchers."
-      }
+      { heading: "Asynchronous Python FastAPI Core", desc: "FastAPI with ASGI non-blocking event loops was selected over Django to stream high-density GeoJSON geospatial vectors with sub-20ms latency." },
+      { heading: "Gemini 1.5 AI Query Triage", desc: "Offloaded citizen grievance routing to Google Gemini API, transforming unstructured complaint texts into categorized SQL spatial tags." }
     ],
     routes: [
       { method: "GET", path: "/api/v1/gis/wards", desc: "Stream municipal polygon boundaries" },
@@ -1684,27 +1805,16 @@ const architectureRegistry = {
   "bits-radar": {
     title: "BITS RADAR | Architecture",
     technologies: ["Python", "Flask", "MySQL", "SQLite", "REST API", "Chart.JS", "Bootstrap 5", "Render"],
-    diagramSvg: `
-      <svg viewBox="0 0 460 130" fill="none" class="diagram-svg">
-        <rect x="10" y="45" width="100" height="40" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5"/>
-        <text x="60" y="70" fill="#ffffff" font-size="10" font-weight="700" text-anchor="middle">BOOTSTRAP UI</text>
-        <path d="M 110 65 L 155 65" stroke="#64748b" stroke-width="1.5"/>
-        <rect x="160" y="45" width="120" height="40" rx="8" fill="#1e293b" stroke="#d97706" stroke-width="1.5"/>
-        <text x="220" y="70" fill="#ffffff" font-size="10.5" font-weight="700" text-anchor="middle">FLASK REST API</text>
-        <path d="M 280 65 L 325 65" stroke="#64748b" stroke-width="1.5"/>
-        <rect x="330" y="45" width="120" height="40" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="1.5"/>
-        <text x="390" y="70" fill="#ffffff" font-size="10.5" font-weight="700" text-anchor="middle">SQLITE / MYSQL</text>
-      </svg>
-    `,
+    graphData: [
+      { data: { id: 'ui', label: 'Bootstrap UI' } },
+      { data: { id: 'api', label: 'Flask REST API' } },
+      { data: { id: 'db', label: 'SQLite/MySQL' } },
+      { data: { id: 'e1', source: 'ui', target: 'api' } },
+      { data: { id: 'e2', source: 'api', target: 'db' } }
+    ],
     tradeoffs: [
-      {
-        heading: "Why Python/Flask + SQLite / MySQL was chosen",
-        desc: "For an agile bug and issue tracking system, Flask's lightweight micro-framework architecture eliminates redundant overhead found in heavier frameworks like Django, allowing low-latency sub-15ms request dispatching. SQLite was utilized for zero-configuration, ACID-compliant local embedded storage during testing and rapid triage sprints, with seamless migration to MySQL for multi-tenant production RBAC security."
-      },
-      {
-        heading: "RBAC & Client Auditing Strategy",
-        desc: "Session middleware enforces role-based endpoint permissions (Admin vs QA Engineer), preventing ticket manipulation while recording atomic audit trails into the database."
-      }
+      { heading: "Why Python/Flask + SQLite / MySQL was chosen", desc: "For an agile bug and issue tracking system, Flask's lightweight micro-framework architecture eliminates redundant overhead found in heavier frameworks like Django." },
+      { heading: "RBAC & Client Auditing Strategy", desc: "Session middleware enforces role-based endpoint permissions (Admin vs QA Engineer), preventing ticket manipulation while recording atomic audit trails." }
     ],
     routes: [
       { method: "GET", path: "/api/tickets/summary", desc: "Aggregate ticket metrics for Chart.js" },
@@ -1717,27 +1827,16 @@ const architectureRegistry = {
   "passport": {
     title: "Passport Automation System | Architecture",
     technologies: ["PHP 8", "MySQL", "Bootstrap", "Apache / XAMPP", "Admin Control Panel"],
-    diagramSvg: `
-      <svg viewBox="0 0 460 130" fill="none" class="diagram-svg">
-        <rect x="10" y="45" width="95" height="40" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5"/>
-        <text x="57" y="70" fill="#ffffff" font-size="10" font-weight="700" text-anchor="middle">CITIZEN PORTAL</text>
-        <path d="M 105 65 L 155 65" stroke="#64748b" stroke-width="1.5"/>
-        <rect x="160" y="45" width="120" height="40" rx="8" fill="#1e293b" stroke="#818cf8" stroke-width="1.5"/>
-        <text x="220" y="70" fill="#ffffff" font-size="10.5" font-weight="700" text-anchor="middle">PHP CORE APP</text>
-        <path d="M 280 65 L 330 65" stroke="#64748b" stroke-width="1.5"/>
-        <rect x="335" y="45" width="115" height="40" rx="8" fill="#1e293b" stroke="#0ea5e9" stroke-width="1.5"/>
-        <text x="392" y="70" fill="#ffffff" font-size="10.5" font-weight="700" text-anchor="middle">MYSQL DATABASE</text>
-      </svg>
-    `,
+    graphData: [
+      { data: { id: 'ui', label: 'Citizen Portal' } },
+      { data: { id: 'php', label: 'PHP Core App' } },
+      { data: { id: 'db', label: 'MySQL Database' } },
+      { data: { id: 'e1', source: 'ui', target: 'php' } },
+      { data: { id: 'e2', source: 'php', target: 'db' } }
+    ],
     tradeoffs: [
-      {
-        heading: "Prepared Statements for Citizen Data Protection",
-        desc: "Implemented strict parameterized SQL queries across all verification routes to prevent SQL injection during citizen identity document verification."
-      },
-      {
-        heading: "State-Machine Flow Validation",
-        desc: "Enforced non-reversible progression steps (Submission -> Verification -> Biometric Scheduling -> Issuance) guarded by server-side verification tokens."
-      }
+      { heading: "Prepared Statements for Citizen Data Protection", desc: "Implemented strict parameterized SQL queries across all verification routes to prevent SQL injection during citizen identity document verification." },
+      { heading: "State-Machine Flow Validation", desc: "Enforced non-reversible progression steps guarded by server-side verification tokens." }
     ],
     routes: [
       { method: "POST", path: "/passport/apply.php", desc: "Multi-part document upload processing" },
@@ -1751,42 +1850,139 @@ const architectureRegistry = {
 const archDrawer = document.getElementById("archDrawer");
 const archOverlay = document.getElementById("archDrawerOverlay");
 const archCloseBtn = document.getElementById("archDrawerClose");
+let cytoscapeInstance = null;
+
+function renderCytoscape(graphData) {
+  const container = document.getElementById("archDiagramContainer");
+  if (!container) return;
+  if (cytoscapeInstance) cytoscapeInstance.destroy();
+  
+  cytoscapeInstance = cytoscape({
+    container: container,
+    elements: graphData,
+    style: [
+      {
+        selector: 'node',
+        style: {
+          'background-color': '#1e293b',
+          'label': 'data(label)',
+          'color': '#ffffff',
+          'text-valign': 'center',
+          'font-size': '11px',
+          'font-family': 'Inter, sans-serif',
+          'font-weight': '600',
+          'width': '120px',
+          'height': '40px',
+          'shape': 'round-rectangle',
+          'border-width': 1.5,
+          'border-color': '#38bdf8'
+        }
+      },
+      {
+        selector: 'edge',
+        style: {
+          'width': 2,
+          'line-color': '#64748b',
+          'target-arrow-color': '#64748b',
+          'target-arrow-shape': 'triangle',
+          'curve-style': 'bezier'
+        }
+      },
+      {
+        selector: '.packet',
+        style: {
+          'width': 8,
+          'height': 8,
+          'background-color': '#39ff14',
+          'shape': 'ellipse',
+          'label': '',
+          'border-width': 0
+        }
+      }
+    ],
+    layout: {
+      name: 'breadthfirst',
+      directed: true,
+      padding: 30
+    },
+    zoomingEnabled: false,
+    userZoomingEnabled: false,
+    panningEnabled: true,
+    userPanningEnabled: true,
+    boxSelectionEnabled: false
+  });
+
+  cytoscapeInstance.resize();
+}
+
+function simulatePacketHops() {
+  if (!cytoscapeInstance) return;
+  const edges = cytoscapeInstance.edges();
+  if (edges.length === 0) return;
+
+  edges.forEach((edge, i) => {
+    setTimeout(() => {
+      const packet = cytoscapeInstance.add({
+        group: 'nodes',
+        classes: 'packet',
+        position: edge.source().position()
+      });
+      packet.animate({
+        position: edge.target().position(),
+        duration: 800,
+        easing: 'ease-in-out'
+      }).promise().then(() => packet.remove());
+    }, i * 400); 
+  });
+}
+
+const simBtn = document.getElementById('simulatePacketBtn');
+if (simBtn) {
+  simBtn.addEventListener('click', simulatePacketHops);
+}
 
 function openArchitectureDrawer(projectId) {
   const data = architectureRegistry[projectId];
   if (!data || !archDrawer) return;
 
-  document.getElementById("archDrawerTitle").textContent = data.title;
+  const titleEl = document.getElementById("archDrawerTitle");
+  if (titleEl) titleEl.textContent = data.title;
   
   const techContainer = document.getElementById("archTechContainer");
   if (techContainer) {
     techContainer.innerHTML = data.technologies.map(t => `<span class="stack-tag">${t}</span>`).join('');
   }
 
-  document.getElementById("archDiagramContainer").innerHTML = data.diagramSvg;
+  setTimeout(() => renderCytoscape(data.graphData), 300);
   
-  document.getElementById("archTradeoffsContainer").innerHTML = data.tradeoffs.map(t => `
-    <div class="tradeoff-item">
-      <h5>${t.heading}</h5>
-      <p>${t.desc}</p>
-    </div>
-  `).join('');
+  const tradeoffsContainer = document.getElementById("archTradeoffsContainer");
+  if (tradeoffsContainer) {
+    tradeoffsContainer.innerHTML = data.tradeoffs.map(t => `
+      <div class="tradeoff-item">
+        <h5>${t.heading}</h5>
+        <p>${t.desc}</p>
+      </div>
+    `).join('');
+  }
 
-  document.getElementById("archRoutesContainer").innerHTML = data.routes.map(r => `
-    <div class="arch-route-badge">
-      <span class="arch-method ${r.method.toLowerCase()}">${r.method}</span>
-      <span class="arch-path">${r.path}</span>
-      <span class="arch-desc">${r.desc}</span>
-    </div>
-  `).join('');
+  const routesContainer = document.getElementById("archRoutesContainer");
+  if (routesContainer) {
+    routesContainer.innerHTML = data.routes.map(r => `
+      <div class="arch-route-badge">
+        <span class="arch-method ${r.method.toLowerCase()}">${r.method}</span>
+        <span class="arch-path">${r.path}</span>
+        <span class="arch-desc">${r.desc}</span>
+      </div>
+    `).join('');
+  }
 
   const ghLink = document.getElementById("archGithubLink");
   const liveLink = document.getElementById("archLiveLink");
-  ghLink.href = data.github;
-  liveLink.href = data.live;
+  if (ghLink) ghLink.href = data.github;
+  if (liveLink) liveLink.href = data.live;
 
   archDrawer.classList.add("active");
-  archOverlay.classList.add("active");
+  archOverlay?.classList.add("active");
   archDrawer.setAttribute("aria-hidden", "false");
   document.body.style.overflow = "hidden";
 }
@@ -1794,9 +1990,10 @@ function openArchitectureDrawer(projectId) {
 function closeArchitectureDrawer() {
   if (!archDrawer) return;
   archDrawer.classList.remove("active");
-  archOverlay.classList.remove("active");
+  archOverlay?.classList.remove("active");
   archDrawer.setAttribute("aria-hidden", "true");
   document.body.style.overflow = "";
+  if (cytoscapeInstance) cytoscapeInstance.destroy();
 }
 
 document.querySelectorAll(".inspect-arch-btn").forEach(btn => {
@@ -1809,14 +2006,6 @@ document.querySelectorAll(".inspect-arch-btn").forEach(btn => {
 
 if (archCloseBtn) archCloseBtn.addEventListener("click", closeArchitectureDrawer);
 if (archOverlay) archOverlay.addEventListener("click", closeArchitectureDrawer);
-
-window.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") {
-    closeArchitectureDrawer();
-    const arcadeModal = document.getElementById("arcadeModal");
-    if (arcadeModal) arcadeModal.classList.remove("show");
-  }
-});
 
 // =============== CUSTOM SCROLLBAR FOR CHAT ===============
 const chatContent = document.getElementById('chatScrollContent');
@@ -1899,3 +2088,74 @@ if (chatContent && trackBody && thumb && upBtn && downBtn) {
 // Custom Cursor Copy Logic
 document.addEventListener('mousedown', () => { document.body.classList.add('is-copying'); });
 document.addEventListener('mouseup', () => { document.body.classList.remove('is-copying'); });
+
+// =============== COMMAND PALETTE (Cmd+K) ===============
+const cmdPalette = document.getElementById('commandPalette');
+const cmdInput = document.getElementById('cmdPaletteInput');
+const cmdItems = document.querySelectorAll('.cmd-item');
+
+function togglePalette() {
+  if (!cmdPalette) return;
+  const isActive = cmdPalette.classList.contains('active');
+  if (isActive) {
+    cmdPalette.classList.remove('active');
+    cmdInput?.blur();
+  } else {
+    cmdPalette.classList.add('active');
+    if (cmdInput) {
+      cmdInput.value = '';
+      cmdItems.forEach(item => item.style.display = 'flex'); 
+      setTimeout(() => cmdInput.focus(), 100);
+    }
+  }
+}
+
+document.addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    togglePalette();
+  }
+  if (e.key === 'Escape') {
+    if (cmdPalette?.classList.contains('active')) togglePalette();
+    closeArchitectureDrawer();
+    document.getElementById("arcadeModal")?.classList.remove("show");
+    document.getElementById("cookiePreferencesPanel")?.classList.remove("show");
+    window.closeCookieModal?.();
+  }
+});
+
+if (cmdInput) {
+  cmdInput.addEventListener('input', (e) => {
+    const term = e.target.value.toLowerCase();
+    cmdItems.forEach(item => {
+      const text = item.textContent.toLowerCase();
+      item.style.display = text.includes(term) ? 'flex' : 'none';
+    });
+  });
+}
+
+cmdItems.forEach(item => {
+  item.addEventListener('click', () => {
+    const action = item.getAttribute('data-action');
+    
+    if (action === 'scroll') {
+      const targetId = item.getAttribute('data-target');
+      document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' });
+    } else if (action === 'terminal') {
+      document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+      const cmd = item.getAttribute('data-command');
+      if (window.insertTerminalCmd && cmd) {
+        window.insertTerminalCmd(cmd);
+      }
+    } else if (action === 'download') {
+      const link = document.createElement('a');
+      link.href = 'resumeee.html'; 
+      link.download = 'Vignesh_Resume.html'; 
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+    
+    togglePalette();
+  });
+});

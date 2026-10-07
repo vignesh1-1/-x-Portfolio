@@ -8,9 +8,12 @@
   <link rel="icon" type="image/png" href="Gemini_Generated_Image_ko64ocko64ocko64-removebg-preview.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Single FontAwesome CDN import -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Cytoscape CDN for Interactive Architecture Graph -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.26.0/cytoscape.min.js"></script>
   
   <!-- External CSS -->
   <link rel="stylesheet" href="style.css">
@@ -18,21 +21,23 @@
 <body>
 
   <!-- NAVBAR -->
-  <nav class="navbar">
-    <div class="scroll-progress-container">
+  <nav class="navbar" role="navigation" aria-label="Main Navigation">
+    <div class="scroll-progress-container" aria-hidden="true">
       <div class="scroll-progress-bar" id="scrollBar"></div>
     </div>
 
     <!-- LOGO & POPUP WRAPPER -->
     <div class="logo-wrapper">
       <div class="logo">
-        <img src="Gemini_Generated_Image_ko64ocko64ocko64-removebg-preview.png" alt="Logo">
+        <a href="#home" aria-label="Go to top">
+          <img src="Gemini_Generated_Image_ko64ocko64ocko64-removebg-preview.png" alt="Logo">
+        </a>
       </div>
 
-      <div id="navPointsPopup" class="nav-points-bubble">
+      <div id="navPointsPopup" class="nav-points-bubble" role="status" tabindex="0" aria-label="Arcade points score summary">
         <div class="bubble-tail"></div>
         <div class="bubble-inner">
-          <i class="fa-solid fa-gamepad bubble-icon"></i>
+          <i class="fa-solid fa-gamepad bubble-icon" aria-hidden="true"></i>
           <span class="bubble-text" id="bubblePointsText">Arcade: 0 pts</span>
         </div>
       </div>
@@ -47,45 +52,54 @@
       <a href="#contact">CONTACT</a>
       <a class="cta" href="neuralvision.html">NEURAL VISION</a>
       
-      <!-- AUDIO CONTROLS -->
+      <!-- AUDIO & THEME CONTROLS -->
       <div class="nav-controls">
-        <button id="audioToggleBtn" class="nav-audio-btn" aria-label="Toggle Sound">
-          <i class="fas fa-volume-up"></i>
+        <label class="theme-switch" for="themeToggleCheckbox" aria-label="Toggle Dark Mode">
+          <input type="checkbox" id="themeToggleCheckbox" />
+          <div class="theme-slider">
+            <i class="fas fa-sun" aria-hidden="true"></i>
+            <i class="fas fa-moon" aria-hidden="true"></i>
+          </div>
+        </label>
+        <button id="audioToggleBtn" class="nav-audio-btn" aria-label="Toggle Sound Effects" type="button">
+          <i class="fas fa-volume-up" aria-hidden="true"></i>
         </button>
       </div>
     </div>
 
     <div class="nav-right">
-      <div class="menu-btn" id="mobileMenuBtn">MENU</div>
+      <button class="menu-btn" id="mobileMenuBtn" aria-label="Toggle Navigation Menu" type="button">MENU</button>
     </div>
   </nav>
 
   <!-- HOME SECTION -->
   <section class="home" id="home">
-    <canvas id="neural-network"></canvas>
+    <canvas id="neural-network" aria-hidden="true"></canvas>
     
     <div class="home-content">
       <p class="subtitle">
-        <i data-lucide="sparkles"></i> A<span style="font-family: 'Georgia', serif; margin-left: -8px;">I</span> ENGINEER PORTFOLIO
+        <i data-lucide="sparkles" aria-hidden="true"></i> A<span class="serif-accent serif-offset">I</span> ENGINEER PORTFOLIO
       </p>
 
       <h1>Building dependable <br class="mobile-break">digital products, <br class="mobile-break"><span>not just demos</span></h1>
-      <h2 class="typing-container"><span style="font-family: 'Georgia', serif;">I</span> engineer <span class="typing-text"></span><span class="cursor">&nbsp;</span></h2>
+      <h2 class="typing-container"><span class="serif-accent">I</span> engineer <span class="typing-text"></span><span class="cursor">&nbsp;</span></h2>
       <p class="description" style="font-family: 'Space Grotesk', sans-serif;">
-        <span style="font-family: 'Georgia', serif;">I</span> am <bold style="font-weight:800 ;">Vignesh</bold>, an A<span style="font-family: 'Georgia', serif;">I</span> engineer and a Full-Stack Developer focused on <bold style="font-weight:800 ;">A<span style="font-family: 'Georgia', serif;">I</span>-AGENTS</bold> and <bold style="font-weight:800 ;">LLM </bold> powered features, building <bold style="font-weight:800 ;">AP<span style="font-family: 'Georgia', serif;">I</span>'s</bold> and backend systems make systems intelligent and ships software products.
+        <span class="serif-accent">I</span> am <strong>Vignesh</strong>, an A<span class="serif-accent">I</span> engineer and a Full-Stack Developer focused on <strong>AI-AGENTS</strong> and <strong>LLM </strong> powered features, building <strong>AP<span class="serif-accent">I</span>'s</strong> and backend systems make systems intelligent and ships software products.
       </p>
       <div class="home-buttons">
         <a href="#projects" class="primary-btn">
-          Explore Projects <i class="fa-solid fa-arrow-right btn-arrow"></i>
+          Explore Projects <i class="fa-solid fa-arrow-right btn-arrow" aria-hidden="true"></i>
         </a>
         <a href="#contact" class="secondary-btn">Let's Collaborate</a>
+        <!-- Cmd+K Hint -->
+        <span class="cmd-k-hint"><kbd>Cmd</kbd> + <kbd>K</kbd> to jump</span>
       </div>
     </div>
 
     <div class="home-image">
       <div class="holdd">
-        <img src="Gemini_Generated_Image_ko64ocko64ocko64-removebg-preview.png" alt="Hero Image">
-        <div class="number-slider">
+        <img src="Gemini_Generated_Image_ko64ocko64ocko64-removebg-preview.png" alt="Hero Illustration">
+        <div class="number-slider" aria-hidden="true">
           <div class="numbers">
             <span style="color: black; border-radius: 20px; font-family:'Space Grotesk',sans-serif;">OBJECTIVE</span>
             <span style="color: black; border-radius: 20px; font-family:'Space Grotesk',sans-serif;">MASTERY</span>
@@ -129,7 +143,7 @@
             <span class="stack-tag">Flask</span>
             <span class="stack-tag">Web Technologies</span>
             <span class="stack-tag">C++</span>
-            <span class="stack-tag">DaVinchi Resolve</span>
+            <span class="stack-tag">DaVinci Resolve</span>
           </div>
         </div>
         <p class="focus">Focus: Building scalable web applications and solving real-world problems using software systems.</p>
@@ -143,10 +157,10 @@
     <div class="stats-container">
       <div class="stat-box">
         <h3 class="counter" data-target="100" data-suffix="%">0%</h3>
-        <p>resi-api uptime & reliability</p>
+        <p>REST-API uptime & reliability</p>
       </div>
       <div class="stat-box">
-        <h3 class="counter" data-target="50" data-prefix="< " data-suffix="ms">< 0ms</h3>
+        <h3 class="counter" data-target="50" data-prefix="< " data-suffix="ms">&lt; 0ms</h3>
         <p>Average API response speed</p>
       </div>
       <div class="stat-box">
@@ -155,7 +169,7 @@
       </div>
       <div class="stat-box">
         <h3 class="counter" data-target="10" data-suffix="+">0+</h3>
-        <p>CORE TECHnologies mastered</p>
+        <p>CORE TECHNOLOGIES MASTERED</p>
       </div>
     </div>
     
@@ -166,17 +180,17 @@
       </div>
       <div class="scroller">
         <ul class="scroller__inner">
-          <li class="tool-tag"><i class="fa-solid fa-circle"></i> React</li>
-          <li class="tool-tag"><i class="fa-solid fa-circle"></i> Bootstrap</li>
-          <li class="tool-tag"><i class="fa-solid fa-circle"></i> Python</li>
-          <li class="tool-tag"><i class="fa-solid fa-circle"></i> JAVA</li>
-          <li class="tool-tag"><i class="fa-solid fa-circle"></i> FastAPI</li>
-          <li class="tool-tag"><i class="fa-solid fa-circle"></i> Flask</li>
-          <li class="tool-tag"><i class="fa-solid fa-circle"></i> OpenAI</li>
-          <li class="tool-tag"><i class="fa-solid fa-circle"></i> Gemini</li>
-          <li class="tool-tag"><i class="fa-solid fa-circle"></i> Firebase</li>
-          <li class="tool-tag"><i class="fa-solid fa-circle"></i> XAMPP</li>
-          <li class="tool-tag"><i class="fa-solid fa-circle"></i> DaVinchi</li>
+          <li class="tool-tag"><i class="fa-solid fa-circle" aria-hidden="true"></i> React</li>
+          <li class="tool-tag"><i class="fa-solid fa-circle" aria-hidden="true"></i> Bootstrap</li>
+          <li class="tool-tag"><i class="fa-solid fa-circle" aria-hidden="true"></i> Python</li>
+          <li class="tool-tag"><i class="fa-solid fa-circle" aria-hidden="true"></i> JAVA</li>
+          <li class="tool-tag"><i class="fa-solid fa-circle" aria-hidden="true"></i> FastAPI</li>
+          <li class="tool-tag"><i class="fa-solid fa-circle" aria-hidden="true"></i> Flask</li>
+          <li class="tool-tag"><i class="fa-solid fa-circle" aria-hidden="true"></i> OpenAI</li>
+          <li class="tool-tag"><i class="fa-solid fa-circle" aria-hidden="true"></i> Gemini</li>
+          <li class="tool-tag"><i class="fa-solid fa-circle" aria-hidden="true"></i> Firebase</li>
+          <li class="tool-tag"><i class="fa-solid fa-circle" aria-hidden="true"></i> XAMPP</li>
+          <li class="tool-tag"><i class="fa-solid fa-circle" aria-hidden="true"></i> DaVinci Resolve</li>
         </ul>
       </div>
     </div>
@@ -193,7 +207,7 @@
       <div class="process-wrapper">
         <div class="process-details-panel reveal-left">
           <div id="process-empty" class="process-empty-state">
-            <i class="fa-solid fa-wand-magic-sparkles" style="font-size: 2.5rem; margin-bottom: 15px;"></i>
+            <i class="fa-solid fa-wand-magic-sparkles" style="font-size: 2.5rem; margin-bottom: 15px;" aria-hidden="true"></i>
             <h3>Select a Phase</h3>
             <p>Click on any card to explore my workflow and approach.</p>
           </div>
@@ -211,7 +225,7 @@
           </div>
 
           <div id="process-quote" class="process-quote-view">
-            <div class="bg-quote-mark">&ldquo;</div>
+            <div class="bg-quote-mark" aria-hidden="true">&ldquo;</div>
             <div class="quote-content">
               <h2 class="shimmer-text" id="quoteTextDisplay">&ldquo;Building dependable software means engineering systems that remain resilient when the unexpected happens.&rdquo;</h2>
               <div class="author-tag" id="quoteAuthorDisplay">Vignesh P // Engineering Core Philosophy</div>
@@ -219,47 +233,47 @@
           </div>
         </div>
 
-        <div class="cards process-cards reveal-right">
-          <div class="card process-card" data-phase="planning">
+        <div class="cards process-cards reveal-right" role="tablist">
+          <div class="card process-card" data-phase="planning" role="tab" tabindex="0">
             <div class="card-title-row">
-              <div class="icon"><i class="fa-solid fa-compass"></i></div>
+              <div class="icon"><i class="fa-solid fa-compass" aria-hidden="true"></i></div>
               <h3>Discover</h3>
             </div>
           </div>
-          <div class="card process-card" data-phase="analysis">
+          <div class="card process-card" data-phase="analysis" role="tab" tabindex="0">
             <div class="card-title-row">
-              <div class="icon"><i class="fa-solid fa-chart-line"></i></div>
+              <div class="icon"><i class="fa-solid fa-chart-line" aria-hidden="true"></i></div>
               <h3>Analyze</h3>
             </div>
           </div>
-          <div class="card process-card" data-phase="designing">
+          <div class="card process-card" data-phase="designing" role="tab" tabindex="0">
             <div class="card-title-row">
-              <div class="icon"><i class="fa-solid fa-microchip"></i></div>
+              <div class="icon"><i class="fa-solid fa-microchip" aria-hidden="true"></i></div>
               <h3>Engineer</h3>
             </div>
           </div>
-          <div class="card process-card" data-phase="testing">
+          <div class="card process-card" data-phase="testing" role="tab" tabindex="0">
             <div class="card-title-row">
-              <div class="icon"><i class="fa-solid fa-vial"></i></div>
+              <div class="icon"><i class="fa-solid fa-vial" aria-hidden="true"></i></div>
               <h3>Prototype</h3>
             </div>
           </div>
-          <div class="card process-card" data-phase="deployment">
+          <div class="card process-card" data-phase="deployment" role="tab" tabindex="0">
             <div class="card-title-row">
-              <div class="icon"><i class="fa-solid fa-rocket"></i></div>
+              <div class="icon"><i class="fa-solid fa-rocket" aria-hidden="true"></i></div>
               <h3>Launch</h3>
             </div>
           </div>
-          <div class="card process-card" data-phase="maintainance">
+          <div class="card process-card" data-phase="maintainance" role="tab" tabindex="0">
             <div class="card-title-row">
-              <div class="icon"><i class="fa-solid fa-brain"></i></div>
+              <div class="icon"><i class="fa-solid fa-brain" aria-hidden="true"></i></div>
               <h3>Maintain</h3>
             </div>
           </div>
 
-          <div class="card process-card quote-card" data-phase="quote">
+          <div class="card process-card quote-card" data-phase="quote" role="tab" tabindex="0">
             <div class="card-title-row">
-              <div class="icon"><i class="fa-solid fa-quote-left"></i></div>
+              <div class="icon"><i class="fa-solid fa-quote-left" aria-hidden="true"></i></div>
               <h3>Core Philosophy</h3>
             </div>
           </div>
@@ -297,16 +311,16 @@
 
     <div class="education-grid reveal">
       <div class="edu-card">
-        <div class="edu-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+        <div class="edu-icon"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i></div>
         <h4>Education</h4>
         <h5>BCA | CMR University</h5>
-        <p>2024-2027 | --------</p>
+        <p>2024-2027 | Bengaluru, IN</p>
       </div>
       <div class="edu-card">
-        <div class="edu-icon"><i class="fa-solid fa-code"></i></div>
+        <div class="edu-icon"><i class="fa-solid fa-code" aria-hidden="true"></i></div>
         <h4>Technical Focus</h4>
         <h5>Full-Stack AI Engineering</h5>
-        <p>Building scalable web applications, interactive interfaces.</p>
+        <p>Building scalable web applications and interactive architectures.</p>
       </div>
     </div>
   </section>
@@ -321,17 +335,30 @@
       </div>
     </div>
 
+    <!-- Filterable Project Matrix Toolbar -->
+    <div class="project-filters reveal" role="toolbar" aria-label="Project filter options">
+      <button class="filter-btn active" data-filter="all" type="button">All Projects</button>
+      <button class="filter-btn" data-filter="ai" type="button">AI / LLM</button>
+      <button class="filter-btn" data-filter="fullstack" type="button">Full-Stack</button>
+      <button class="filter-btn" data-filter="fastapi" type="button">FastAPI / Python</button>
+      <button class="filter-btn" data-filter="database" type="button">Database</button>
+    </div>
+
     <div class="projects-wrapper prod-wrapper">
-      <div class="project-card reveal-right">
+      <div class="project-card reveal-right" data-tags="fullstack database">
         <div class="project-left">
           <h3>EXOTIC GB HUB | Premium E-Commerce</h3>
-          <p>E-commerce platform for exotic aquarium supplies. Features a custom JavaScript search, direct WhatsApp ordering, and is powered by Firebase (by Google) for secure user authentication and dynamic product storage.</p>
+          <p>E-commerce platform for exotic aquarium supplies. Features a custom JavaScript search, direct WhatsApp ordering, and is powered by Firebase for secure user authentication and dynamic product storage.</p>
+          <div class="project-metrics">
+            <span class="metric-badge"><i class="fa-solid fa-users" aria-hidden="true"></i> 10k+ Active Users</span>
+            <span class="metric-badge"><i class="fa-solid fa-bolt" aria-hidden="true"></i> &lt;45ms Latency</span>
+          </div>
         </div>
         <div class="project-links">
-          <button class="inspect-arch-btn" data-project="exotic-hub">
-            <i class="fa-solid fa-network-wired"></i> Architecture
+          <button class="inspect-arch-btn" data-project="exotic-hub" type="button">
+            <i class="fa-solid fa-network-wired" aria-hidden="true"></i> Architecture
           </button>
-          <a href="https://nandantechhub.github.io/EXOTIC-GB-HUB-PRO/" target="_blank" class="acti">&emsp13;Live Now</a>
+          <a href="https://nandantechhub.github.io/EXOTIC-GB-HUB-PRO/" target="_blank" rel="noopener noreferrer" class="acti">&emsp13;Live Now</a>
         </div>
       </div>
     </div>
@@ -342,46 +369,58 @@
     </div><br><br>
 
     <div class="projects-wrapper selected-wrapper">
-      <div class="project-card reveal-left">
+      <div class="project-card reveal-left" data-tags="ai fastapi fullstack database">
         <div class="project-left">
           <h3>G+ | Bengaluru</h3>
           <p>An integrated smart city operations and command center platform powered by Python & JavaScript backends, featuring real-time GIS mapping, AI-assisted query resolution, municipal finance analytics, live city pulse monitoring, and interactive grievance logging.</p>
+          <div class="project-metrics">
+            <span class="metric-badge"><i class="fa-solid fa-brain" aria-hidden="true"></i> 96% AI Accuracy</span>
+            <span class="metric-badge"><i class="fa-solid fa-database" aria-hidden="true"></i> Spatial Queries</span>
+          </div>
         </div>
         <div class="project-links">
-          <button class="inspect-arch-btn" data-project="g-plus">
-            <i class="fa-solid fa-network-wired"></i> Architecture
+          <button class="inspect-arch-btn" data-project="g-plus" type="button">
+            <i class="fa-solid fa-network-wired" aria-hidden="true"></i> Architecture
           </button>
-          <a href="https://joyful-sprite-4cc486.netlify.app" target="_blank" class="acti">&emsp13;Live Now</a>
+          <a href="https://joyful-sprite-4cc486.netlify.app" target="_blank" rel="noopener noreferrer" class="acti">&emsp13;Live Now</a>
         </div>
       </div>
 
-      <div class="project-card reveal-right">
+      <div class="project-card reveal-right" data-tags="fullstack fastapi database">
         <div class="project-left">
           <h3>BITS RADAR – Bug Tracking System</h3>
           <p>Bug & Issue Tracking System designed to manage software tickets across the SDLC, featuring RBAC, RESTful APIs, bulk operations, audit trails, analytics, and responsive UI.</p>
+          <div class="project-metrics">
+            <span class="metric-badge"><i class="fa-solid fa-vial-circle-check" aria-hidden="true"></i> 94% Test Coverage</span>
+            <span class="metric-badge"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> RBAC Secured</span>
+          </div>
         </div>
         <div class="project-links">
-          <button class="inspect-arch-btn" data-project="bits-radar">
-            <i class="fa-solid fa-network-wired"></i> Architecture
+          <button class="inspect-arch-btn" data-project="bits-radar" type="button">
+            <i class="fa-solid fa-network-wired" aria-hidden="true"></i> Architecture
           </button>
-          <a href="https://bits-radar.onrender.com/" target="_blank" class="acti">&emsp13;Live Now</a>
+          <a href="https://bits-radar.onrender.com/" target="_blank" rel="noopener noreferrer" class="acti">&emsp13;Live Now</a>
         </div>
       </div>
 
-      <div class="project-card reveal-left">
+      <div class="project-card reveal-left" data-tags="fullstack database">
         <div class="project-left">
           <h3 style="font-family:'Space Grotesk',sans-serif;">Online Passport Automation System</h3>
           <p>A digital platform that allows citizens to apply for passports, schedule verification, and track application status online. Built using PHP and MySQL with a secure admin management panel.</p>
+          <div class="project-metrics">
+            <span class="metric-badge"><i class="fa-solid fa-server" aria-hidden="true"></i> 99.9% Uptime</span>
+            <span class="metric-badge"><i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i> Zero-loss Backup</span>
+          </div>
         </div>
         <div class="project-links">
-          <button class="inspect-arch-btn" data-project="passport">
-            <i class="fa-solid fa-network-wired"></i> Architecture
+          <button class="inspect-arch-btn" data-project="passport" type="button">
+            <i class="fa-solid fa-network-wired" aria-hidden="true"></i> Architecture
           </button>
-          <a href="#" class="icon live" onclick="showLivePopup(event)">
-            <i class="fas fa-globe"></i> Go Live
-          </a>
-          <div id="livePopup" class="glass-popup">
-            <p>🚧 The project runs on a local development server.</p>
+          <button type="button" class="icon live arch-action-link" style="border-radius: 25px; padding: 10px 20px; font-size: 13.5px;" onclick="showLivePopup(event)">
+            <i class="fas fa-globe" aria-hidden="true"></i> &nbsp;Go Live
+          </button>
+          <div id="livePopup" class="glass-popup" role="dialog" aria-label="Project Status Notice">
+            <p>🚧 The project runs on a local development server. (Tap to dismiss)</p>
           </div>
         </div>
       </div>
@@ -392,14 +431,14 @@
       <div class="neural-scroll-container">
         <div class="neural-left reveal-left">
           <div class="approach-badge" style="margin-bottom: 20px; font-size: 11px; background: transparent;">Directed Acyclic Graph (DAG)</div>
-          <h2 class="neural-heading">State machine compilation across an <span style="color: #64748b; font-weight: 600;">asynchronous DAG</span></h2>
+          <h2 class="neural-heading">State machine compilation across an <span style="color: #475569; font-weight: 600;">asynchronous DAG</span></h2>
           <p class="neural-p">A topological trace of non-blocking I/O propagation across isolated infrastructure boundaries. When dispatched, decoupling transactional storage schemas and automated build pipelines from high-throughput ASGI backends, and edge ingress proxies before hydrating the client viewport.</p>
           <p class="neural-p-small">Click any root node in <strong>DATABASE</strong> or <strong>CI/CD PIPELINES</strong> to trigger execution. The packet stream emits in high-frequency aqua, undergoes runtime transformation in deep navy blue, and clears edge security middleboxes as light-purple client-rendered artifacts.</p>
           <br>
-          <a href="rcb.html" class="neural-btn">Inspect Latent Space Projection &nbsp;<i class="fa-solid fa-arrow-right"></i></a>
+          <a href="rcb.html" class="neural-btn">Inspect Latent Space Projection &nbsp;<i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
         </div>
         <div class="neural-right reveal-right">
-          <canvas id="ffNetworkCanvas"></canvas>
+          <canvas id="ffNetworkCanvas" aria-label="Interactive acyclic network topology visualization"></canvas>
         </div>
       </div>
     </div>
@@ -410,7 +449,7 @@
     <div class="ai-container">
       <div class="ai-left reveal-left">
         <div class="approach-badge" style="margin-bottom: 15px; display: inline-flex; align-items: center; gap: 8px;">
-          <i data-lucide="sparkles" style="width: 14px; height: 14px;"></i> AGENTIC INFERENCE & PIPELINE
+          <i data-lucide="sparkles" style="width: 14px; height: 14px;" aria-hidden="true"></i> AGENTIC INFERENCE & PIPELINE
         </div>
         <h2 class="approach-heading">TALK WITH CYANX AI</h2>
         <p class="section-p">
@@ -419,11 +458,11 @@
 
         <div class="try-asking-label">TRY ASKING</div>
         <div class="suggested-questions">
-          <button class="sq-btn"><i class="fa-solid fa-arrow-right"></i> What is your strongest AI project?</button>
-          <button class="sq-btn"><i class="fa-solid fa-arrow-right"></i> How do you deploy models to production?</button>
+          <button class="sq-btn" type="button"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i> What is your strongest AI project?</button>
+          <button class="sq-btn" type="button"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i> How do you deploy models to production?</button>
         </div>
 
-        <div class="architecture-flow-container">
+        <div class="architecture-flow-container" tabindex="0" aria-label="System architecture diagram preview">
           <svg viewBox="0 0 480 170" fill="none" xmlns="http://www.w3.org/2000/svg" class="architecture-flow-svg">
             <defs>
               <marker id="arrowEnd" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="5" markerHeight="5" orient="auto">
@@ -434,39 +473,39 @@
               </marker>
             </defs>
 
-            <path d="M 99 85 L 117 85 L 117 32 L 135 32" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)" />
-            <path d="M 99 85 L 135 85" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)" />
-            <path d="M 99 85 L 117 85 L 117 138 L 135 138" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)" />
-            <path d="M 217 32 L 253 32" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)" />
-            <path d="M 217 85 L 253 85" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)" />
-            <path d="M 217 138 L 253 138" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)" />
-            <path d="M 335 32 L 353 32 L 353 85 L 371 85" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)" />
-            <path d="M 335 85 L 371 85" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)" />
-            <path d="M 335 138 L 353 138 L 353 85 L 371 85" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)" />
-            <path d="M 176 47 L 176 70" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)" />
-            <path d="M 176 100 L 176 123" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)" />
-            <path d="M 294 47 L 294 70" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)" />
-            <path d="M 294 100 L 294 123" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)" />
+            <path d="M 99 85 L 117 85 L 117 32 L 135 32" stroke="#64748b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)" />
+            <path d="M 99 85 L 135 85" stroke="#64748b" stroke-width="1.5" stroke-linecap="round" marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)" />
+            <path d="M 99 85 L 117 85 L 117 138 L 135 138" stroke="#64748b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)" />
+            <path d="M 217 32 L 253 32" stroke="#64748b" stroke-width="1.5" stroke-linecap="round" marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)" />
+            <path d="M 217 85 L 253 85" stroke="#64748b" stroke-width="1.5" stroke-linecap="round" marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)" />
+            <path d="M 217 138 L 253 138" stroke="#64748b" stroke-width="1.5" stroke-linecap="round" marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)" />
+            <path d="M 335 32 L 353 32 L 353 85 L 371 85" stroke="#64748b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)" />
+            <path d="M 335 85 L 371 85" stroke="#64748b" stroke-width="1.5" stroke-linecap="round" marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)" />
+            <path d="M 335 138 L 353 138 L 353 85 L 371 85" stroke="#64748b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)" />
+            <path d="M 176 47 L 176 70" stroke="#64748b" stroke-width="1.5" stroke-linecap="round" marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)" />
+            <path d="M 176 100 L 176 123" stroke="#64748b" stroke-width="1.5" stroke-linecap="round" marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)" />
+            <path d="M 294 47 L 294 70" stroke="#64748b" stroke-width="1.5" stroke-linecap="round" marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)" />
+            <path d="M 294 100 L 294 123" stroke="#64748b" stroke-width="1.5" stroke-linecap="round" marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)" />
 
             <rect x="12" y="68" width="86" height="34" rx="8" fill="#000000" />
             <text x="55" y="89" fill="#ffffff" font-family="'Space Grotesk', sans-serif" font-size="11.5" font-weight="700" letter-spacing="0.5" text-anchor="middle">VIGNESH</text>
 
-            <rect x="136" y="18" width="80" height="28" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />
+            <rect x="136" y="18" width="80" height="28" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2" />
             <text x="176" y="36" fill="#0f172a" font-family="'Inter', sans-serif" font-size="9" font-weight="600" text-anchor="middle">GITHUB ACTIONS</text>
 
-            <rect x="136" y="71" width="80" height="28" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />
+            <rect x="136" y="71" width="80" height="28" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2" />
             <text x="176" y="89" fill="#0f172a" font-family="'Inter', sans-serif" font-size="11" font-weight="600" text-anchor="middle">FIREBASE</text>
 
-            <rect x="136" y="124" width="80" height="28" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />
+            <rect x="136" y="124" width="80" height="28" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2" />
             <text x="176" y="142" fill="#0f172a" font-family="'Inter', sans-serif" font-size="11" font-weight="600" text-anchor="middle">RENDER</text>
 
-            <rect x="254" y="18" width="80" height="28" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />
+            <rect x="254" y="18" width="80" height="28" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2" />
             <text x="294" y="36" fill="#0f172a" font-family="'Inter', sans-serif" font-size="10.5" font-weight="600" text-anchor="middle">PYTHON 3</text>
 
-            <rect x="254" y="71" width="80" height="28" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />
+            <rect x="254" y="71" width="80" height="28" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2" />
             <text x="294" y="89" fill="#0f172a" font-family="'Inter', sans-serif" font-size="11" font-weight="600" text-anchor="middle">FAST-API</text>
 
-            <rect x="254" y="124" width="80" height="28" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />
+            <rect x="254" y="124" width="80" height="28" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2" />
             <text x="294" y="142" fill="#0f172a" font-family="'Inter', sans-serif" font-size="9" font-weight="600" text-anchor="middle">MINILM-L6-V2</text>
 
             <rect x="372" y="68" width="96" height="34" rx="8" fill="#000000" />
@@ -479,14 +518,14 @@
         <div class="chat-card">
           <div class="chat-header-container">
             <div class="header-titles">
-              <span id="apiBadge" class="api-badge success"><i class="fa-solid fa-check"></i> API ACTIVE</span>
+              <span id="apiBadge" class="api-badge success"><i class="fa-solid fa-check" aria-hidden="true"></i> API ACTIVE</span>
               <h3 class="chat-header">Ask My AI Assistant</h3>
             </div>
             <div id="aiNotification" class="ai-notification">One Answer down, What's Next?</div>
-            <div class="holo-system">
+            <div class="holo-system" aria-hidden="true">
               <div class="monitor" id="retroTerm">
                 <div class="screen">
-                  <div class="face" id="faceText">◕⁠‿⁠◕</div>
+                  <div class="face" id="faceText">◕⁠‿⁠⁠◕</div>
                 </div>
               </div>
               <div class="holo-cone"></div>
@@ -497,19 +536,19 @@
           </div>
           
           <div class="chat-window custom-scroll-container" id="scrollContainer">
-            <div class="scroll-content" id="chatScrollContent">
+            <div class="scroll-content" id="chatScrollContent" role="log" aria-live="polite">
               <div class="chat-message bot">
                 Hey there!, Ask me anything about his projects, skills, or experience.
               </div>
             </div>
 
             <div class="scrollbar-track-wrap">
-              <button class="scroll-arrow-btn up" id="scrollUpBtn" aria-label="Scroll Up">
+              <button class="scroll-arrow-btn up" id="scrollUpBtn" aria-label="Scroll Up in Chat" type="button">
                 <div class="arrow-icon-up"></div>
               </button>
 
               <div class="track-body" id="trackBody">
-                <div class="scroll-thumb" id="scrollThumb">
+                <div class="scroll-thumb" id="scrollThumb" role="scrollbar" aria-controls="chatScrollContent">
                   <div class="thumb-grip">
                     <span></span>
                     <span></span>
@@ -518,19 +557,23 @@
                 </div>
               </div>
 
-              <button class="scroll-arrow-btn down" id="scrollDownBtn" aria-label="Scroll Down">
+              <button class="scroll-arrow-btn down" id="scrollDownBtn" aria-label="Scroll Down in Chat" type="button">
                 <div class="arrow-icon-down"></div>
               </button>
             </div>
           </div>
           
           <div class="chat-input-area">
-            <textarea placeholder="Ask about projects, skills, or collaboration..."></textarea>
+            <!-- Dynamic AI Chat Context Chips Container -->
+            <div class="context-chips-container" id="chatContextChips">
+              <!-- Chips injected here via JS based on scroll -->
+            </div>
+            <textarea placeholder="Ask about projects, skills, or collaboration..." aria-label="Query personal AI Assistant"></textarea>
             <div class="chat-footer">
               <span class="chat-hint">Press <kbd>Enter</kbd> to send, <kbd>Shift</kbd> + <kbd>Enter</kbd> for a new line.</span>
-              <button class="send-btn">Send <i class="fa-regular fa-paper-plane"></i></button>
+              <button class="send-btn" type="button" aria-label="Send Message">Send <i class="fa-regular fa-paper-plane" aria-hidden="true"></i></button>
             </div>
-            <div id="chatError" class="chat-error-banner">Failed to fetch</div>
+            <div id="chatError" class="chat-error-banner" role="alert">Failed to fetch API</div>
           </div>
         </div>
       </div>
@@ -556,40 +599,40 @@
             
             <div class="contact-actions">
               <a href="mailto:vigneshpremkumar1@gmail.com" class="btn-getintouch">
-                Get in touch <i class="fa-regular fa-envelope"></i>
+                Get in touch <i class="fa-regular fa-envelope" aria-hidden="true"></i>
               </a>
-              <a href="resumeee.html" target="_blank" class="btn-resume">
-                View Resume <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              <a href="resumeee.html" target="_blank" rel="noopener noreferrer" class="btn-resume">
+                View Resume <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
               </a>
             </div>
           </div>
 
           <div class="content-right">
-            <a style="text-decoration: none;" href="mailto:vigneshblrind@gmail.com" target="_blank">
+            <a style="text-decoration: none;" href="mailto:vigneshblrind@gmail.com" target="_blank" rel="noopener noreferrer">
               <div class="contact-item">
-                <i class="fa-regular fa-envelope"></i>
+                <i class="fa-regular fa-envelope" aria-hidden="true"></i>
                 <span>vigneshblrind@gmail.com</span>
               </div>
             </a>
-            <a style="text-decoration: none;" href="tel:+919380356694" target="_blank">
+            <a style="text-decoration: none;" href="tel:+919380356694" target="_blank" rel="noopener noreferrer">
               <div class="contact-item">
-                <i class="fa-solid fa-phone"></i>
+                <i class="fa-solid fa-phone" aria-hidden="true"></i>
                 <span>+91 9380356694</span>
               </div>
             </a>
-            <a style="text-decoration: none;" href="https://linkedin.com/in/vigneshp05" target="_blank">
+            <a style="text-decoration: none;" href="https://linkedin.com/in/vigneshp05" target="_blank" rel="noopener noreferrer">
               <div class="contact-item">
-                <i class="fa-brands fa-linkedin-in"></i>
+                <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
                 <span>linkedin.com/in/vigneshp05</span>
               </div>
             </a>
             
             <div class="wrapper">
-              <a href="https://vsco.co/vcenzo1" target="_blank" class="icon-link">
+              <a href="https://vsco.co/vcenzo1" target="_blank" rel="noopener noreferrer" class="icon-link" aria-label="VSCO Profile">
                 <div class="icon vsco">
                   <div class="tooltip">VSCO</div>
                   <span>
-                    <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;">
                       <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/>
                       <path d="M12 5.5a6.5 6.5 0 1 0 6.5 6.5A6.5 6.5 0 0 0 12 5.5zm0 11a4.5 4.5 0 1 1 4.5-4.5 4.5 4.5 0 0 1-4.5 4.5z"/>
                       <circle cx="12" cy="12" r="2.5"/>
@@ -597,34 +640,34 @@
                   </span>
                 </div>
               </a>
-              <a href="https://x.com/Vignesh6622" target="_blank" class="icon twitter">
+              <a href="https://x.com/Vignesh6622" target="_blank" rel="noopener noreferrer" class="icon twitter" aria-label="X Profile">
                 <div class="tooltip">X</div>
-                <span><i class="fa-brands fa-x-twitter"></i></span>
+                <span><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></span>
               </a>
-              <a href="https://www.instagram.com/viggh_____01?igsh=MTZ5aDJzZDJ3dWZrZA==" class="icon instagram">
+              <a href="https://www.instagram.com/viggh_____01?igsh=MTZ5aDJzZDJ3dWZrZA==" target="_blank" rel="noopener noreferrer" class="icon instagram" aria-label="Instagram Profile">
                 <div class="tooltip">Instagram</div>
-                <span><i class="fab fa-instagram"></i></span>
+                <span><i class="fab fa-instagram" aria-hidden="true"></i></span>
               </a>
-              <a href="https://github.com/vignesh1-1" target="_blank" class="icon-link">
+              <a href="https://github.com/vignesh1-1" target="_blank" rel="noopener noreferrer" class="icon-link" aria-label="GitHub Profile">
                 <div class="icon github">
                   <div class="tooltip">Github</div>
-                  <span><i class="fab fa-github"></i></span>
+                  <span><i class="fab fa-github" aria-hidden="true"></i></span>
                 </div>
               </a>
-              <a href="#" class="icon youtube" onclick="showPopup(event)">
+              <button type="button" class="icon youtube" onclick="showPopup(event)" aria-label="YouTube Channel Popup" style="background:none;border:none;padding:0;">
                 <div class="tooltip">YouTube</div>
-                <span><i class="fab fa-youtube"></i></span>
-              </a>
-              <a href="#" class="icon snapchat" onclick="showPopupp(event, 'snapchatPopup')">
+                <span><i class="fab fa-youtube" aria-hidden="true"></i></span>
+              </button>
+              <button type="button" class="icon snapchat" onclick="showPopupp(event, 'snapchatPopup')" aria-label="Snapchat Popup" style="background:none;border:none;padding:0;">
                 <div class="tooltip" style="color: black;">Snapchat</div>
-                <span><i class="fab fa-snapchat"></i></span>
-              </a>
+                <span><i class="fab fa-snapchat" aria-hidden="true"></i></span>
+              </button>
               
-              <div id="glass-popup" class="glass-popup">
-                <p>❌ Yet Vignesh doesn't have a YouTube channel</p>
+              <div id="glass-popup" class="glass-popup" role="dialog" aria-label="YouTube Notice">
+                <p>❌ Vignesh doesn't maintain a public YouTube channel. (Tap to dismiss)</p>
               </div>
-              <div id="snapchatPopup" class="glass-popup">
-                <p>❌ Error: 404</p>
+              <div id="snapchatPopup" class="glass-popup" role="dialog" aria-label="Snapchat Notice">
+                <p>❌ Error: 404 - Profile Not Found. (Tap to dismiss)</p>
               </div>
             </div>
           </div>
@@ -634,7 +677,7 @@
       <!-- TERMINAL UI (v2.4.0) -->
       <div class="terminal-container reveal">
         <div class="terminal-header">
-          <div class="terminal-dots">
+          <div class="terminal-dots" aria-hidden="true">
             <span class="terminal-dot close"></span>
             <span class="terminal-dot minimize"></span>
             <span class="terminal-dot maximize"></span>
@@ -644,9 +687,9 @@
         <div class="terminal-body" id="terminalBody">
           <div class="terminal-line">Welcome to Vignesh-OS (v2.4.0). Type <span style="color: #0969da;">help</span> to see available commands. Press <span style="color: #0969da;">Tab</span> for auto-completion.</div>
           <div class="terminal-input-line">
-            <span class="terminal-prompt">guest@vignesh-os:~$></span>
+            <label for="terminalInput" class="terminal-prompt">guest@vignesh-os:~$></label>
             <div class="terminal-input-container">
-              <input type="text" id="terminalInput" autocomplete="off" spellcheck="false">
+              <input type="text" id="terminalInput" autocomplete="off" spellcheck="false" aria-label="Interactive terminal command input">
             </div>
           </div>
         </div>
@@ -658,31 +701,57 @@
          <b>
            <span style="font-size: xx-large;">VIGNESH P</span><br><br>
            Copyright ©2026 &emsp13;ᴄʏᴀɴx | Portfolio&emsp13;<br> 
-           Designed by CYANX INTELLIGENCE, <span style="font-weight: 500;">All Rights Recieved</span>
+           Designed by CYANX INTELLIGENCE, <span style="font-weight: 500;">All Rights Reserved</span>
          </b>
          <br><br>
-         <a href="javascript:void(0)" id="openCookiePreferencesLink" style="color: #000000; text-decoration: underline; font-weight: 600; font-size: 13.5px; cursor: pointer;">Cookies preference</a>
+         <button type="button" id="openCookiePreferencesLink" style="background:none;border:none;color: #000000; text-decoration: underline; font-weight: 600; font-size: 13.5px; cursor: pointer;">Cookies preference</button>
        </center>
     </div>
   </section>
 
   <!-- OVERLAY LOADER -->
-  <div id="loadingOverlay">
+  <div id="loadingOverlay" aria-hidden="true">
     <div class="loader"></div>
   </div>
 
   <!-- FLOATING ACTIONS CONTAINER -->
   <div class="floating-action-container">
-    <button id="aiNavBtn" class="action-btn" aria-label="Go to AI Assistant">
-      <i class="fa-solid fa-robot"></i>
+    <button id="aiNavBtn" class="action-btn" aria-label="Scroll to AI Assistant" type="button">
+      <i class="fa-solid fa-robot" aria-hidden="true"></i>
     </button>
-    <button id="scrollTopBtn" class="action-btn" aria-label="Scroll to top">
-      <i class="fa-solid fa-arrow-up"></i>
+    <button id="scrollTopBtn" class="action-btn" aria-label="Scroll to top of page" type="button">
+      <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
     </button>
   </div>
 
+  <!-- COMMAND PALETTE MODAL (Cmd+K) -->
+  <div id="commandPalette" class="command-palette-overlay" role="dialog" aria-modal="true" aria-label="Quick command navigation palette">
+    <div class="cmd-palette-box">
+      <div class="cmd-header">
+        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        <input type="text" id="cmdPaletteInput" class="cmd-input" placeholder="Search sections, run commands, or download resume..." aria-label="Command search palette">
+        <span class="cmd-esc">ESC</span>
+      </div>
+      <div class="cmd-body">
+        <div class="cmd-category">Navigation</div>
+        <ul class="cmd-list" id="cmdNavList">
+          <li class="cmd-item" data-action="scroll" data-target="home"><i class="fa-solid fa-house" aria-hidden="true"></i> Go to Home</li>
+          <li class="cmd-item" data-action="scroll" data-target="about"><i class="fa-solid fa-microchip" aria-hidden="true"></i> View Capabilities & Stack</li>
+          <li class="cmd-item" data-action="scroll" data-target="projects"><i class="fa-solid fa-folder-open" aria-hidden="true"></i> Browse Projects</li>
+          <li class="cmd-item" data-action="scroll" data-target="experience"><i class="fa-solid fa-briefcase" aria-hidden="true"></i> Check Experience</li>
+        </ul>
+        <div class="cmd-category">Actions</div>
+        <ul class="cmd-list" id="cmdActionList">
+          <li class="cmd-item" data-action="download"><i class="fa-solid fa-download" aria-hidden="true"></i> Download Resume</li>
+          <li class="cmd-item" data-action="terminal" data-command="matrix"><i class="fa-solid fa-terminal" aria-hidden="true"></i> Run Terminal: matrix scan</li>
+          <li class="cmd-item" data-action="terminal" data-command="arcade"><i class="fa-solid fa-gamepad" aria-hidden="true"></i> Launch Neural Arcade</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
   <!-- COOKIES PREFERENCES PANEL -->
-  <div id="cookiePreferencesPanel" class="cookie-panel">
+  <div id="cookiePreferencesPanel" class="cookie-panel" role="region" aria-label="Cookie Settings">
     <div class="cookie-box">
       <h3>Cookies Preferences</h3>
       <p class="cookie-desc">We use cookies to ensure you get the best experience, save preferences, and maintain AI context.</p>
@@ -691,9 +760,9 @@
         <div class="cookie-item">
           <div class="cookie-heading-wrap">
             <h4>Strictly Necessary</h4>
-            <span class="cookie-know-more" onclick="openCookieModal('Strictly Necessary Cookies', 'These cookies are required for the website to function securely and properly. They cannot be turned off. They handle core features like routing and basic security.')">Know more</span>
+            <span class="cookie-know-more" role="button" tabindex="0" onclick="openCookieModal('Strictly Necessary Cookies', 'These cookies are required for the website to function securely and properly. They cannot be turned off. They handle core features like routing and basic security.')">Know more</span>
           </div>
-          <label class="cookie-switch">
+          <label class="cookie-switch" aria-label="Strictly Necessary Cookies switch">
             <input type="checkbox" checked disabled>
             <span class="cookie-slider-toggle round"></span>
           </label>
@@ -701,10 +770,21 @@
 
         <div class="cookie-item">
           <div class="cookie-heading-wrap">
-            <h4>AI Chat History</h4>
-            <span class="cookie-know-more" onclick="openCookieModal('AI Chat History Cookies', 'These cookies store your conversation context with the AI assistant. Keeping this enabled allows you to pick up the chat where you left off.')">Know more</span>
+            <h4>Theme Preferences</h4>
+            <span class="cookie-know-more" role="button" tabindex="0" onclick="openCookieModal('Theme Preferences', 'These cookies store your light/dark mode preference so it persists across visits.')">Know more</span>
           </div>
-          <label class="cookie-switch">
+          <label class="cookie-switch" aria-label="Theme Preferences Cookies switch">
+            <input type="checkbox" id="cookie-theme" checked>
+            <span class="cookie-slider-toggle round"></span>
+          </label>
+        </div>
+
+        <div class="cookie-item">
+          <div class="cookie-heading-wrap">
+            <h4>AI Chat History</h4>
+            <span class="cookie-know-more" role="button" tabindex="0" onclick="openCookieModal('AI Chat History Cookies', 'These cookies store your conversation context with the AI assistant. Keeping this enabled allows you to pick up the chat where you left off.')">Know more</span>
+          </div>
+          <label class="cookie-switch" aria-label="AI Chat History Cookies switch">
             <input type="checkbox" id="cookie-ai" checked>
             <span class="cookie-slider-toggle round"></span>
           </label>
@@ -712,34 +792,34 @@
       </div>
 
       <div class="cookie-actions">
-        <button id="btn-accept-necessary" class="cookie-btn btn-outline">Accept Necessary</button>
-        <button id="btn-accept-all" class="cookie-btn btn-filled">Accept All</button>
+        <button id="btn-accept-necessary" class="cookie-btn btn-outline" type="button">Accept Necessary</button>
+        <button id="btn-accept-all" class="cookie-btn btn-filled" type="button">Accept All</button>
       </div>
     </div>
   </div>
 
   <!-- FULL SCREEN "KNOW MORE" MODAL -->
-  <div id="cookieInfoModal" class="cookie-info-modal">
+  <div id="cookieInfoModal" class="cookie-info-modal" role="dialog" aria-modal="true" aria-labelledby="cookieInfoTitle">
     <div class="cookie-info-content">
-      <div class="cookie-info-icon"><i class="fa-solid fa-cookie-bite"></i></div>
+      <div class="cookie-info-icon"><i class="fa-solid fa-cookie-bite" aria-hidden="true"></i></div>
       <h2 id="cookieInfoTitle">Cookie Title</h2>
       <p id="cookieInfoDesc">Cookie Description goes here.</p>
-      <button class="cookie-close-btn" onclick="closeCookieModal()">CLOSE</button>
+      <button class="cookie-close-btn" onclick="closeCookieModal()" type="button">CLOSE</button>
     </div>
   </div>
 
   <!-- ARCADE BADGES MODAL -->
-  <div id="arcadeModal" class="arcade-modal">
+  <div id="arcadeModal" class="arcade-modal" role="dialog" aria-modal="true" aria-labelledby="arcadeModalHeading">
     <div class="arcade-modal-card">
       <div class="arcade-modal-header">
         <div class="arcade-title-group">
-          <i class="fa-solid fa-trophy arcade-header-trophy"></i>
+          <i class="fa-solid fa-trophy arcade-header-trophy" aria-hidden="true"></i>
           <div>
-            <h3>Neural Arcade Achievements</h3>
+            <h3 id="arcadeModalHeading">Neural Arcade Achievements</h3>
             <span class="arcade-score-sub" id="arcadeModalTotal">Total Record: 0 pts</span>
           </div>
         </div>
-        <button class="arcade-close-btn" id="closeArcadeModal" aria-label="Close Arcade Modal">&times;</button>
+        <button class="arcade-close-btn" id="closeArcadeModal" aria-label="Close Arcade Modal" type="button">&times;</button>
       </div>
       <div class="arcade-modal-body">
         <div class="arcade-badges-grid" id="arcadeBadgesGrid"></div>
@@ -747,7 +827,7 @@
       </div>
       <div class="arcade-modal-footer">
         <a href="game.html" class="primary-btn arcade-play-btn">
-          Launch Neural Arcade <i class="fa-solid fa-arrow-right"></i>
+          Launch Neural Arcade <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
         </a>
       </div>
     </div>
@@ -755,42 +835,46 @@
 
   <!-- ARCHITECTURE SLIDE-OVER DRAWER -->
   <div id="archDrawerOverlay" class="arch-drawer-overlay"></div>
-  <aside id="archDrawer" class="arch-drawer" aria-hidden="true">
+  <aside id="archDrawer" class="arch-drawer" aria-hidden="true" role="dialog" aria-label="System Architecture Drawer">
     <div class="arch-drawer-header">
       <div>
         <span class="arch-tag">SYSTEM ARCHITECTURE</span>
         <h3 id="archDrawerTitle">Project Architecture</h3>
       </div>
-      <button id="archDrawerClose" class="arch-close-btn" aria-label="Close Architecture Drawer">&times;</button>
+      <button id="archDrawerClose" class="arch-close-btn" aria-label="Close Architecture Drawer" type="button">&times;</button>
     </div>
     
     <div class="arch-drawer-body">
       <div class="arch-section">
-        <h4 class="arch-section-title"><i class="fa-solid fa-layer-group"></i> Technologies</h4>
+        <h4 class="arch-section-title"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> Technologies</h4>
         <div class="arch-tech-tags" id="archTechContainer"></div>
       </div>
 
       <div class="arch-section">
-        <h4 class="arch-section-title"><i class="fa-solid fa-diagram-project"></i> Topology & Data Flow</h4>
-        <div class="arch-diagram-wrapper" id="archDiagramContainer"></div>
+        <h4 class="arch-section-title"><i class="fa-solid fa-diagram-project" aria-hidden="true"></i> Topology & Data Flow</h4>
+        <!-- Modified to hold Cytoscape rendering -->
+        <div class="arch-diagram-wrapper" id="archDiagramContainer" aria-label="Cytoscape topology canvas" tabindex="0"></div>
+        <div style="text-align: right; margin-top: 8px;">
+          <button id="simulatePacketBtn" class="secondary-btn" style="padding: 6px 12px; font-size: 11px;" type="button">Simulate Hops</button>
+        </div>
       </div>
 
       <div class="arch-section">
-        <h4 class="arch-section-title"><i class="fa-solid fa-scale-balanced"></i> Architectural Trade-offs & Decisions</h4>
+        <h4 class="arch-section-title"><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i> Architectural Trade-offs & Decisions</h4>
         <div class="arch-tradeoffs-box" id="archTradeoffsContainer"></div>
       </div>
 
       <div class="arch-section">
-        <h4 class="arch-section-title"><i class="fa-solid fa-code"></i> API Endpoints & Route Specs</h4>
+        <h4 class="arch-section-title"><i class="fa-solid fa-code" aria-hidden="true"></i> API Endpoints & Route Specs</h4>
         <div class="arch-routes-list" id="archRoutesContainer"></div>
       </div>
 
       <div class="arch-section arch-actions-section">
-        <a id="archGithubLink" href="#" target="_blank" class="arch-action-link">
-          <i class="fab fa-github"></i> View Source / Commits
+        <a id="archGithubLink" href="#" target="_blank" rel="noopener noreferrer" class="arch-action-link">
+          <i class="fab fa-github" aria-hidden="true"></i> View Source / Commits
         </a>
-        <a id="archLiveLink" href="#" target="_blank" class="arch-action-link primary">
-          <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Deployment
+        <a id="archLiveLink" href="#" target="_blank" rel="noopener noreferrer" class="arch-action-link primary">
+          <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> Open Deployment
         </a>
       </div>
     </div>

@@ -3,19 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Nᴇᴜʀᴀʟ Vɪsɪᴏɴ // Sᴘᴀᴛɪᴀʟ Gᴇsᴛᴜʀᴇ Cᴏɴᴛʀᴏʟ</title>
-  <meta name="description" content="High-performance 60FPS 3D neural network portfolio with Iron Man holographic hand tracking." />
+  <title>Nᴇᴜʀᴀʟ Vɪsɪᴏɴ</title>
+  <meta name="description" content="Interactive 3D neural network portfolio displaying project nodes, geometric connections, and detailed project inspect sheets." />
   
+  <!-- Typography -->
+   <link rel="icon" type="image/png" href="Gemini_Generated_Image_ko64ocko64ocko64-removebg-preview.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   
   <!-- Three.js CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
-  <!-- MediaPipe Hands -->
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
 
   <style>
     *, *::before, *::after {
@@ -31,8 +29,6 @@
       --color-border: #e2e2e2;
       --color-tag-bg: #f5f5f5;
       --color-aqua: #00d2ff;
-      --color-iron-cyan: #00f0ff;
-      --color-iron-glow: rgba(0, 240, 255, 0.4);
       --font-mono: 'Space Mono', monospace, ui-monospace;
       --font-sans: 'Space Grotesk', system-ui, -apple-system, sans-serif;
     }
@@ -49,6 +45,45 @@
       touch-action: none;
     }
 
+    ::selection {
+      background: #000000;
+      color: #ffffff;
+    }
+
+    /* GPU-Accelerated Smooth Entrance Animations */
+    @keyframes gpuSmoothFadeIn {
+      0% {
+        opacity: 0;
+        transform: scale3d(0.97, 0.97, 1) translate3d(0, 0, 0);
+      }
+      100% {
+        opacity: 1;
+        transform: scale3d(1, 1, 1) translate3d(0, 0, 0);
+      }
+    }
+
+    @keyframes gpuHudSlideDown {
+      0% {
+        opacity: 0;
+        transform: translate3d(0, -18px, 0);
+      }
+      100% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+      }
+    }
+
+    @keyframes gpuHudSlideUp {
+      0% {
+        opacity: 0;
+        transform: translate3d(0, 18px, 0);
+      }
+      100% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+      }
+    }
+
     #canvas-container {
       position: absolute;
       top: 0;
@@ -57,19 +92,39 @@
       height: 100%;
       cursor: grab;
       z-index: 1;
+      will-change: transform, opacity;
+      transform: translate3d(0, 0, 0);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      animation: gpuSmoothFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
-    #canvas-container:active { cursor: grabbing; }
+    #canvas-container:active {
+      cursor: grabbing;
+    }
 
-    .ui-layer { position: fixed; z-index: 10; pointer-events: none; }
-    .interactive { pointer-events: auto; }
+    .ui-layer {
+      position: fixed;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .interactive {
+      pointer-events: auto;
+    }
 
     /* Top HUD */
     header.header-hud {
-      top: 0; left: 0; right: 0;
+      top: 0;
+      left: 0;
+      right: 0;
       padding: 14px 16px;
       display: flex;
       flex-direction: column;
       gap: 10px;
+      will-change: transform, opacity;
+      transform: translate3d(0, 0, 0);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      animation: gpuHudSlideDown 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.15s backwards;
     }
 
     .top-bar {
@@ -93,6 +148,7 @@
       gap: 5px;
       background: rgba(255, 255, 255, 0.94);
       backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       border: 1px solid var(--color-border);
       border-radius: 8px;
       padding: 7px 11px;
@@ -113,10 +169,59 @@
       border-color: #000000;
     }
 
+    /* Flowing Border on NEURAL VIEW */
+    .brand-badge-wrapper {
+      position: relative;
+      border-radius: 9px;
+      padding: 1.5px;
+      background: var(--color-border);
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    @keyframes rotateFlow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .brand-badge-wrapper::before {
+      content: '';
+      position: absolute;
+      width: 250%;
+      height: 250%;
+      top: -75%;
+      left: -75%;
+      background: transparent;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    .brand-badge-wrapper.flow-yellow::before {
+      opacity: 1;
+      background: conic-gradient(from 0deg, transparent 60%, #eab308 85%, #fde047 100%);
+      animation: rotateFlow 2.4s linear infinite;
+    }
+    .brand-badge-wrapper.flow-green::before {
+      opacity: 1;
+      background: conic-gradient(from 0deg, transparent 60%, #10b981 85%, #34d399 100%);
+      animation: rotateFlow 2s linear infinite;
+    }
+    .brand-badge-wrapper.flow-red::before {
+      opacity: 1;
+      background: conic-gradient(from 0deg, transparent 50%, #ef4444 85%, #f87171 100%);
+      animation: rotateFlow 1.6s linear infinite;
+    }
+
     .brand-badge {
+      position: relative;
+      z-index: 1;
       background: rgba(255, 255, 255, 0.96);
       backdrop-filter: blur(8px);
-      border: 1px solid var(--color-border);
+      -webkit-backdrop-filter: blur(8px);
       border-radius: 7.5px;
       padding: 7px 10px;
       display: inline-flex;
@@ -134,19 +239,32 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      white-space: nowrap;
     }
     .pulse-dot {
-      width: 6px; height: 6px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
-      background: #10b981;
+      background: #000000;
+      transition: background 0.3s ease;
+      animation: pulseAnim 2s infinite ease-in-out;
     }
+    @keyframes pulseAnim {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.3; transform: scale(0.85); }
+    }
+    .flow-yellow .pulse-dot { background: #eab308; }
+    .flow-green .pulse-dot { background: #10b981; }
+    .flow-red .pulse-dot { background: #ef4444; }
 
+    /* Control Tray */
     .control-tray {
       display: flex;
       align-items: center;
       gap: 5px;
       background: rgba(255, 255, 255, 0.94);
       backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       border: 1px solid var(--color-border);
       border-radius: 8px;
       padding: 3px 5px;
@@ -155,7 +273,8 @@
     }
 
     .icon-btn {
-      width: 30px; height: 30px;
+      width: 30px;
+      height: 30px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -165,41 +284,17 @@
       color: var(--color-text);
       cursor: pointer;
       transition: all 0.15s ease;
-      position: relative;
     }
-    .icon-btn:hover { background: #f0f0f0; }
+    .icon-btn:hover {
+      background: #f0f0f0;
+    }
     .icon-btn.active {
       background: #000000;
       color: #ffffff;
       border-color: #000000;
     }
 
-    /* Spatial Mode Futuristic Button */
-    .icon-btn.spatial-active {
-      background: #000000 !important;
-      color: var(--color-iron-cyan) !important;
-      border: 1px solid var(--color-iron-cyan) !important;
-      box-shadow: 0 0 10px var(--color-iron-glow);
-    }
-    .spatial-ping {
-      position: absolute;
-      top: 4px; right: 4px;
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--color-iron-cyan);
-      box-shadow: 0 0 6px var(--color-iron-cyan);
-      display: none;
-    }
-    .spatial-active .spatial-ping {
-      display: block;
-      animation: pulseAnim 1.2s infinite ease-in-out;
-    }
-
-    @keyframes pulseAnim {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.3; transform: scale(0.85); }
-    }
-
+    /* Filter Strip */
     .filter-strip {
       display: flex;
       align-items: center;
@@ -207,8 +302,11 @@
       overflow-x: auto;
       padding-bottom: 2px;
       scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
     }
-    .filter-strip::-webkit-scrollbar { display: none; }
+    .filter-strip::-webkit-scrollbar {
+      display: none;
+    }
     .filter-pill {
       font-family: var(--font-mono);
       font-size: 10px;
@@ -216,13 +314,17 @@
       border-radius: 5px;
       background: rgba(255, 255, 255, 0.88);
       backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
       border: 1px solid var(--color-border);
       color: var(--color-muted);
       cursor: pointer;
       white-space: nowrap;
       transition: all 0.15s ease;
     }
-    .filter-pill:hover { color: #000000; border-color: #000000; }
+    .filter-pill:hover {
+      color: #000000;
+      border-color: #000000;
+    }
     .filter-pill.active {
       background: #000000;
       color: #ffffff;
@@ -233,7 +335,8 @@
     /* Status Alert Pop-up */
     #status-popup {
       position: fixed;
-      top: 75px; left: 50%;
+      top: 75px;
+      left: 50%;
       transform: translateX(-50%) translateY(-10px);
       padding: 8px 14px;
       border-radius: 8px;
@@ -250,24 +353,39 @@
       gap: 8px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
       max-width: 90vw;
+      text-align: center;
     }
     #status-popup.show {
-      opacity: 1; visibility: visible;
+      opacity: 1;
+      visibility: visible;
       transform: translateX(-50%) translateY(0);
     }
-    #status-popup.status-yellow { background: #fefce8; color: #854d0e; border: 1px solid #facc15; }
-    #status-popup.status-green { background: #000000; color: #ffffff; border: 1px solid #10b981; }
-    #status-popup.status-cyan { background: #000000; color: var(--color-iron-cyan); border: 1px solid var(--color-iron-cyan); box-shadow: 0 0 15px var(--color-iron-glow); }
-    #status-popup.status-red { background: #fef2f2; color: #991b1b; border: 1px solid #f87171; }
+    #status-popup.status-yellow {
+      background: #fefce8;
+      color: #854d0e;
+      border: 1px solid #facc15;
+    }
+    #status-popup.status-green {
+      background: #000000;
+      color: #ffffff;
+      border: 1px solid #10b981;
+    }
+    #status-popup.status-red {
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #f87171;
+    }
 
     /* Feature Space Card */
     #feature-space-card {
       position: fixed;
-      bottom: 56px; right: 16px;
+      bottom: 56px;
+      right: 16px;
       width: 320px;
       max-width: calc(100vw - 40px);
       background: rgba(255, 255, 255, 0.94);
       backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border: 1px solid var(--color-border);
       border-radius: 14px;
       padding: 16px;
@@ -284,19 +402,61 @@
       opacity: 0;
       pointer-events: none;
     }
-    .fs-header { display: flex; align-items: center; justify-content: space-between; }
-    .fs-title { font-size: 14px; font-weight: 700; color: #000000; }
-    .fs-close { background: transparent; border: none; cursor: pointer; color: #888; font-size: 16px; }
-    .fs-body { font-size: 11.5px; line-height: 1.55; color: #444444; }
-    .fs-legend { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
-    .fs-legend-item { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #333333; }
-    .fs-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .fs-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .fs-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #000000;
+    }
+    .fs-close {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: #888;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+    }
+    .fs-body {
+      font-size: 11.5px;
+      line-height: 1.55;
+      color: #444444;
+    }
+    .fs-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .fs-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: #333333;
+    }
+    .fs-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
     .fs-dot.dot-project { background: #050505; }
     .fs-dot.dot-live { background: #00d2ff; box-shadow: 0 0 6px #00d2ff; }
     .fs-dot.dot-tech { background: #9ca3af; }
-    .fs-footer { font-family: var(--font-mono); font-size: 9px; color: #888888; border-top: 1px solid #ebebeb; padding-top: 8px; }
+    .fs-footer {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: #888888;
+      border-top: 1px solid #ebebeb;
+      padding-top: 8px;
+    }
 
-    /* Node Tooltip */
+    /* Tooltip */
     #node-tooltip {
       position: fixed;
       z-index: 25;
@@ -309,7 +469,10 @@
       flex-direction: column;
       align-items: center;
     }
-    #node-tooltip.visible { opacity: 1; visibility: visible; }
+    #node-tooltip.visible {
+      opacity: 1;
+      visibility: visible;
+    }
     .tooltip-card {
       background: #000000;
       color: #ffffff;
@@ -322,12 +485,44 @@
       align-items: center;
       gap: 2px;
     }
-    .tooltip-title-wrap { display: flex; align-items: center; gap: 6px; }
-    .tooltip-dot { width: 6px; height: 6px; border-radius: 50%; background: #ffffff; }
-    .tooltip-dot.live { background: #00e5ff; box-shadow: 0 0 8px #00e5ff; }
-    .tooltip-title { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
-    .tooltip-cat { font-family: var(--font-mono); font-size: 9px; color: #a0a0a0; }
-    .tooltip-arrow { width: 8px; height: 8px; background: #000000; transform: rotate(45deg); margin-top: -4px; border-right: 1px solid #222222; border-bottom: 1px solid #222222; }
+    .tooltip-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tooltip-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #ffffff;
+    }
+    .tooltip-dot.live {
+      background: #00e5ff;
+      box-shadow: 0 0 8px #00e5ff;
+    }
+    .tooltip-title {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .tooltip-cat {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: #a0a0a0;
+      letter-spacing: 0.05em;
+    }
+    .tooltip-arrow {
+      width: 8px;
+      height: 8px;
+      background: #000000;
+      transform: rotate(45deg);
+      margin-top: -4px;
+      border-right: 1px solid #222222;
+      border-bottom: 1px solid #222222;
+    }
 
     #frosted-backdrop {
       position: fixed;
@@ -335,17 +530,22 @@
       z-index: 30;
       background: rgba(255, 255, 255, 0.45);
       backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       opacity: 0;
       visibility: hidden;
       transition: opacity 0.25s ease, visibility 0.25s ease;
       cursor: pointer;
     }
-    #frosted-backdrop.active { opacity: 1; visibility: visible; }
+    #frosted-backdrop.active {
+      opacity: 1;
+      visibility: visible;
+    }
 
-    /* Side Card */
+    /* Inspection Card */
     #side-card {
       position: fixed;
-      top: 0; right: 0;
+      top: 0;
+      right: 0;
       width: 100%;
       max-width: 460px;
       height: 100%;
@@ -358,53 +558,301 @@
       transform: translateX(100%);
       transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    #side-card.open { transform: translateX(0); }
+    #side-card.open {
+      transform: translateX(0);
+    }
 
-    .card-header { padding: 18px 20px; border-bottom: 1px solid var(--color-border); display: flex; align-items: flex-start; justify-content: space-between; background: #fafafa; }
-    .card-header-left { display: flex; flex-direction: column; gap: 4px; padding-right: 14px; }
-    .card-badges { display: flex; align-items: center; gap: 6px; }
-    .status-badge { display: inline-flex; align-items: center; gap: 5px; background: #000000; color: #ffffff; font-family: var(--font-mono); font-size: 9px; font-weight: 700; padding: 3px 6px; border-radius: 4px; text-transform: uppercase; }
-    .status-badge.live { background: #042f2e; color: #00e5ff; border: 1px solid #00bcd4; }
-    .status-dot { width: 5px; height: 5px; border-radius: 50%; background: #10b981; }
-    .card-category-label { font-family: var(--font-mono); font-size: 10px; color: var(--color-muted); text-transform: uppercase; }
-    .card-title { font-size: 19px; font-weight: 700; color: #000000; line-height: 1.25; }
-    .btn-close { width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; background: transparent; border: 1px solid transparent; border-radius: 6px; cursor: pointer; color: var(--color-muted); font-size: 16px; flex-shrink: 0; }
-    .btn-close:hover { background: #ebebeb; color: #000000; }
-    .card-body { flex: 1; overflow-y: auto; padding: 18px 20px; display: flex; flex-direction: column; gap: 16px; }
-    .section-label { font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-muted); margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; }
-    .card-description { font-size: 13px; line-height: 1.6; color: #262626; }
-    .tags-container { display: flex; flex-wrap: wrap; gap: 5px; }
-    .tech-tag { font-family: var(--font-mono); font-size: 10px; font-weight: 500; color: #000000; background: var(--color-tag-bg); border: 1px solid var(--color-border); border-radius: 4px; padding: 3px 7px; }
-    .metadata-box { background: #f9f9f9; border: 1px solid var(--color-border); border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 7px; }
-    .meta-row { display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 10.5px; border-bottom: 1px solid #ebebeb; padding-bottom: 4px; }
-    .meta-row:last-child { border-bottom: none; padding-bottom: 0; }
-    .meta-label { color: var(--color-muted); }
-    .meta-value { font-weight: 700; color: #000000; }
-    .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-    .metric-card { background: #ffffff; border: 1px solid var(--color-border); border-radius: 6px; padding: 7px 9px; display: flex; flex-direction: column; gap: 2px; }
-    .metric-label { font-family: var(--font-mono); font-size: 8.5px; color: var(--color-muted); text-transform: uppercase; }
-    .metric-val { font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: #000000; }
-    .connected-list { display: flex; flex-direction: column; gap: 5px; }
-    .conn-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; background: #ffffff; border: 1px solid var(--color-border); border-radius: 6px; cursor: pointer; text-decoration: none; color: inherit; }
-    .conn-item:hover { border-color: #000000; background: #fbfbfb; }
-    .conn-name { font-family: var(--font-mono); font-size: 10.5px; font-weight: 700; display: flex; align-items: center; gap: 5px; }
-    .card-footer { padding: 14px 18px; border-top: 1px solid var(--color-border); background: #fafafa; display: flex; gap: 8px; }
-    .btn-action-primary, .btn-action-secondary { flex: 1; border-radius: 6px; padding: 9px; font-family: var(--font-mono); font-size: 10.5px; font-weight: 700; text-transform: uppercase; display: inline-flex; align-items: center; justify-content: center; gap: 5px; cursor: pointer; text-decoration: none; }
-    .btn-action-primary { background: #000000; color: #ffffff; border: 1px solid #000000; }
-    .btn-action-secondary { background: #ffffff; color: #000000; border: 1px solid var(--color-border); }
-    .btn-action-primary.disabled, .btn-action-secondary.disabled { opacity: 0.4; pointer-events: none; cursor: not-allowed; }
+    .card-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      background: #fafafa;
+    }
+    .card-header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-right: 14px;
+    }
+    .card-badges {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #000000;
+      color: #ffffff;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 700;
+      padding: 3px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+    .status-badge.live {
+      background: #042f2e;
+      color: #00e5ff;
+      border: 1px solid #00bcd4;
+    }
+    .status-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #10b981;
+    }
+    .status-dot.aqua-pulse {
+      background: #00e5ff;
+      box-shadow: 0 0 6px #00e5ff;
+      animation: pulseAnim 1.2s infinite ease-in-out;
+    }
+    .card-category-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--color-muted);
+      text-transform: uppercase;
+    }
+    .card-title {
+      font-size: 19px;
+      font-weight: 700;
+      color: #000000;
+      line-height: 1.25;
+    }
+
+    .btn-close {
+      width: 30px;
+      height: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--color-muted);
+      transition: all 0.15s ease;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .btn-close:hover {
+      background: #ebebeb;
+      color: #000000;
+    }
+
+    .card-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-description {
+      font-size: 13px;
+      line-height: 1.6;
+      color: #262626;
+    }
+
+    .tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+    .tech-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      color: #000000;
+      background: var(--color-tag-bg);
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      padding: 3px 7px;
+    }
+
+    .metadata-box {
+      background: #f9f9f9;
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      border-bottom: 1px solid #ebebeb;
+      padding-bottom: 4px;
+    }
+    .meta-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .meta-label {
+      color: var(--color-muted);
+    }
+    .meta-value {
+      font-weight: 700;
+      color: #000000;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+    .metric-card {
+      background: #ffffff;
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      padding: 7px 9px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .metric-label {
+      font-family: var(--font-mono);
+      font-size: 8.5px;
+      color: var(--color-muted);
+      text-transform: uppercase;
+    }
+    .metric-val {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: #000000;
+    }
+
+    .connected-list {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .conn-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 10px;
+      background: #ffffff;
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+      color: inherit;
+    }
+    .conn-item:hover {
+      border-color: #000000;
+      background: #fbfbfb;
+    }
+    .conn-name {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .conn-action {
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      color: var(--color-muted);
+    }
+
+    .card-footer {
+      padding: 14px 18px;
+      border-top: 1px solid var(--color-border);
+      background: #fafafa;
+      display: flex;
+      gap: 8px;
+    }
+    .btn-action-primary {
+      flex: 1;
+      background: #000000;
+      color: #ffffff;
+      border: 1px solid #000000;
+      border-radius: 6px;
+      padding: 9px;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn-action-primary.disabled {
+      opacity: 0.4;
+      pointer-events: none;
+      cursor: not-allowed;
+    }
+
+    .btn-action-secondary {
+      flex: 1;
+      background: #ffffff;
+      color: #000000;
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      padding: 9px;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn-action-secondary.disabled {
+      opacity: 0.4;
+      pointer-events: none;
+      cursor: not-allowed;
+    }
 
     footer.footer-hud {
-      bottom: 0; left: 0; right: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
       padding: 12px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 8px;
+      will-change: transform, opacity;
+      transform: translate3d(0, 0, 0);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      animation: gpuHudSlideUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.15s backwards;
     }
     .hud-badge {
       background: rgba(255, 255, 255, 0.94);
       backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       border: 1px solid var(--color-border);
       border-radius: 6px;
       padding: 5px 10px;
@@ -416,11 +864,15 @@
       color: var(--color-muted);
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
     }
-    .hud-highlight { color: #000000; font-weight: 700; }
+    .hud-highlight {
+      color: #000000;
+      font-weight: 700;
+    }
 
     #directory-drawer {
       position: fixed;
-      top: 0; left: 0;
+      top: 0;
+      left: 0;
       width: 100%;
       max-width: 320px;
       height: 100%;
@@ -433,177 +885,106 @@
       transform: translateX(-100%);
       transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    #directory-drawer.open { transform: translateX(0); }
-    .drawer-header { padding: 14px 16px; border-bottom: 1px solid var(--color-border); background: #fafafa; display: flex; justify-content: space-between; align-items: center; }
-    .drawer-search-wrap { padding: 8px 16px; border-bottom: 1px solid var(--color-border); }
-    .drawer-list { flex: 1; overflow-y: auto; padding: 8px; display: flex; flex-direction: column; gap: 5px; }
-    .drawer-item { padding: 9px 11px; border-radius: 6px; border: 1px solid var(--color-border); background: #ffffff; cursor: pointer; }
-    .drawer-item:hover, .drawer-item.active { border-color: #000000; background: #000000; color: #ffffff; }
-    .drawer-item-title { font-family: var(--font-mono); font-size: 11px; font-weight: 700; margin-bottom: 2px; display: flex; align-items: center; justify-content: space-between; }
-    .drawer-tag-live { font-size: 8.5px; padding: 1px 4px; border-radius: 3px; background: #00bcd4; color: #ffffff; text-transform: uppercase; font-weight: 700; }
-    .drawer-item-sub { font-size: 10px; color: var(--color-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-    /* ============================================================
-       HIGH-PERFORMANCE HOLOGRAPHIC RETICLE & TELEMETRY
-       ============================================================ */
-
-    #gesture-reticle {
-      position: fixed;
-      pointer-events: none;
-      z-index: 28;
-      width: 44px;
-      height: 44px;
-      transform: translate(-50%, -50%);
-      opacity: 0;
-      visibility: hidden;
-      will-change: transform, left, top;
-      transition: opacity 0.2s ease;
+    #directory-drawer.open {
+      transform: translateX(0);
     }
-    #gesture-reticle.active {
-      opacity: 1;
-      visibility: visible;
+    .drawer-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--color-border);
+      background: #fafafa;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-
-    .reticle-ring-outer {
-      position: absolute;
-      inset: 0;
-      border: 1.5px dashed var(--color-iron-cyan);
-      border-radius: 50%;
-      animation: reticleSpin 6s linear infinite;
+    .drawer-search-wrap {
+      padding: 8px 16px;
+      border-bottom: 1px solid var(--color-border);
     }
-    .reticle-ring-inner {
-      position: absolute;
-      inset: 8px;
-      border: 1.5px solid var(--color-iron-cyan);
-      border-radius: 50%;
-      box-shadow: 0 0 10px var(--color-iron-glow);
-      transition: all 0.12s ease;
-    }
-    .reticle-center-dot {
-      position: absolute;
-      top: 50%; left: 50%;
-      width: 4px; height: 4px;
-      background: var(--color-iron-cyan);
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      box-shadow: 0 0 8px var(--color-iron-cyan);
-    }
-    .reticle-bracket {
-      position: absolute;
-      width: 6px; height: 6px;
-      border-color: var(--color-iron-cyan);
-      border-style: solid;
-    }
-    .bracket-tl { top: -3px; left: -3px; border-width: 2px 0 0 2px; }
-    .bracket-tr { top: -3px; right: -3px; border-width: 2px 2px 0 0; }
-    .bracket-bl { bottom: -3px; left: -3px; border-width: 0 0 2px 2px; }
-    .bracket-br { bottom: -3px; right: -3px; border-width: 0 2px 2px 0; }
-
-    #gesture-reticle.pinching .reticle-ring-inner {
-      inset: 3px;
-      background: rgba(0, 240, 255, 0.35);
-      border-color: #ffffff;
-      box-shadow: 0 0 16px var(--color-iron-cyan);
-    }
-    #gesture-reticle.orbiting .reticle-ring-outer {
-      border-color: #facc15;
-      animation-duration: 2s;
-    }
-    #gesture-reticle.locked-node .reticle-ring-outer {
-      border-color: #ffffff;
-      border-style: solid;
-    }
-
-    @keyframes reticleSpin { 100% { transform: rotate(360deg); } }
-
-    /* Telemetry HUD Viewport */
-    #spatial-feed-hud {
-      position: fixed;
-      bottom: 56px; left: 16px;
-      width: 175px; height: 135px;
-      background: rgba(10, 15, 20, 0.90);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(0, 240, 255, 0.4);
-      border-radius: 12px;
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
-      z-index: 35;
-      overflow: hidden;
+    .drawer-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px;
       display: flex;
       flex-direction: column;
-      opacity: 0;
-      transform: translateY(20px);
-      pointer-events: none;
-      transition: opacity 0.25s ease, transform 0.25s ease;
+      gap: 5px;
+      -webkit-overflow-scrolling: touch;
     }
-    #spatial-feed-hud.visible {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: auto;
+    .drawer-item {
+      padding: 9px 11px;
+      border-radius: 6px;
+      border: 1px solid var(--color-border);
+      background: #ffffff;
+      cursor: pointer;
+      transition: all 0.15s ease;
     }
-
-    .spatial-hud-header {
-      padding: 5px 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(0, 240, 255, 0.08);
-      border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+    .drawer-item:hover, .drawer-item.active {
+      border-color: #000000;
+      background: #000000;
+      color: #ffffff;
+    }
+    .drawer-item-title {
       font-family: var(--font-mono);
-      font-size: 8px;
-      color: var(--color-iron-cyan);
-      letter-spacing: 0.06em;
+      font-size: 11px;
       font-weight: 700;
-    }
-    .hud-rec-dot {
-      width: 5px; height: 5px;
-      border-radius: 50%;
-      background: #00f0ff;
-      animation: pulseAnim 1s infinite ease-in-out;
-    }
-
-    .spatial-viewport-wrap {
-      position: relative;
-      flex: 1;
-      width: 100%;
-      background: #02070a;
-      overflow: hidden;
-    }
-    #spatial-video {
-      position: absolute;
-      width: 100%; height: 100%;
-      object-fit: cover;
-      transform: scaleX(-1);
-      opacity: 0.25;
-      filter: grayscale(100%);
-    }
-    #spatial-canvas {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      transform: scaleX(-1);
-    }
-
-    .spatial-hud-footer {
-      padding: 4px 8px;
+      margin-bottom: 2px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      background: rgba(0, 0, 0, 0.7);
-      border-top: 1px solid rgba(0, 240, 255, 0.15);
-      font-family: var(--font-mono);
-      font-size: 8px;
-      color: #94a3b8;
+      justify-content: space-between;
     }
-    #gesture-state-text {
-      color: var(--color-iron-cyan);
-      font-weight: 700;
+    .drawer-tag-live {
+      font-size: 8.5px;
+      padding: 1px 4px;
+      border-radius: 3px;
+      background: #00bcd4;
+      color: #ffffff;
       text-transform: uppercase;
+      font-weight: 700;
+    }
+    .drawer-item-sub {
+      font-size: 10px;
+      color: var(--color-muted);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     @media (max-width: 640px) {
-      #spatial-feed-hud {
-        width: 140px; height: 110px;
-        bottom: 50px; left: 8px;
+      header.header-hud {
+        padding: 8px 10px;
+        gap: 6px;
+      }
+      .hud-badge:first-child {
+        display: none;
+      }
+      footer.footer-hud {
+        padding: 8px 10px;
+      }
+
+      #side-card {
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        max-width: 100%;
+        height: 75vh;
+        border-left: none;
+        border-top: 1px solid var(--color-border);
+        border-radius: 16px 16px 0 0;
+        transform: translateY(100%);
+      }
+      #side-card.open {
+        transform: translateY(0);
+      }
+      .card-header {
+        border-radius: 16px 16px 0 0;
+        padding: 14px 16px;
+      }
+      #feature-space-card {
+        bottom: 50px;
+        left: 10px;
+        right: 10px;
+        width: auto;
       }
     }
   </style>
@@ -611,36 +992,6 @@
 <body>
 
   <div id="canvas-container"></div>
-
-  <!-- Holographic Reticle -->
-  <div id="gesture-reticle">
-    <div class="reticle-ring-outer"></div>
-    <div class="reticle-ring-inner"></div>
-    <div class="reticle-center-dot"></div>
-    <div class="reticle-bracket bracket-tl"></div>
-    <div class="reticle-bracket bracket-tr"></div>
-    <div class="reticle-bracket bracket-bl"></div>
-    <div class="reticle-bracket bracket-br"></div>
-  </div>
-
-  <!-- Telemetry Camera HUD -->
-  <div id="spatial-feed-hud">
-    <div class="spatial-hud-header">
-      <div style="display: flex; align-items: center; gap: 5px;">
-        <span class="hud-rec-dot"></span>
-        <span>STARK SPATIAL LINK</span>
-      </div>
-      <span id="spatial-fps">60 FPS</span>
-    </div>
-    <div class="spatial-viewport-wrap">
-      <video id="spatial-video" playsinline muted></video>
-      <canvas id="spatial-canvas"></canvas>
-    </div>
-    <div class="spatial-hud-footer">
-      <span>MODE</span>
-      <span id="gesture-state-text">SEARCHING...</span>
-    </div>
-  </div>
 
   <!-- State Alert Pop-up -->
   <div id="status-popup">
@@ -671,7 +1022,8 @@
           <span>Portfolio</span>
         </a>
 
-        <div class="brand-badge-wrapper interactive">
+        <!-- Flowing Border Wrapper around NEURAL VIEW -->
+        <div class="brand-badge-wrapper interactive" id="brand-badge-wrapper">
           <div class="brand-badge">
             <div class="brand-title">
               <span class="pulse-dot"></span>
@@ -683,14 +1035,6 @@
 
       <!-- Controls -->
       <div class="control-tray interactive">
-        <button id="btn-camera-mode" class="icon-btn" title="Toggle Iron Man Spatial Mode">
-          <span class="spatial-ping"></span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
-            <circle cx="12" cy="13" r="4"></circle>
-          </svg>
-        </button>
-
         <button id="btn-toggle-info" class="icon-btn" title="Toggle Info">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"></circle>
@@ -738,36 +1082,28 @@
   <!-- Feature Space Info Card -->
   <div id="feature-space-card" class="interactive">
     <div class="fs-header">
-      <span class="fs-title">Iron Man Spatial Gestures</span>
+      <span class="fs-title">Portfolio feature space</span>
       <button class="fs-close" id="btn-close-info" aria-label="Close card">&times;</button>
     </div>
     <div class="fs-body">
-      Camera mode uses high-speed edge AI hand tracking:
+      Every point is a real entry from this site. Nodes are distributed spatially in 3D neural space with real-time vector coordinate connections.
     </div>
     <div class="fs-legend">
       <div class="fs-legend-item">
-        <span class="fs-dot" style="background: var(--color-iron-cyan);"></span>
-        <span><b>☝️ Index Point:</b> Precision Laser Reticle & Hover</span>
+        <span class="fs-dot dot-project"></span>
+        <span>Project (Standard Node)</span>
       </div>
       <div class="fs-legend-item">
-        <span class="fs-dot" style="background: #facc15;"></span>
-        <span><b>🖐️ Open Palm:</b> Move Hand to Orbit Constellation</span>
+        <span class="fs-dot dot-live"></span>
+        <span>Live Application (Active System)</span>
       </div>
       <div class="fs-legend-item">
-        <span class="fs-dot" style="background: #ffffff; border: 1px solid #000;"></span>
-        <span><b>👌 Pinch (Thumb+Index):</b> Trigger & Open Node</span>
-      </div>
-      <div class="fs-legend-item">
-        <span class="fs-dot" style="background: #ef4444;"></span>
-        <span><b>✊ Closed Fist:</b> Close Card / Reset View</span>
-      </div>
-      <div class="fs-legend-item">
-        <span class="fs-dot" style="background: #9ca3af;"></span>
-        <span><b>↔️ Push/Pull Hand:</b> Dynamic Camera Zoom</span>
+        <span class="fs-dot dot-tech"></span>
+        <span>Metallic Synaptic Bridges</span>
       </div>
     </div>
     <div class="fs-footer">
-      Optimized MediaPipe Lite • 60 FPS Engine
+      Drag to orbit • scroll to zoom • tap node to inspect
     </div>
   </div>
 
@@ -866,7 +1202,7 @@
       <button class="btn-close" id="btn-close-dir">&times;</button>
     </div>
     <div class="drawer-search-wrap">
-      <input type="text" id="drawer-search" class="form-input" placeholder="Search nodes, tech..." style="font-size: 11.5px; padding: 6px 8px; width: 100%; border: 1px solid var(--color-border); border-radius: 6px;" />
+      <input type="text" id="drawer-search" class="form-input" placeholder="Search nodes, tech..." style="font-size: 11.5px; padding: 6px 8px;" />
     </div>
     <div class="drawer-list" id="drawer-list-items"></div>
   </div>
@@ -874,13 +1210,11 @@
   <!-- Footer HUD -->
   <footer class="ui-layer footer-hud">
     <div class="hud-badge interactive">
-      <span class="hud-highlight" id="footer-gesture-hint">Drag or Orbit</span>
+      <span class="hud-highlight">Drag to Rotate</span>
       <span>•</span>
-      <span>☝️ Point Reticle</span>
+      <span>Pinch / Scroll to Zoom</span>
       <span>•</span>
-      <span>🖐️ Hand Orbit</span>
-      <span>•</span>
-      <span>👌 Pinch Select</span>
+      <span>Tap Node</span>
     </div>
 
     <div class="hud-badge interactive">
@@ -902,28 +1236,33 @@
       let autoRotate = true;
       let popupTimer = null;
 
+      const badgeWrapper = document.getElementById('brand-badge-wrapper');
       const statusPopup = document.getElementById('status-popup');
       const popupText = document.getElementById('popup-text');
 
       function setBadgeState(state, message, durationMs) {
-        statusPopup.classList.remove('status-yellow', 'status-green', 'status-red', 'status-cyan', 'show');
+        badgeWrapper.classList.remove('flow-yellow', 'flow-green', 'flow-red');
+        statusPopup.classList.remove('status-yellow', 'status-green', 'status-red', 'show');
         if (popupTimer) clearTimeout(popupTimer);
 
         if (state === 'yellow') {
+          badgeWrapper.classList.add('flow-yellow');
           statusPopup.classList.add('status-yellow', 'show');
-          popupText.textContent = message || 'Loading...';
+          popupText.textContent = message || 'Server Cold-Starting... Waking up endpoints';
         } else if (state === 'green') {
+          badgeWrapper.classList.add('flow-green');
           statusPopup.classList.add('status-green', 'show');
-          popupText.textContent = message || 'Ready';
-          popupTimer = setTimeout(() => statusPopup.classList.remove('show'), durationMs || 3000);
-        } else if (state === 'cyan') {
-          statusPopup.classList.add('status-cyan', 'show');
-          popupText.textContent = message;
-          popupTimer = setTimeout(() => statusPopup.classList.remove('show'), durationMs || 3500);
+          popupText.textContent = message || 'Connected to Server • Neural Network Live';
+          popupTimer = setTimeout(() => {
+            statusPopup.classList.remove('show');
+          }, durationMs || 3000);
         } else if (state === 'red') {
+          badgeWrapper.classList.add('flow-red');
           statusPopup.classList.add('status-red', 'show');
-          popupText.textContent = message || 'Error';
-          popupTimer = setTimeout(() => statusPopup.classList.remove('show'), durationMs || 7000);
+          popupText.textContent = message || 'Warning: Failed fetching projects.json';
+          popupTimer = setTimeout(() => {
+            statusPopup.classList.remove('show');
+          }, durationMs || 7000);
         }
       }
 
@@ -933,6 +1272,7 @@
         } catch (e) {}
       }
 
+      // Universal Dual-Hosting Data Loader (Localhost + GitHub Pages)
       async function loadProjectsData() {
         setBadgeState('yellow', 'Connecting • Fetching neural nodes...');
         let fetchedSuccessfully = false;
@@ -951,7 +1291,7 @@
             }
           }
         } catch (e) {
-          console.warn('projects.json fetch failed:', e);
+          console.warn('Resolved projects.json fetch failed, trying local fallback:', e);
         }
 
         if (!fetchedSuccessfully) {
@@ -981,9 +1321,9 @@
         }
 
         if (fetchedSuccessfully) {
-          setBadgeState('green', 'Connected • Neural Network Live', 3000);
+          setBadgeState('green', 'Connected to Server • Neural Network Live', 3000);
         } else {
-          setBadgeState('red', 'Warning: Error loading projects.json', 7000);
+          setBadgeState('red', 'Warning: Error fetching projects.json (Check file location)', 7000);
         }
 
         rebuildCategoryFilters();
@@ -1065,7 +1405,7 @@
         });
       }
 
-      // UI References
+      // DOM Elements
       const container = document.getElementById('canvas-container');
       const tooltip = document.getElementById('node-tooltip');
       const tooltipTitle = document.getElementById('tooltip-title');
@@ -1076,12 +1416,17 @@
       const dirDrawer = document.getElementById('directory-drawer');
       const dirSearch = document.getElementById('drawer-search');
       const dirListItems = document.getElementById('drawer-list-items');
+
       const featureSpaceCard = document.getElementById('feature-space-card');
       const btnToggleInfo = document.getElementById('btn-toggle-info');
       const btnCloseInfo = document.getElementById('btn-close-info');
 
-      btnToggleInfo.addEventListener('click', () => featureSpaceCard.classList.toggle('hidden'));
-      btnCloseInfo.addEventListener('click', () => featureSpaceCard.classList.add('hidden'));
+      btnToggleInfo.addEventListener('click', () => {
+        featureSpaceCard.classList.toggle('hidden');
+      });
+      btnCloseInfo.addEventListener('click', () => {
+        featureSpaceCard.classList.add('hidden');
+      });
 
       const btnCloseCard = document.getElementById('btn-close-card');
       const btnResetCam = document.getElementById('btn-reset-cam');
@@ -1227,7 +1572,7 @@
         const sphereGeo = new THREE.SphereGeometry(4.2, 32, 32);
         const haloGeo = new THREE.SphereGeometry(6.2, 24, 24);
         const pulseWaveGeo = new THREE.RingGeometry(4.8, 6.4, 32);
-        const hitGeo = new THREE.SphereGeometry(14, 16, 16); // generous hit volume for seamless hand raycasting
+        const hitGeo = new THREE.SphereGeometry(11, 16, 16);
 
         visibleProjects.forEach((proj, idx) => {
           const isLive = proj.type === 'live';
@@ -1419,7 +1764,7 @@
                 <div class="conn-name">${conn.title} ${connIsLive ? '<span class="drawer-tag-live">LIVE</span>' : ''}</div>
                 <div style="font-size: 9.5px; color: #888;">${conn.category}</div>
               </div>
-              <span style="font-family: var(--font-mono); font-size: 9.5px; color: #888;">Traverse &rarr;</span>
+              <span class="conn-action">Traverse &rarr;</span>
             `;
             btn.addEventListener('click', () => selectProject(conn));
             detailConnected.appendChild(btn);
@@ -1485,7 +1830,7 @@
             </div>
             <div class="drawer-item-sub">${p.description}</div>
             <div style="margin-top: 5px; display: flex; gap: 4px; flex-wrap: wrap;">
-              ${p.tags.slice(0, 3).map(t => `<span style="font-family: var(--font-mono); font-size: 8.5px; padding: 2px 4px; border-radius: 3px; background: rgba(128,128,128,0.15);">\${t}</span>`).join('')}
+              ${p.tags.slice(0, 3).map(t => `<span style="font-family: var(--font-mono); font-size: 8.5px; padding: 2px 4px; border-radius: 3px; background: rgba(128,128,128,0.15);">${t}</span>`).join('')}
             </div>
           `;
           div.addEventListener('click', () => {
@@ -1506,7 +1851,6 @@
       });
 
       window.addEventListener('mousemove', e => {
-        if (spatialModeActive) return;
         const rect = container.getBoundingClientRect();
         mouse.x = ((e.clientX - rect.left) / width) * 2 - 1;
         mouse.y = -((e.clientY - rect.top) / height) * 2 + 1;
@@ -1544,6 +1888,64 @@
         e.preventDefault();
         camState.targetDistance = Math.max(50, Math.min(480, camState.targetDistance + e.deltaY * 0.75));
       }, { passive: false });
+
+      container.addEventListener('mouseleave', () => {
+        isMouseInCanvas = false;
+        camState.isDragging = false;
+        tooltip.classList.remove('visible');
+        hoveredProject = null;
+      });
+
+      let touchDist = 0;
+      container.addEventListener('touchstart', e => {
+        if (e.touches.length === 1) {
+          camState.isDragging = true;
+          camState.prevX = e.touches[0].clientX;
+          camState.prevY = e.touches[0].clientY;
+          camState.dragDist = 0;
+        } else if (e.touches.length === 2) {
+          touchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+        }
+      }, { passive: true });
+
+      window.addEventListener('touchmove', e => {
+        if (e.touches.length === 1 && camState.isDragging) {
+          const cx = e.touches[0].clientX;
+          const cy = e.touches[0].clientY;
+          const dx = cx - camState.prevX;
+          const dy = cy - camState.prevY;
+          camState.dragDist += Math.abs(dx) + Math.abs(dy);
+
+          camState.targetTheta -= dx * 0.0085;
+          camState.targetPhi = Math.max(0.12, Math.min(Math.PI - 0.12, camState.targetPhi - dy * 0.0085));
+
+          camState.prevX = cx;
+          camState.prevY = cy;
+        } else if (e.touches.length === 2) {
+          const dist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+          const delta = (touchDist - dist) * 1.2;
+          camState.targetDistance = Math.max(50, Math.min(480, camState.targetDistance + delta));
+          touchDist = dist;
+        }
+      }, { passive: true });
+
+      window.addEventListener('touchend', e => {
+        if (camState.isDragging && camState.dragDist < 10 && e.changedTouches.length > 0) {
+          const t = e.changedTouches[0];
+          const rect = container.getBoundingClientRect();
+          mouse.x = ((t.clientX - rect.left) / width) * 2 - 1;
+          mouse.y = -((t.clientY - rect.top) / height) * 2 + 1;
+
+          raycaster.setFromCamera(mouse, camera);
+          const hits = raycaster.intersectObjects(nodeVisuals.map(v => v.hitMesh));
+          if (hits.length > 0) {
+            const pId = hits[0].object.userData.projectId;
+            const targetNode = projects.find(p => p.id === pId);
+            if (targetNode) selectProject(targetNode);
+          }
+        }
+        camState.isDragging = false;
+      }, { passive: true });
 
       btnCloseCard.addEventListener('click', closeProjectCard);
       frostedBackdrop.addEventListener('click', closeProjectCard);
@@ -1589,333 +1991,6 @@
         renderer.setSize(width, height);
       });
 
-      // ============================================================
-      //  IRON MAN 60-FPS HIGH SPEED ENGINE
-      // ============================================================
-
-      let spatialModeActive = false;
-      let handsEngine = null;
-      let cameraStream = null;
-      let videoPumpActive = false;
-
-      const btnCameraMode = document.getElementById('btn-camera-mode');
-      const spatialFeedHud = document.getElementById('spatial-feed-hud');
-      const spatialVideo = document.getElementById('spatial-video');
-      const spatialCanvas = document.getElementById('spatial-canvas');
-      const spatialCtx = spatialCanvas.getContext('2d', { alpha: true });
-      const gestureReticle = document.getElementById('gesture-reticle');
-      const gestureStateText = document.getElementById('gesture-state-text');
-      const spatialFps = document.getElementById('spatial-fps');
-
-      const handState = {
-        currX: window.innerWidth / 2,
-        currY: window.innerHeight / 2,
-        prevPalmX: null,
-        prevPalmY: null,
-        baseScale: null,
-        wasPinching: false,
-        pinchTriggerCooldown: 0,
-        frameCount: 0,
-        lastFpsTimestamp: performance.now()
-      };
-
-      // Velocity-adaptive lerp filter: tight when hovering, responsive when moving
-      function adaptiveLerp(current, target) {
-        const delta = Math.hypot(target - current);
-        const alpha = delta > 60 ? 0.55 : (delta < 8 ? 0.10 : 0.25);
-        return current + (target - current) * alpha;
-      }
-
-      function initMediaPipeHands() {
-        if (handsEngine) return;
-
-        handsEngine = new Hands({
-          locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
-        });
-
-        // modelComplexity: 0 (Lite) gives 3-4x speedup over default (1)
-        handsEngine.setOptions({
-          maxNumHands: 1,
-          modelComplexity: 0,
-          minDetectionConfidence: 0.65,
-          minTrackingConfidence: 0.65
-        });
-
-        handsEngine.onResults(onHandResults);
-      }
-
-      // Non-blocking asynchronous video frame pump
-      async function framePump() {
-        if (!videoPumpActive) return;
-
-        if (spatialVideo.readyState >= 2 && !handsEngine.isProcessingFrame) {
-          handsEngine.isProcessingFrame = true;
-          try {
-            await handsEngine.send({ image: spatialVideo });
-          } catch (e) {
-            console.error(e);
-          }
-          handsEngine.isProcessingFrame = false;
-        }
-
-        if ('requestVideoFrameCallback' in spatialVideo) {
-          spatialVideo.requestVideoFrameCallback(framePump);
-        } else {
-          requestAnimationFrame(framePump);
-        }
-      }
-
-      async function startSpatialTracking() {
-        initMediaPipeHands();
-        setBadgeState('cyan', 'INITIALIZING STARK SPATIAL LINK...', 2500);
-
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({
-            video: {
-              width: { ideal: 480 },
-              height: { ideal: 360 },
-              frameRate: { ideal: 60, max: 60 },
-              facingMode: 'user'
-            }
-          });
-
-          cameraStream = stream;
-          spatialVideo.srcObject = stream;
-          await spatialVideo.play();
-
-          spatialCanvas.width = spatialVideo.videoWidth || 480;
-          spatialCanvas.height = spatialVideo.videoHeight || 360;
-
-          videoPumpActive = true;
-          framePump();
-
-          spatialModeActive = true;
-          autoRotate = false;
-          btnToggleOrbit.classList.remove('active');
-          iconPause.style.display = 'none';
-          iconPlay.style.display = 'block';
-
-          btnCameraMode.classList.add('spatial-active');
-          spatialFeedHud.classList.add('visible');
-          gestureReticle.classList.add('active');
-          document.getElementById('footer-gesture-hint').textContent = 'Iron Man Mode: ☝️ Point | 🖐️ Orbit | 👌 Pinch';
-          setBadgeState('cyan', 'STARK HUD ONLINE • 60 FPS STREAM READY', 3500);
-        } catch (err) {
-          console.error('Camera failed:', err);
-          setBadgeState('red', 'Camera Access Denied', 5000);
-          stopSpatialTracking();
-        }
-      }
-
-      function stopSpatialTracking() {
-        videoPumpActive = false;
-        spatialModeActive = false;
-        btnCameraMode.classList.remove('spatial-active');
-        spatialFeedHud.classList.remove('visible');
-        gestureReticle.classList.remove('active', 'pinching', 'orbiting', 'locked-node');
-        document.getElementById('footer-gesture-hint').textContent = 'Drag or Orbit';
-
-        if (cameraStream) {
-          cameraStream.getTracks().forEach(t => t.stop());
-          cameraStream = null;
-        }
-
-        mouse.set(-999, -999);
-        tooltip.classList.remove('visible');
-        hoveredProject = null;
-        setBadgeState('green', 'Spatial Link Disconnected', 2000);
-      }
-
-      btnCameraMode.addEventListener('click', () => {
-        if (!spatialModeActive) startSpatialTracking();
-        else stopSpatialTracking();
-      });
-
-      // ============================================================
-      //  GESTURE RECOGNITION (Scale-Invariant & Non-Jittery)
-      // ============================================================
-
-      function onHandResults(results) {
-        if (!spatialModeActive) return;
-
-        // Telemetry FPS Monitor
-        handState.frameCount++;
-        const now = performance.now();
-        if (now - handState.lastFpsTimestamp >= 1000) {
-          spatialFps.textContent = `${handState.frameCount} FPS`;
-          handState.frameCount = 0;
-          handState.lastFpsTimestamp = now;
-        }
-
-        spatialCtx.clearRect(0, 0, spatialCanvas.width, spatialCanvas.height);
-
-        if (!results.multiHandLandmarks || results.multiHandLandmarks.length === 0) {
-          gestureStateText.textContent = 'NO HAND';
-          gestureReticle.classList.remove('locked-node', 'pinching', 'orbiting');
-          handState.prevPalmX = null;
-          handState.prevPalmY = null;
-          handState.baseScale = null;
-          return;
-        }
-
-        const lm = results.multiHandLandmarks[0];
-        drawCleanSkeleton(lm);
-
-        // Core Anatomical Landmarks
-        const wrist = lm[0];
-        const thumbTip = lm[4];
-        const indexMCP = lm[5];
-        const indexTip = lm[8];
-        const middleMCP = lm[9];
-        const middleTip = lm[12];
-        const ringTip = lm[16];
-        const pinkyTip = lm[20];
-
-        // Anatomical Hand Scale Unit (Wrist to Middle MCP distance)
-        const handScale = Math.hypot(middleMCP.x - wrist.x, middleMCP.y - wrist.y) || 0.18;
-
-        // Individual Finger Curl Test (Tip to Wrist compared to MCP to Wrist)
-        const isIndexOpen  = Math.hypot(indexTip.x - wrist.x, indexTip.y - wrist.y) > Math.hypot(indexMCP.x - wrist.x, indexMCP.y - wrist.y) * 1.15;
-        const isMiddleOpen = Math.hypot(middleTip.x - wrist.x, middleTip.y - wrist.y) > Math.hypot(middleMCP.x - wrist.x, middleMCP.y - wrist.y) * 1.15;
-        const isRingOpen   = Math.hypot(ringTip.x - wrist.x, ringTip.y - wrist.y) > Math.hypot(lm[13].x - wrist.x, lm[13].y - wrist.y) * 1.15;
-        const isPinkyOpen  = Math.hypot(pinkyTip.x - wrist.x, pinkyTip.y - wrist.y) > Math.hypot(lm[17].x - wrist.x, lm[17].y - wrist.y) * 1.15;
-
-        // Scale-Invariant Pinch Test (Distance normalized by hand scale)
-        const pinchDistance = Math.hypot(thumbTip.x - indexTip.x, thumbTip.y - indexTip.y) / handScale;
-        const isPinching = pinchDistance < 0.38;
-
-        // 1. Clenched Fist (All fingers curled): Reset Constellation / Close Detail Sheet
-        if (!isIndexOpen && !isMiddleOpen && !isRingOpen && !isPinkyOpen) {
-          gestureStateText.textContent = '✊ FIST: RESET';
-          gestureReticle.classList.remove('active', 'orbiting', 'pinching');
-          if (sideCard.classList.contains('open')) closeProjectCard();
-          camState.targetLookAt.set(0, 0, 0);
-          camState.targetDistance = 260;
-          handState.prevPalmX = null;
-          return;
-        }
-
-        gestureReticle.classList.add('active');
-
-        // Dynamic Hand Push / Pull Zoom (Distance scaling)
-        if (!handState.baseScale) {
-          handState.baseScale = handScale;
-        } else {
-          const deltaScale = handScale - handState.baseScale;
-          if (Math.abs(deltaScale) > 0.02) {
-            camState.targetDistance = Math.max(60, Math.min(420, camState.targetDistance - deltaScale * 300));
-            handState.baseScale = handScale;
-          }
-        }
-
-        // 2. Open Palm (All fingers extended): Holographic Orbit
-        const isOpenPalm = isIndexOpen && isMiddleOpen && isRingOpen && isPinkyOpen && !isPinching;
-
-        if (isOpenPalm) {
-          gestureStateText.textContent = '🖐️ PALM: ORBIT';
-          gestureReticle.classList.add('orbiting');
-          gestureReticle.classList.remove('pinching', 'locked-node');
-
-          const palmX = (1 - middleMCP.x) * width;
-          const palmY = middleMCP.y * height;
-
-          if (handState.prevPalmX !== null) {
-            const dx = palmX - handState.prevPalmX;
-            const dy = palmY - handState.prevPalmY;
-
-            camState.targetTheta -= dx * 0.008;
-            camState.targetPhi = Math.max(0.12, Math.min(Math.PI - 0.12, camState.targetPhi - dy * 0.008));
-          }
-
-          handState.prevPalmX = palmX;
-          handState.prevPalmY = palmY;
-          return;
-        } else {
-          handState.prevPalmX = null;
-          handState.prevPalmY = null;
-          gestureReticle.classList.remove('orbiting');
-        }
-
-        // 3. Precision Pointing Mode (Index finger controls laser reticle)
-        const targetScreenX = (1 - indexTip.x) * width;
-        const targetScreenY = indexTip.y * height;
-
-        handState.currX = adaptiveLerp(handState.currX, targetScreenX);
-        handState.currY = adaptiveLerp(handState.currY, targetScreenY);
-
-        gestureReticle.style.left = `${handState.currX}px`;
-        gestureReticle.style.top = `${handState.currY}px`;
-
-        mouse.x = (handState.currX / width) * 2 - 1;
-        mouse.y = -(handState.currY / height) * 2 + 1;
-        isMouseInCanvas = true;
-
-        // 4. Pinch Trigger (Thumb + Index Tip Together): Select Node
-        if (isPinching) {
-          gestureStateText.textContent = '👌 PINCH TRIGGER';
-          gestureReticle.classList.add('pinching');
-
-          if (!handState.wasPinching && (now - handState.pinchTriggerCooldown > 400)) {
-            handState.pinchTriggerCooldown = now;
-
-            raycaster.setFromCamera(mouse, camera);
-            const hits = raycaster.intersectObjects(nodeVisuals.map(v => v.hitMesh));
-            if (hits.length > 0) {
-              const pId = hits[0].object.userData.projectId;
-              const targetNode = projects.find(p => p.id === pId);
-              if (targetNode) {
-                selectProject(targetNode);
-                gestureStateText.textContent = 'NODE LOCKED';
-              }
-            }
-          }
-          handState.wasPinching = true;
-        } else {
-          gestureReticle.classList.remove('pinching');
-          handState.wasPinching = false;
-          gestureStateText.textContent = hoveredProject ? 'TARGET LOCKED' : '☝️ POINT AIM';
-        }
-
-        if (hoveredProject) {
-          gestureReticle.classList.add('locked-node');
-        } else {
-          gestureReticle.classList.remove('locked-node');
-        }
-      }
-
-      // Fast, zero-shadow skeletal rendering
-      function drawCleanSkeleton(lm) {
-        const w = spatialCanvas.width;
-        const h = spatialCanvas.height;
-
-        const bones = [
-          [0,1],[1,2],[2,3],[3,4],
-          [0,5],[5,6],[6,7],[7,8],
-          [5,9],[9,10],[10,11],[11,12],
-          [9,13],[13,14],[14,15],[15,16],
-          [13,17],[17,18],[18,19],[19,20],[0,17]
-        ];
-
-        spatialCtx.strokeStyle = 'rgba(0, 240, 255, 0.75)';
-        spatialCtx.lineWidth = 1.5;
-
-        spatialCtx.beginPath();
-        for (let i = 0; i < bones.length; i++) {
-          const [a, b] = bones[i];
-          spatialCtx.moveTo(lm[a].x * w, lm[a].y * h);
-          spatialCtx.lineTo(lm[b].x * w, lm[b].y * h);
-        }
-        spatialCtx.stroke();
-
-        spatialCtx.fillStyle = '#00f0ff';
-        for (let i = 0; i < lm.length; i++) {
-          spatialCtx.beginPath();
-          spatialCtx.arc(lm[i].x * w, lm[i].y * h, i === 8 || i === 4 ? 3.5 : 1.8, 0, 6.28);
-          spatialCtx.fill();
-        }
-      }
-
-      // --- RENDER LOOP ---
       const clock = new THREE.Clock();
 
       function animate() {
@@ -1924,13 +1999,13 @@
         const delta = clock.getDelta();
         const elapsed = clock.getElapsedTime();
 
-        if (autoRotate && !camState.isDragging && !selectedProject && !spatialModeActive) {
+        if (autoRotate && !camState.isDragging && !selectedProject) {
           camState.targetTheta += 0.0018;
         }
 
-        camState.theta += (camState.targetTheta - camState.theta) * 0.14;
-        camState.phi += (camState.targetPhi - camState.phi) * 0.14;
-        camState.distance += (camState.targetDistance - camState.distance) * 0.16;
+        camState.theta += (camState.targetTheta - camState.theta) * 0.12;
+        camState.phi += (camState.targetPhi - camState.phi) * 0.12;
+        camState.distance += (camState.targetDistance - camState.distance) * 0.14;
         camState.lookAt.lerp(camState.targetLookAt, 0.08);
 
         camera.position.x = camState.lookAt.x + camState.distance * Math.sin(camState.phi) * Math.sin(camState.theta);
@@ -1970,10 +2045,10 @@
             vis.haloMesh.material.opacity = vis.isLive ? 0.5 : 0.28;
             vis.ringMesh.material.opacity = 0.95;
           } else if (isHovered) {
-            vis.coreMesh.scale.set(1.3, 1.3, 1.3);
-            vis.haloMesh.scale.set(1.45, 1.45, 1.45);
-            vis.haloMesh.material.opacity = vis.isLive ? 0.45 : 0.3;
-            vis.ringMesh.material.opacity = 0.95;
+            vis.coreMesh.scale.set(1.25, 1.25, 1.25);
+            vis.haloMesh.scale.set(1.4, 1.4, 1.4);
+            vis.haloMesh.material.opacity = vis.isLive ? 0.4 : 0.22;
+            vis.ringMesh.material.opacity = 0.85;
           } else {
             vis.coreMesh.scale.set(1.0, 1.0, 1.0);
             vis.haloMesh.scale.set(1.0, 1.0, 1.0);
@@ -2004,8 +2079,7 @@
           }
         });
 
-        // Precision Node Raycasting
-        if (isMouseInCanvas && !sideCard.classList.contains('open')) {
+        if (isMouseInCanvas && !camState.isDragging && !sideCard.classList.contains('open') && window.innerWidth > 640) {
           raycaster.setFromCamera(mouse, camera);
           const hits = raycaster.intersectObjects(nodeVisuals.map(v => v.hitMesh));
 

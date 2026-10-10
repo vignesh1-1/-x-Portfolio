@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Nᴇᴜʀᴀʟ Vɪsɪᴏɴ // Sᴘᴀᴛɪᴀʟ Gᴇsᴛᴜʀᴇ Cᴏɴᴛʀᴏʟ</title>
+  <title>Nᴇᴜʀᴀʟ Vɪsɪᴏɴ</title>
   <meta name="description" content="Interactive 3D neural network portfolio with spatial gesture hand tracking and project inspect sheets." />
   
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='10' fill='%2300f0ff'/></svg>">
+  <link rel="icon" type="image/png" href="Gemini_Generated_Image_ko64ocko64ocko64-removebg-preview.png">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,7 +36,6 @@
       --font-sans: 'Space Grotesk', system-ui, -apple-system, sans-serif;
     }
 
-    /* Pure Black Obsidian Mode */
     body.theme-obsidian {
       --bg-canvas: #000000;
       --color-text: #ffffff;
@@ -63,47 +62,49 @@
     .ui-layer { position: fixed; z-index: 10; pointer-events: none; }
     .interactive { pointer-events: auto; }
 
-    /* Top HUD */
+    /* Top HUD Architecture */
     header.header-hud {
       top: 0; left: 0; right: 0;
-      padding: 12px 14px;
-      display: flex; flex-direction: column; gap: 8px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
-    .top-bar { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 6px; }
-    .top-bar-left { display: flex; align-items: center; gap: 6px; flex-shrink: 1; min-width: 0; }
 
-    .btn-nav-back {
-      display: inline-flex; align-items: center; gap: 5px;
-      background: var(--color-card-bg);
-      backdrop-filter: blur(8px);
-      border: 1px solid var(--color-border);
-      border-radius: 8px;
-      padding: 6px 10px;
-      font-family: var(--font-mono);
-      font-size: 11px; font-weight: 700;
-      letter-spacing: 0.05em; text-transform: uppercase;
-      color: var(--color-text); text-decoration: none;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-      transition: all 0.15s ease;
-      white-space: nowrap; flex-shrink: 0;
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      width: 100%;
     }
-    .btn-nav-back:hover { background: #000; color: #fff; border-color: #000; }
-    body.theme-obsidian .btn-nav-back:hover { background: #fff; color: #000; border-color: #fff; }
 
-    /* Rotating Light Aqua Blue Border */
-    .brand-badge-wrapper {
-      position: relative;
-      border-radius: 9px;
-      padding: 1.5px;
-      background: var(--color-border);
-      overflow: hidden;
-      display: inline-flex; align-items: center; justify-content: center;
+    /* Top Left: Stacked NEURAL VIEW above Back to Portfolio */
+    .top-bar-left {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 7px;
       flex-shrink: 0;
     }
+
+    .brand-badge-wrapper {
+      position: relative;
+      border-radius: 11px;
+      padding: 2px;
+      background: var(--color-border);
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(0, 210, 255, 0.15);
+    }
+
     @keyframes rotateFlow {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
     .brand-badge-wrapper::before {
       content: '';
       position: absolute;
@@ -113,30 +114,124 @@
       animation: rotateFlow 2.8s linear infinite;
       pointer-events: none;
     }
+
     .brand-badge {
       position: relative; z-index: 1;
       background: var(--color-card-bg);
       backdrop-filter: blur(8px);
-      border-radius: 7.5px;
-      padding: 6px 9px;
-      display: inline-flex; align-items: center; gap: 6px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+      border-radius: 9px;
+      padding: 8px 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
       white-space: nowrap;
     }
     .brand-title {
-      font-family: var(--font-mono); font-size: 10.5px; font-weight: 700;
-      letter-spacing: 0.06em; text-transform: uppercase;
-      display: inline-flex; align-items: center; gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
     }
     .pulse-dot {
-      width: 6px; height: 6px; border-radius: 50%;
+      width: 7px; height: 7px;
+      border-radius: 50%;
       background: var(--color-aqua);
-      box-shadow: 0 0 6px var(--color-aqua);
+      box-shadow: 0 0 8px var(--color-aqua);
       flex-shrink: 0;
     }
 
+    .btn-nav-back {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--color-card-bg);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      padding: 6px 11px;
+      font-family: var(--font-mono);
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.05em; text-transform: uppercase;
+      color: var(--color-text); text-decoration: none;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .btn-nav-back:hover { background: #000; color: #fff; border-color: #000; }
+    body.theme-obsidian .btn-nav-back:hover { background: #fff; color: #000; border-color: #fff; }
+
+    /* Top Right: Controls & Filters */
+    .top-bar-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+      position: relative;
+    }
+
+    .control-tray-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+    }
+
+    /* Pop-up Hint (Desktop / Laptop Mode: Slide Left / Right) */
+    #camera-gesture-popup {
+      position: absolute;
+      right: 100%;
+      top: 50%;
+      margin-right: 12px;
+      background: var(--color-card-bg);
+      color: var(--color-text);
+      border: 1.5px solid var(--color-matrix-green);
+      box-shadow: 0 0 16px var(--color-matrix-glow), 0 4px 18px rgba(0,0,0,0.25);
+      border-radius: 18px;
+      padding: 6px 14px;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      z-index: 25;
+      transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s ease;
+    }
+
+    /* Slide In State (Laptop) */
+    #camera-gesture-popup.slide-in {
+      opacity: 1;
+      transform: translateY(-50%) translateX(0);
+      pointer-events: auto;
+    }
+    /* Slide Out State (Laptop: slides right toward camera button) */
+    #camera-gesture-popup.slide-out {
+      opacity: 0;
+      transform: translateY(-50%) translateX(32px);
+      pointer-events: none;
+    }
+
+    /* Laptop Right Arrow `>` */
+    #camera-gesture-popup .popup-arrow {
+      position: absolute;
+      top: 50%;
+      right: -8px;
+      transform: translateY(-50%);
+      width: 0; height: 0;
+      border-top: 6px solid transparent;
+      border-bottom: 6px solid transparent;
+      border-left: 8px solid var(--color-matrix-green);
+    }
+
     .control-tray {
-      display: flex; align-items: center; gap: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
       background: var(--color-card-bg);
       backdrop-filter: blur(8px);
       border: 1px solid var(--color-border);
@@ -175,10 +270,17 @@
       50% { opacity: 0.3; transform: scale(0.85); }
     }
 
+    /* Desktop / Laptop Filter Strip */
     .filter-strip {
-      display: flex; align-items: center; gap: 5px;
-      overflow-x: auto; padding-bottom: 2px; scrollbar-width: none;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
+      max-width: calc(100vw - 190px);
+      justify-content: flex-end;
     }
     .filter-strip::-webkit-scrollbar { display: none; }
     .filter-pill {
@@ -194,6 +296,65 @@
     .filter-pill.active {
       background: var(--color-text); color: var(--bg-canvas);
       border-color: var(--color-text); font-weight: 700;
+    }
+
+    /* Mobile Filter Dropdown (Hidden on Laptop) */
+    #mobile-filter-wrapper {
+      display: none;
+      position: relative;
+    }
+    .mobile-filter-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--color-card-bg);
+      border: 1px solid var(--color-border);
+      border-radius: 7px;
+      padding: 5px 10px;
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--color-text);
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    }
+    .mobile-filter-menu {
+      position: absolute;
+      top: 100%; right: 0;
+      margin-top: 5px;
+      background: var(--color-card-bg);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      display: none;
+      flex-direction: column;
+      min-width: 175px;
+      max-height: 240px;
+      overflow-y: auto;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+    }
+    .mobile-filter-menu.open { display: flex; }
+    .mobile-filter-option {
+      padding: 8px 12px;
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      color: var(--color-muted);
+      border-bottom: 1px solid rgba(128, 128, 128, 0.12);
+      text-align: left;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .mobile-filter-option:last-child { border-bottom: none; }
+    .mobile-filter-option:hover { background: rgba(128, 128, 128, 0.1); color: var(--color-text); }
+    .mobile-filter-option.active {
+      color: var(--color-matrix-green);
+      font-weight: 700;
+      background: rgba(0, 255, 136, 0.08);
     }
 
     #status-popup {
@@ -434,12 +595,64 @@
     }
     #gesture-state-text { color: var(--color-matrix-green); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
 
-    @media (max-width: 640px) {
-      header.header-hud { padding: 8px 10px; gap: 6px; }
-      .btn-nav-back { padding: 5px 8px; font-size: 10px; }
-      .btn-nav-back span { display: none; }
-      .brand-badge { padding: 5px 7px; }
-      .brand-title { font-size: 9.5px; }
+    /* ============================================================
+       MOBILE MODE: MESSAGE CLOUD POPUP & FILTER DROPDOWN
+       ============================================================ */
+    @media (max-width: 768px) {
+      header.header-hud { padding: 10px 12px; gap: 6px; }
+      
+      .brand-badge { padding: 6px 10px; }
+      .brand-title { font-size: 10.5px; }
+
+      .btn-nav-back { padding: 5px 9px; font-size: 10px; }
+
+      /* Hide Desktop Horizontal Filter Strip */
+      .filter-strip { display: none !important; }
+
+      /* Show Mobile Filter Dropdown */
+      #mobile-filter-wrapper { display: block; }
+
+      /* Mobile Message Cloud Speech Bubble Callout */
+      #camera-gesture-popup {
+        right: auto;
+        left: 0;
+        top: 100%;
+        margin-top: 12px;
+        margin-right: 0;
+        width: 145px;
+        border-radius: 20px 20px 20px 20px;
+        padding: 9px 12px;
+        font-size: 9.5px;
+        line-height: 1.35;
+        white-space: normal;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0, 255, 136, 0.3), 0 8px 24px rgba(0,0,0,0.6);
+      }
+
+      /* Slide In / Out Transitions (Mobile: Down to Show, Up to Hide) */
+      #camera-gesture-popup.slide-in {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+      #camera-gesture-popup.slide-out {
+        opacity: 0;
+        transform: translateY(-18px);
+        pointer-events: none;
+      }
+
+      /* Upside-down 'v' (pointing up) Caret Arrow for Message Cloud */
+      #camera-gesture-popup .popup-arrow {
+        top: -8px;
+        right: auto;
+        left: 12px;
+        transform: none;
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-bottom: 8px solid var(--color-matrix-green);
+        border-top: none;
+      }
+
       .icon-btn { width: 26px; height: 26px; }
       footer.footer-hud { padding: 6px 10px; flex-wrap: wrap; gap: 4px; }
       .hud-badge:last-child { display: none; }
@@ -515,7 +728,15 @@
   <!-- Top Header HUD -->
   <header class="ui-layer header-hud">
     <div class="top-bar">
+      <!-- TOP LEFT: Stacked NEURAL VIEW on top above Back to Portfolio Button -->
       <div class="top-bar-left">
+        <div class="brand-badge-wrapper interactive">
+          <div class="brand-badge">
+            <span class="pulse-dot"></span>
+            <span class="brand-title">NEURAL VIEW</span>
+          </div>
+        </div>
+
         <a href="index.html" class="btn-nav-back interactive" title="Back to Portfolio">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="19" y1="12" x2="5" y2="12"></line>
@@ -523,105 +744,116 @@
           </svg>
           <span>Portfolio</span>
         </a>
+      </div>
 
-        <!-- Rotating Light Aqua Border on NEURAL VIEW -->
-        <div class="brand-badge-wrapper interactive">
-          <div class="brand-badge">
-            <div class="brand-title">
-              <span class="pulse-dot"></span>
-              <span>NEURAL VIEW</span>
-            </div>
+      <!-- TOP RIGHT: Controls & Filter options -->
+      <div class="top-bar-right">
+        <div class="control-tray-wrapper">
+          <!-- Gesture Popup: Laptop `[  ]>` / Mobile Message Cloud Bubble -->
+          <div id="camera-gesture-popup" class="interactive slide-out" title="Click to start gesture control">
+            <span>Click to control by gesture</span>
+            <div class="popup-arrow"></div>
+          </div>
+
+          <div class="control-tray interactive">
+            <button id="btn-camera-mode" class="icon-btn" title="Toggle Spatial Camera Mode (Space)">
+              <span class="spatial-ping"></span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+              </svg>
+            </button>
+
+            <button id="btn-layout-toggle" class="icon-btn" title="Cycle Topology: Sphere / Helix / Clusters (L)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="5" r="3"></circle>
+                <circle cx="6" cy="19" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <line x1="8.5" y1="17.5" x2="10.5" y2="7.5"></line>
+                <line x1="15.5" y1="17.5" x2="13.5" y2="7.5"></line>
+              </svg>
+            </button>
+
+            <button id="btn-theme-toggle" class="icon-btn" title="Toggle Architectural / Obsidian Theme (T)">
+              <svg id="theme-icon-sun" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+              </svg>
+            </button>
+
+            <button id="btn-audio-toggle" class="icon-btn active" title="Toggle Audio Synthesizer (M)">
+              <svg id="audio-icon-on" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+              </svg>
+              <svg id="audio-icon-off" style="display:none;" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <line x1="23" y1="9" x2="17" y2="15"></line>
+                <line x1="17" y1="9" x2="23" y2="15"></line>
+              </svg>
+            </button>
+
+            <button id="btn-toggle-info" class="icon-btn" title="Toggle Info">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+            </button>
+
+            <button id="btn-reset-cam" class="icon-btn" title="Reset Camera (F)">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                <path d="M3 3v5h5"></path>
+              </svg>
+            </button>
+
+            <button id="btn-toggle-orbit" class="icon-btn active" title="Toggle Orbit">
+              <svg id="icon-pause" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="6" y="4" width="4" height="16"></rect>
+                <rect x="14" y="4" width="4" height="16"></rect>
+              </svg>
+              <svg id="icon-play" style="display: none;" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+            </button>
+
+            <button id="btn-toggle-dir" class="icon-btn" title="Directory Index">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="8" y1="6" x2="21" y2="6"></line>
+                <line x1="8" y1="12" x2="21" y2="12"></line>
+                <line x1="8" y1="18" x2="21" y2="18"></line>
+                <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                <line x1="3" y1="18" x2="3.01" y2="18"></line>
+              </svg>
+            </button>
           </div>
         </div>
+
+        <!-- Desktop Horizontal Filter Strip -->
+        <div class="filter-strip interactive" id="category-filter-container">
+          <button class="filter-pill active" data-cat="ALL">ALL NODES</button>
+        </div>
+
+        <!-- Mobile Filter Dropdown Component -->
+        <div id="mobile-filter-wrapper" class="interactive">
+          <button id="mobile-filter-btn" class="mobile-filter-trigger" title="Filter Nodes">
+            <span id="mobile-filter-current">ALL NODES</span>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          <div id="mobile-filter-dropdown" class="mobile-filter-menu"></div>
+        </div>
       </div>
-
-      <!-- Controls -->
-      <div class="control-tray interactive">
-        <button id="btn-camera-mode" class="icon-btn" title="Toggle Spatial Camera Mode (Space)">
-          <span class="spatial-ping"></span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
-            <circle cx="12" cy="13" r="4"></circle>
-          </svg>
-        </button>
-
-        <button id="btn-layout-toggle" class="icon-btn" title="Cycle Topology: Sphere / Helix / Clusters (L)">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="5" r="3"></circle>
-            <circle cx="6" cy="19" r="3"></circle>
-            <circle cx="18" cy="19" r="3"></circle>
-            <line x1="8.5" y1="17.5" x2="10.5" y2="7.5"></line>
-            <line x1="15.5" y1="17.5" x2="13.5" y2="7.5"></line>
-          </svg>
-        </button>
-
-        <button id="btn-theme-toggle" class="icon-btn" title="Toggle Architectural / Obsidian Theme (T)">
-          <svg id="theme-icon-sun" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="5"></circle>
-            <line x1="12" y1="1" x2="12" y2="3"></line>
-            <line x1="12" y1="21" x2="12" y2="23"></line>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-            <line x1="1" y1="12" x2="3" y2="12"></line>
-            <line x1="21" y1="12" x2="23" y2="12"></line>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-          </svg>
-        </button>
-
-        <button id="btn-audio-toggle" class="icon-btn active" title="Toggle Audio Synthesizer (M)">
-          <svg id="audio-icon-on" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-          </svg>
-          <svg id="audio-icon-off" style="display:none;" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-            <line x1="23" y1="9" x2="17" y2="15"></line>
-            <line x1="17" y1="9" x2="23" y2="15"></line>
-          </svg>
-        </button>
-
-        <button id="btn-toggle-info" class="icon-btn" title="Toggle Info">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="16" x2="12" y2="12"></line>
-            <line x1="12" y1="8" x2="12.01" y2="8"></line>
-          </svg>
-        </button>
-
-        <button id="btn-reset-cam" class="icon-btn" title="Reset Camera (F)">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
-            <path d="M3 3v5h5"></path>
-          </svg>
-        </button>
-
-        <button id="btn-toggle-orbit" class="icon-btn active" title="Toggle Orbit">
-          <svg id="icon-pause" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="6" y="4" width="4" height="16"></rect>
-            <rect x="14" y="4" width="4" height="16"></rect>
-          </svg>
-          <svg id="icon-play" style="display: none;" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="5 3 19 12 5 21 5 3"></polygon>
-          </svg>
-        </button>
-
-        <button id="btn-toggle-dir" class="icon-btn" title="Directory Index">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="8" y1="6" x2="21" y2="6"></line>
-            <line x1="8" y1="12" x2="21" y2="12"></line>
-            <line x1="8" y1="18" x2="21" y2="18"></line>
-            <line x1="3" y1="6" x2="3.01" y2="6"></line>
-            <line x1="3" y1="12" x2="3.01" y2="12"></line>
-            <line x1="3" y1="18" x2="3.01" y2="18"></line>
-          </svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- Category Filter Strip -->
-    <div class="filter-strip interactive" id="category-filter-container">
-      <button class="filter-pill active" data-cat="ALL">ALL NODES</button>
     </div>
   </header>
 
@@ -919,7 +1151,7 @@
       let laserTether = null;
 
       // ==========================================
-      // 3. PROCEDURAL WEB AUDIO
+      // 3. SCI-FI PROCEDURAL WEB AUDIO
       // ==========================================
       let audioCtx = null;
       let soundEnabled = true;
@@ -1127,7 +1359,6 @@
 
         // WHITE BASE SQUARES IN DARK MODE
         if (gridHelper) scene.remove(gridHelper);
-        // Center line: white in dark mode; grid squares: pure crisp white in dark mode
         gridHelper = new THREE.GridHelper(440, 44, isDark ? 0xffffff : 0x8c8c8c, isDark ? 0xffffff : 0xb5b5b5);
         gridHelper.position.y = -100;
         gridHelper.material.transparent = true;
@@ -1146,7 +1377,7 @@
           }
           ringGeo.setFromPoints(pts);
           const ringLine = new THREE.Line(ringGeo, new THREE.LineBasicMaterial({
-            color: isDark ? 0xffffff : 0x7a7a7a, // Pure White rings in Dark Mode
+            color: isDark ? 0xffffff : 0x7a7a7a,
             transparent: true,
             opacity: isDark ? 0.85 : 0.8
           }));
@@ -1249,7 +1480,7 @@
             }
           }
         } catch (e) {
-          console.warn('Network projects.json fetch bypassed, using memory:', e);
+          console.warn('Network fetch bypassed, using memory:', e);
         }
 
         if (fetchedSuccessfully) {
@@ -1279,27 +1510,61 @@
         }
       });
 
+      // Synchronize both Desktop and Mobile Category Filters
       function rebuildCategoryFilters() {
         const catContainer = document.getElementById('category-filter-container');
+        const mobileDropdown = document.getElementById('mobile-filter-dropdown');
         const categories = Array.from(new Set(projects.map(p => p.category).filter(Boolean)));
-        catContainer.innerHTML = '<button class="filter-pill active" data-cat="ALL">ALL NODES</button>';
         
+        // 1. Desktop Horizontal Filter Strip
+        catContainer.innerHTML = '<button class="filter-pill active" data-cat="ALL">ALL NODES</button>';
+        // 2. Mobile Dropdown Options
+        mobileDropdown.innerHTML = '<button class="mobile-filter-option active" data-cat="ALL">ALL NODES</button>';
+
         categories.forEach(cat => {
+          // Desktop pill
           const btn = document.createElement('button');
           btn.className = 'filter-pill';
           btn.setAttribute('data-cat', cat);
           btn.textContent = cat.toUpperCase();
           catContainer.appendChild(btn);
+
+          // Mobile option
+          const mobBtn = document.createElement('button');
+          mobBtn.className = 'mobile-filter-option';
+          mobBtn.setAttribute('data-cat', cat);
+          mobBtn.textContent = cat.toUpperCase();
+          mobileDropdown.appendChild(mobBtn);
         });
 
+        // Set up desktop click events
         catContainer.querySelectorAll('.filter-pill').forEach(pill => {
           pill.addEventListener('click', () => {
-            catContainer.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
-            pill.classList.add('active');
-            activeCategory = pill.getAttribute('data-cat');
-            rebuildNeuralNetwork();
+            setCategoryFilter(pill.getAttribute('data-cat'));
           });
         });
+
+        // Set up mobile click events
+        mobileDropdown.querySelectorAll('.mobile-filter-option').forEach(opt => {
+          opt.addEventListener('click', () => {
+            setCategoryFilter(opt.getAttribute('data-cat'));
+            mobileDropdown.classList.remove('open');
+          });
+        });
+      }
+
+      function setCategoryFilter(cat) {
+        activeCategory = cat;
+        // Update Desktop UI
+        document.querySelectorAll('.filter-pill').forEach(p => {
+          p.classList.toggle('active', p.getAttribute('data-cat') === cat);
+        });
+        // Update Mobile UI
+        document.querySelectorAll('.mobile-filter-option').forEach(o => {
+          o.classList.toggle('active', o.getAttribute('data-cat') === cat);
+        });
+        document.getElementById('mobile-filter-current').textContent = cat === 'ALL' ? 'ALL NODES' : cat.toUpperCase();
+        rebuildNeuralNetwork();
       }
 
       // ==========================================
@@ -1354,6 +1619,53 @@
       const drawerCount = document.getElementById('drawer-count');
       const footerFocusTitle = document.getElementById('footer-focus-title');
       const footerClusterInfo = document.getElementById('footer-cluster-info');
+
+      // Mobile Filter Dropdown Toggle
+      const mobileFilterBtn = document.getElementById('mobile-filter-btn');
+      const mobileFilterDropdown = document.getElementById('mobile-filter-dropdown');
+      mobileFilterBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        mobileFilterDropdown.classList.toggle('open');
+      });
+      document.addEventListener('click', () => {
+        mobileFilterDropdown.classList.remove('open');
+      });
+
+      // ==========================================
+      // PERIODIC POP-UP TIMING CYCLE (5s on, 10s off)
+      // ==========================================
+      const cameraGesturePopup = document.getElementById('camera-gesture-popup');
+      let popupLoopTimer = null;
+
+      function triggerPopupShow() {
+        if (spatialModeActive) return;
+        cameraGesturePopup.classList.remove('slide-out');
+        cameraGesturePopup.classList.add('slide-in');
+
+        // Visible for 5 seconds
+        popupLoopTimer = setTimeout(() => {
+          triggerPopupHide();
+        }, 5000);
+      }
+
+      function triggerPopupHide() {
+        cameraGesturePopup.classList.remove('slide-in');
+        cameraGesturePopup.classList.add('slide-out');
+
+        // Hidden for 10 seconds, then reappear
+        popupLoopTimer = setTimeout(() => {
+          if (!spatialModeActive) {
+            triggerPopupShow();
+          }
+        }, 10000);
+      }
+
+      // Start pop-up loop cycle
+      setTimeout(triggerPopupShow, 600);
+
+      cameraGesturePopup.addEventListener('click', () => {
+        document.getElementById('btn-camera-mode').click();
+      });
 
       btnAudioToggle.addEventListener('click', () => {
         soundEnabled = !soundEnabled;
@@ -2044,6 +2356,12 @@
           btnCameraMode.classList.add('spatial-active');
           spatialFeedHud.classList.add('visible');
           gestureReticle.classList.add('active');
+
+          // Dismiss popup when active
+          if (popupLoopTimer) clearTimeout(popupLoopTimer);
+          cameraGesturePopup.classList.remove('slide-in');
+          cameraGesturePopup.classList.add('slide-out');
+
           document.getElementById('footer-gesture-hint').textContent = 'Spatial Mode: ☝️ Point | 🖐️ Orbit | ↔️ Zoom';
           setBadgeState('cyan', 'SPATIAL LINK ONLINE • 60 FPS READY', 3500);
         } catch (err) {
@@ -2059,6 +2377,10 @@
         btnCameraMode.classList.remove('spatial-active');
         spatialFeedHud.classList.remove('visible');
         gestureReticle.classList.remove('active', 'pinching', 'orbiting', 'locked-node');
+        
+        // Restart popup cycle
+        triggerPopupHide();
+
         document.getElementById('footer-gesture-hint').textContent = `Topology: ${currentTopology}`;
 
         if (cameraStream) {

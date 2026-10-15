@@ -742,9 +742,61 @@ html {
 }
 
 /* =========================================
-   PROJECTS
+   PROJECTS & MATRIX FILTERS
    ========================================= */
 .projects-section { padding: 80px 15%; }
+
+.project-filters { 
+  display: flex; 
+  flex-wrap: wrap; 
+  gap: 12px; 
+  margin-bottom: 25px; 
+  justify-content: flex-start; 
+  align-items: center;
+}
+
+.filter-btn { 
+  background: transparent; 
+  border: 1px solid #cbd5e1; 
+  color: #475569; 
+  padding: 8px 18px; 
+  border-radius: 30px; 
+  font-size: 13px; 
+  font-weight: 600; 
+  transition: all 0.3s ease; 
+  cursor: pointer; 
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .filter-btn:hover { border-color: #000; color: #000; }
+}
+.filter-btn.active { background: #000; color: #fff; border-color: #000; }
+
+/* Mobile Filter Dropdown (Default Hidden on Desktop) */
+.mobile-project-select {
+  display: none;
+  width: 100%;
+  max-width: 320px;
+  padding: 11px 18px;
+  border-radius: 25px;
+  border: 1.5px solid #cbd5e1;
+  background-color: #ffffff;
+  color: #0f172a;
+  font-size: 13.5px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2364748b' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 14px;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+}
+
+.hidden-project { display: none !important; }
 
 .project-card {
   display: flex;
@@ -835,8 +887,12 @@ html {
   font-size: 13px;
 }
 
+.project-metrics { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+.metric-badge { background: #f1f5f9; border: 1px solid #cbd5e1; color: #334155; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; display: inline-flex; align-items: center; gap: 6px; }
+.metric-badge i { color: #7594fa; }
+
 /* =========================================
-   ARCHITECTURE SLIDE-OVER DRAWER
+   ARCHITECTURE SLIDE-OVER DRAWER & SIMULATOR
    ========================================= */
 .arch-drawer-overlay {
   position: fixed;
@@ -969,17 +1025,39 @@ html {
   font-weight: 600;
 }
 
-.arch-diagram-wrapper {
-  background: #0f172a;
+/* Cytoscape Topology Simulator Canvas */
+#archDiagramContainer {
+  height: 310px;
+  min-height: 280px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  background: #090d16;
+  border: 1px solid rgba(56, 189, 248, 0.25);
   border-radius: 16px;
-  padding: 24px 18px;
-  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.4);
+  padding: 0;
+  box-shadow: inset 0 2px 14px rgba(0, 0, 0, 0.6);
+  touch-action: none;
 }
 
-.diagram-svg {
-  width: 100%;
-  height: auto;
-  display: block;
+#simulatePacketBtn {
+  padding: 7px 16px;
+  font-size: 11.5px;
+  font-weight: 600;
+  border-radius: 20px;
+  background: #000000;
+  color: #ffffff;
+  border: 1px solid #334155;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  #simulatePacketBtn:hover {
+    background: #1e293b;
+    border-color: #38bdf8;
+    color: #38bdf8;
+  }
 }
 
 .arch-tradeoffs-box {
@@ -2186,7 +2264,7 @@ input:checked + .theme-slider .fa-sun { color: #94a3b8 !important; }
 .thumb-grip { display: flex; flex-direction: column; gap: 2px; }
 .thumb-grip span { display: block; width: 6px; height: 1.5px; background: #ffffff; border-radius: 1px; }
 
-/* Experience Section */
+/* Experience & Education Section */
 .experience-section { padding: 80px 15%; color: #000000; width: 100%; }
 .timeline-container { position: relative; margin-left: 10px; padding-left: 40px; margin-bottom: 40px; }
 .timeline-container::before { content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 1px; background-color: #cbd5e1; }
@@ -2290,7 +2368,6 @@ body:not(.loaded) .about {
   .navbar { width: 95%; padding: 8px 14px; top: 12px; }
   .logo img { width: 32px; }
 
-  /* FIX: Clean inline points display without popping out of logo row */
   .logo-wrapper {
     display: flex;
     align-items: center;
@@ -2314,7 +2391,6 @@ body:not(.loaded) .about {
   .bubble-text { font-size: 11px; }
   .bubble-icon { font-size: 11.5px; }
 
-  /* FIX: Clean hidden state to prevent transparent text leaks */
   .nav-links {
     position: absolute;
     top: calc(100% + 10px);
@@ -2372,6 +2448,14 @@ body:not(.loaded) .about {
 }
 
 @media(max-width: 768px) {
+  /* Projects Filter Dropdown in Mobile Mode */
+  .project-filters .filter-btn {
+    display: none !important;
+  }
+  .mobile-project-select {
+    display: block !important;
+  }
+
   #neural-network { opacity: 0.32 !important; }
   .ai-telemetry-badge {
     display: flex !important; flex-direction: column !important; align-items: stretch !important; gap: 6px !important; width: 100% !important; border-radius: 12px !important; padding: 8px 12px !important; box-sizing: border-box !important;
@@ -2400,7 +2484,6 @@ body:not(.loaded) .about {
   
   .home-buttons { flex-direction: row; align-items: center; justify-content: flex-start; flex-wrap: wrap; gap: 10px; }
   .primary-btn, .secondary-btn { padding: 10px 18px; font-size: 13px; white-space: nowrap; }
-  .cmd-k-hint { display: none; }
   
   .cards:not(.process-cards), .about-info { grid-template-columns: 1fr; }
   
@@ -2512,75 +2595,12 @@ html, body { overflow-y: auto !important; overflow-x: hidden !important; -webkit
   .navbar, .chat-card, .contact-card { backdrop-filter: blur(6px) !important; -webkit-backdrop-filter: blur(6px) !important; }
 }
 
-/* =========================================
-   TOOLBARS, PALETTES & CYTOSCAPE
-   ========================================= */
-#archDiagramContainer {
-  height: 280px; position: relative; overflow: hidden; background: #0f172a; border-radius: 16px; padding: 0; box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.4); cursor: grab;
-}
-#archDiagramContainer:active { cursor: grabbing; }
-
-.project-filters { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 25px; justify-content: flex-start; }
-.filter-btn { background: transparent; border: 1px solid #cbd5e1; color: #475569; padding: 8px 18px; border-radius: 30px; font-size: 13px; font-weight: 600; transition: all 0.3s ease; cursor: pointer; }
-
-@media (hover: hover) and (pointer: fine) {
-  .filter-btn:hover { border-color: #000; color: #000; }
-}
-.filter-btn.active { background: #000; color: #fff; border-color: #000; }
-.hidden-project { display: none !important; }
-
-.project-metrics { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
-.metric-badge { background: #f1f5f9; border: 1px solid #cbd5e1; color: #334155; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; display: inline-flex; align-items: center; gap: 6px; }
-.metric-badge i { color: #7594fa; }
-
 .context-chips-container { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 5px; }
 .context-chip { background: rgba(117, 148, 250, 0.1); border: 1px solid rgba(117, 148, 250, 0.3); color: #0f172a; padding: 6px 12px; font-size: 11.5px; border-radius: 15px; cursor: pointer; transition: all 0.2s ease; font-weight: 600; }
 
 @media (hover: hover) and (pointer: fine) {
   .context-chip:hover { background: rgba(117, 148, 250, 0.2); transform: translateY(-2px); }
 }
-
-.cmd-k-hint { display: inline-flex; align-items: center; font-size: 12px; color: #64748b; margin-left: 10px; }
-.cmd-k-hint kbd { background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 4px; padding: 2px 6px; font-family: monospace; margin: 0 4px; color: #0f172a; font-weight: bold; }
-
-/* FIX: Command palette stays strictly hidden until opened */
-.command-palette-overlay { 
-  position: fixed; 
-  top: 0; 
-  left: 0; 
-  width: 100vw; 
-  height: 100vh; 
-  background: rgba(15, 23, 42, 0.5); 
-  backdrop-filter: blur(8px); 
-  z-index: 10005; 
-  display: none; 
-  justify-content: center; 
-  align-items: flex-start; 
-  padding-top: 12vh; 
-  opacity: 0; 
-  visibility: hidden; 
-  transition: all 0.2s ease; 
-}
-.command-palette-overlay.active { 
-  display: flex !important; 
-  opacity: 1 !important; 
-  visibility: visible !important; 
-}
-.cmd-palette-box { background: #ffffff; width: 100%; max-width: 550px; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); border: 1px solid #cbd5e1; overflow: hidden; transform: scale(0.98); transition: all 0.2s ease; }
-.command-palette-overlay.active .cmd-palette-box { transform: scale(1); }
-.cmd-header { display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; }
-.cmd-header i { color: #64748b; font-size: 16px; margin-right: 12px; }
-.cmd-input { flex: 1; border: none; background: transparent; font-size: 15px; color: #0f172a; outline: none; font-family: 'Inter', sans-serif; }
-.cmd-esc { font-size: 10px; background: #e2e8f0; color: #475569; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
-.cmd-body { max-height: 350px; overflow-y: auto; padding: 10px 0; }
-.cmd-category { font-size: 11px; font-weight: 700; text-transform: uppercase; color: #94a3b8; padding: 8px 20px; }
-.cmd-list { list-style: none; padding: 0; margin: 0 0 10px 0; }
-.cmd-item { padding: 12px 20px; display: flex; align-items: center; gap: 12px; font-size: 14px; color: #334155; cursor: pointer; transition: background 0.2s ease; }
-
-@media (hover: hover) and (pointer: fine) {
-  .cmd-item:hover, .cmd-item.selected { background: #f1f5f9; color: #0f172a; }
-}
-.cmd-item i { color: #7594fa; font-size: 14px; width: 16px; text-align: center; }
 
 /* =========================================
    DARK MODE OVERRIDES
@@ -2632,7 +2652,6 @@ body.dark-mode {
 .dark-mode .cookie-box,
 .dark-mode .arcade-modal-card,
 .dark-mode .arch-drawer,
-.dark-mode .cmd-palette-box,
 .dark-mode .nav-points-bubble,
 .dark-mode .stat-box,
 .dark-mode .tool-tag,
@@ -2674,7 +2693,7 @@ body.dark-mode {
   }
 }
 
-/* Invert Headers & Primary Text to White */
+/* Invert Headers & Primary Text to White in Dark Mode */
 .dark-mode .home-content h1,
 .dark-mode .typing-container,
 .dark-mode .about-content h2,
@@ -2688,6 +2707,8 @@ body.dark-mode {
 .dark-mode .content-left h1,
 .dark-mode .exp-header h3,
 .dark-mode .edu-card h4,
+.dark-mode .edu-card h5,
+.dark-mode .process-card h3,
 .dark-mode .chat-header,
 .dark-mode .neural-heading,
 .dark-mode .stat-box h3,
@@ -2700,6 +2721,14 @@ body.dark-mode {
 .dark-mode .numbers span {
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Mobile Filter Select Dark Mode */
+.dark-mode .mobile-project-select {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border-color: #334155 !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23ffffff' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E") !important;
 }
 
 /* Footer in Dark Mode */
@@ -2737,6 +2766,19 @@ body.dark-mode {
   background-color: #1e293b !important;
   color: #ffffff !important;
   border-color: #334155 !important;
+}
+
+.dark-mode #simulatePacketBtn {
+  background: #111827 !important;
+  border-color: #38bdf8 !important;
+  color: #ffffff !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .dark-mode #simulatePacketBtn:hover {
+    background: #1e293b !important;
+    color: #38bdf8 !important;
+  }
 }
 
 /* Process UI Dark Overrides */
@@ -2780,7 +2822,6 @@ body.dark-mode {
 .dark-mode .game-record-name,
 .dark-mode .chat-hint,
 .dark-mode .telemetry-sep,
-.dark-mode .cmd-k-hint,
 .dark-mode .arcade-score-sub,
 .dark-mode .badge-info p {
   color: #cbd5e1 !important;
@@ -2891,7 +2932,7 @@ body.dark-mode {
 }
 
 /* =========================================
-   TERMINAL DARK MODE FIX
+   TERMINAL DARK MODE
    ========================================= */
 .dark-mode .terminal-container { 
   background-color: #0b0f17 !important; 
@@ -2942,21 +2983,6 @@ body.dark-mode {
 
 @media (hover: hover) and (pointer: fine) {
   .dark-mode .arch-action-link.primary:hover { background: #e2e8f0; }
-}
-
-/* Command Palette in Dark Mode */
-.dark-mode .cmd-header { background: #000000; border-bottom-color: #334155; }
-.dark-mode .cmd-input { color: #ffffff; }
-.dark-mode .cmd-item { color: #cbd5e1; }
-
-@media (hover: hover) and (pointer: fine) {
-  .dark-mode .cmd-item:hover, .dark-mode .cmd-item.selected { background: #111111; color: #ffffff; }
-}
-
-.dark-mode .cmd-k-hint kbd {
-  background: #1e293b !important;
-  color: #f8fafc !important;
-  border-color: #334155 !important;
 }
 
 /* Modals & Cookies in Dark Mode */

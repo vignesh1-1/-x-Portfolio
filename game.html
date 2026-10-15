@@ -2,90 +2,157 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>CYANX | Neural Arcade</title>
 <link rel="icon" type="image/png" href="Gemini_Generated_Image_ko64ocko64ocko64-removebg-preview.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-    body { background: #f8fafc; color: #0f172a; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-x: hidden; position: relative; padding: 60px 0; }
+    :root {
+        --bg-pure: #ffffff;
+        --text-main: #000000;
+        --text-sub: #475569;
+        --border-color: #e2e8f0;
+        --badge-border: #cbd5e1;
+        --accent: #4f46e5;
+    }
+    body.dark-mode {
+        --bg-pure: #000000;
+        --text-main: #ffffff;
+        --text-sub: #94a3b8;
+        --border-color: #262626;
+        --badge-border: #333333;
+        --accent: #6366f1;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: var(--bg-pure); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-x: hidden; position: relative; padding: 85px 0 50px 0; transition: background 0.25s ease, color 0.25s ease; }
     
-    body::after { content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.025) 50%), linear-gradient(90deg, rgba(79, 70, 229, 0.02), rgba(0, 0, 0, 0.01), rgba(79, 70, 229, 0.02)); z-index: 2; background-size: 100% 2px, 3px 100%; pointer-events: none; }
-    .glow-bg { position: fixed; width: 600px; height: 600px; background: radial-gradient(circle, rgba(99, 102, 241, 0.12), transparent 70%); top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 0; filter: blur(60px); }
+    .container { z-index: 10; text-align: center; width: 92%; max-width: 1100px; }
+    h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(2rem, 6vw, 3rem); color: var(--text-main); margin-bottom: 8px; text-shadow: 0 4px 18px rgba(99, 102, 241, 0.2); letter-spacing: 2px; }
+    p.subtitle { color: var(--accent); font-weight: 600; margin-bottom: 35px; text-transform: uppercase; letter-spacing: 3px; font-size: clamp(0.75rem, 2.5vw, 0.9rem); }
     
-    .container { z-index: 10; text-align: center; width: 90%; max-width: 1050px; }
-    h1 { font-family: 'Space Grotesk', sans-serif; font-size: 3rem; color: #0f172a; margin-bottom: 10px; text-shadow: 0 4px 18px rgba(99, 102, 241, 0.2); letter-spacing: 2px; }
-    p.subtitle { color: #4f46e5; font-weight: 600; margin-bottom: 40px; text-transform: uppercase; letter-spacing: 3px; font-size: 0.9rem; }
+    .arcade-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 22px; }
     
-    .arcade-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 25px; }
-    
-    .game-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 28px; text-decoration: none; color: #0f172a; display: flex; flex-direction: column; align-items: flex-start; transition: all 0.3s ease; position: relative; overflow: hidden; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04); }
-    .game-card:hover { transform: translateY(-5px); border-color: #6366f1; box-shadow: 0 12px 30px rgba(99, 102, 241, 0.15); }
+    .game-card { background: var(--bg-pure); border: 1px solid var(--border-color); border-radius: 16px; padding: 26px; text-decoration: none; color: var(--text-main); display: flex; flex-direction: column; align-items: flex-start; transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1); position: relative; overflow: hidden; box-shadow: 0 8px 25px rgba(99, 102, 241, 0.05); }
+    .game-card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 14px 32px rgba(99, 102, 241, 0.18); }
     .game-card::before { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent); transition: left 0.5s ease; }
     .game-card:hover::before { left: 150%; }
+    .game-card.featured-card { grid-column: 1 / -1; align-items: center; text-align: center; border-width: 2px; border-color: var(--accent); }
     
-    .card-icon { font-size: 2rem; color: #4f46e5; margin-bottom: 15px; }
-    .game-card h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.35rem; margin-bottom: 10px; color: #0f172a; }
-    .game-card p { color: #64748b; font-size: 0.92rem; line-height: 1.5; text-align: left; margin-bottom: 18px; flex-grow: 1; }
+    .card-icon { font-size: 1.9rem; color: var(--accent); margin-bottom: 14px; }
+    .game-card h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.32rem; margin-bottom: 8px; color: var(--text-main); }
+    .game-card p { color: var(--text-sub); font-size: 0.9rem; line-height: 1.5; text-align: left; margin-bottom: 18px; flex-grow: 1; }
+    .game-card.featured-card p { text-align: center; max-width: 620px; }
     
-    /* BADGE STYLES */
     .highscore-container { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: auto; }
-    .highscore-badge { font-size: 0.8rem; background: #f1f5f9; color: #334155; padding: 5px 12px; border-radius: 20px; border: 1px solid #cbd5e1; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+    .highscore-badge { font-size: 0.78rem; background: var(--bg-pure); color: var(--text-main); padding: 5px 12px; border-radius: 20px; border: 1px solid var(--badge-border); font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
     
-    /* MODE BADGES */
-    .mode-tag { font-size: 0.75rem; padding: 4px 10px; border-radius: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .mode-tag { font-size: 0.72rem; padding: 4px 10px; border-radius: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
     .mode-Easy { background: #dcfce7 !important; color: #15803d !important; border: 1px solid #86efac; }
     .mode-Medium { background: #fef08a !important; color: #713f12 !important; border: 1px solid #fde047; }
     .mode-Hard { background: #fce7f3 !important; color: #991b1b !important; border: 1px solid #fbcfe8; }
     .mode-CYANX_AI { background: #ede9fe !important; color: #581c87 !important; border: 1px solid #ddd6fe; }
 
-    .btn-return { position: fixed; top: 30px; left: 30px; padding: 10px 20px; background: #ffffff; border: 1px solid #cbd5e1; color: #1e293b; border-radius: 30px; text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.3s; z-index: 10; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); }
-    .btn-return:hover { background: #f1f5f9; border-color: #94a3b8; }
+    .btn-return { position: fixed; top: 20px; left: 20px; padding: 9px 18px; background: var(--bg-pure); border: 1px solid var(--badge-border); color: var(--text-main); border-radius: 30px; text-decoration: none; font-size: 0.85rem; font-weight: 600; transition: 0.3s; z-index: 20; }
+    .btn-return:hover { border-color: var(--accent); }
+
+    .btn-theme-toggle { position: fixed; top: 20px; right: 20px; width: 40px; height: 40px; background: var(--bg-pure); border: 1px solid var(--badge-border); color: var(--text-main); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; z-index: 20; font-size: 0.95rem; }
+    .btn-theme-toggle:hover { border-color: var(--accent); }
 </style>
 </head>
 <body>
     <a href="index.html" class="btn-return"><i class="fa-solid fa-arrow-left"></i> Exit Arcade</a>
-    <div class="glow-bg"></div>
+    <button class="btn-theme-toggle" id="arcadeThemeBtn" aria-label="Toggle Theme"><i class="fa-solid fa-moon"></i></button>
+
     <div class="container">
         <h1>NEURAL ARCADE</h1>
         <p class="subtitle"><i class="fa-solid fa-terminal"></i> System Override Authorized</p>
         
         <div class="arcade-grid">
+            <a href="neural-runner.html" class="game-card featured-card">
+                <div class="card-icon"><i class="fa-solid fa-forward-fast"></i></div>
+                <h2>1. Neural Runner (⭐ Featured)</h2>
+                <p>Traverse endless data corridors, banking across lanes, leaping over corrupt registers, and harvesting high-density energy cores.</p>
+                <div class="highscore-container" id="hs-runner-box" style="justify-content: center;"></div>
+            </a>
+
             <a href="neural-firewall.html" class="game-card">
                 <div class="card-icon"><i class="fa-solid fa-shield-virus"></i></div>
-                <h2>1. Neural Firewall</h2>
+                <h2>2. Neural Firewall</h2>
                 <p>Rotate the curved ion shield around the core to vaporize rogue packets before the firewall fails.</p>
                 <div class="highscore-container" id="hs-firewall-box"></div>
             </a>
-            <a href="memory-matrix.html" class="game-card">
-                <div class="card-icon"><i class="fa-solid fa-microchip"></i></div>
-                <h2>2. Memory Matrix</h2>
-                <p>Retain and reproduce high-speed neural training patterns without triggering memory overflow.</p>
-                <div class="highscore-container" id="hs-matrix-box"></div>
-            </a>
+
             <a href="signal-sync.html" class="game-card">
                 <div class="card-icon"><i class="fa-solid fa-bolt"></i></div>
                 <h2>3. Signal Sync</h2>
-                <p>Glide or hover across unpredictable signal nodes the instant they materialize to synchronize.</p>
+                <p>Glide or tap across unpredictable signal nodes the instant they materialize to synchronize.</p>
                 <div class="highscore-container" id="hs-signal-box"></div>
             </a>
+
             <a href="cipher-breaker.html" class="game-card">
                 <div class="card-icon"><i class="fa-solid fa-lock"></i></div>
                 <h2>4. Cipher Breaker</h2>
                 <p>Crack secure encrypted vault combinations using numeric deductive algorithms.</p>
                 <div class="highscore-container" id="hs-cipher-box"></div>
             </a>
-            <a href="neural-runner.html" class="game-card" style="grid-column: 1 / -1; align-items: center; text-align: center; background: linear-gradient(135deg, #ffffff, #f8fafc);">
-                <div class="card-icon"><i class="fa-solid fa-forward-fast"></i></div>
-                <h2>5. Neural Runner (⭐ Featured)</h2>
-                <p style="text-align: center; max-width: 600px;">Traverse endless data corridors, leaping over corrupt registers and harvesting high-density energy cores.</p>
-                <div class="highscore-container" id="hs-runner-box" style="justify-content: center;"></div>
+
+            <a href="quantum-stacker.html" class="game-card">
+                <div class="card-icon"><i class="fa-solid fa-layer-group"></i></div>
+                <h2>5. Quantum Stacker</h2>
+                <p>Align oscillating data slabs with sub-millimeter precision before overhanging registers are sheared away.</p>
+                <div class="highscore-container" id="hs-stacker-box"></div>
+            </a>
+
+            <a href="vortex-interceptor.html" class="game-card">
+                <div class="card-icon"><i class="fa-solid fa-crosshairs"></i></div>
+                <h2>6. Vortex Interceptor</h2>
+                <p>Orbit the perimeter of a wormhole conduit and blast corrupt crawlers surging up the pipeline.</p>
+                <div class="highscore-container" id="hs-vortex-box"></div>
+            </a>
+
+            <a href="orbital-core.html" class="game-card">
+                <div class="card-icon"><i class="fa-solid fa-circle-nodes"></i></div>
+                <h2>7. Orbital Core</h2>
+                <p>Deflect kinetic plasma spheres inward to shatter rotating hex-armor rings surrounding the central nucleus.</p>
+                <div class="highscore-container" id="hs-orbital-box"></div>
+            </a>
+
+            <a href="hyper-drift.html" class="game-card">
+                <div class="card-icon"><i class="fa-solid fa-route"></i></div>
+                <h2>8. Hyper-Grid Drift</h2>
+                <p>Outmaneuver rogue AI light-cycles across a suspended grid while deploying solid light-ribbons in your wake.</p>
+                <div class="highscore-container" id="hs-drift-box"></div>
+            </a>
+
+            <a href="gravity-well.html" class="game-card">
+                <div class="card-icon"><i class="fa-solid fa-atom"></i></div>
+                <h2>9. Gravity Well</h2>
+                <p>Modulate a singularity core to pull quantum shards into orbit and unleash shockwaves against antimatter meteors.</p>
+                <div class="highscore-container" id="hs-gravity-box"></div>
             </a>
         </div>
     </div>
 
     <script>
+        function syncTheme() {
+            const saved = localStorage.getItem('theme') || localStorage.getItem('cyanx_theme') || 'light';
+            const isDark = (saved === 'dark');
+            document.body.classList.toggle('dark-mode', isDark);
+            const icon = document.querySelector('#arcadeThemeBtn i');
+            if (icon) icon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        }
+
+        document.getElementById('arcadeThemeBtn').addEventListener('click', () => {
+            const isDark = !document.body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            localStorage.setItem('cyanx_theme', isDark ? 'dark' : 'light');
+            syncTheme();
+        });
+
+        window.addEventListener('storage', syncTheme);
+
         function renderScoreBadge(containerId, scoreText, modeName) {
             const container = document.getElementById(containerId);
             if (!container) return;
@@ -102,30 +169,25 @@
         }
 
         window.onload = () => {
-            // 1. Firewall
-            const fwScore = localStorage.getItem('cyanx_firewall_best');
-            const fwMode = localStorage.getItem('cyanx_firewall_mode');
-            renderScoreBadge('hs-firewall-box', fwScore ? `${fwScore} pts` : null, fwMode);
+            syncTheme();
 
-            // 2. Memory Matrix
-            const mmScore = localStorage.getItem('cyanx_matrix_best');
-            const mmMode = localStorage.getItem('cyanx_matrix_mode');
-            renderScoreBadge('hs-matrix-box', mmScore ? `Round ${mmScore}` : null, mmMode);
+            const games = [
+                { id: 'hs-runner-box',  key: 'cyanx_runner',  unit: 'pts' },
+                { id: 'hs-firewall-box',key: 'cyanx_firewall',unit: 'pts' },
+                { id: 'hs-signal-box',  key: 'cyanx_signal',  unit: 'ms' },
+                { id: 'hs-cipher-box',  key: 'cyanx_cipher',  unit: 'attempts' },
+                { id: 'hs-stacker-box', key: 'cyanx_stacker', unit: 'blocks' },
+                { id: 'hs-vortex-box',  key: 'cyanx_vortex',  unit: 'pts' },
+                { id: 'hs-orbital-box', key: 'cyanx_orbital', unit: 'pts' },
+                { id: 'hs-drift-box',   key: 'cyanx_drift',   unit: 'pts' },
+                { id: 'hs-gravity-box', key: 'cyanx_gravity', unit: 'pts' }
+            ];
 
-            // 3. Signal Sync
-            const ssScore = localStorage.getItem('cyanx_signal_best');
-            const ssMode = localStorage.getItem('cyanx_signal_mode');
-            renderScoreBadge('hs-signal-box', ssScore ? `${ssScore} ms` : null, ssMode);
-
-            // 4. Cipher Breaker
-            const cbScore = localStorage.getItem('cyanx_cipher_best');
-            const cbMode = localStorage.getItem('cyanx_cipher_mode');
-            renderScoreBadge('hs-cipher-box', cbScore ? `${cbScore} attempts` : null, cbMode);
-
-            // 5. Runner
-            const rnScore = localStorage.getItem('cyanx_runner_best');
-            const rnMode = localStorage.getItem('cyanx_runner_mode');
-            renderScoreBadge('hs-runner-box', rnScore ? `${rnScore} pts` : null, rnMode);
+            games.forEach(g => {
+                const s = localStorage.getItem(`${g.key}_best`);
+                const m = localStorage.getItem(`${g.key}_mode`);
+                renderScoreBadge(g.id, s ? `${s} ${g.unit}` : null, m);
+            });
         };
     </script>
 </body>

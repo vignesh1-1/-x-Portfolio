@@ -3,57 +3,68 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Neural Firewall</title>
+<title>Neural Firewall 3D</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="Gemini_Generated_Image_ko64ocko64ocko64-removebg-preview.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
-    body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #ffffff; overflow: hidden; font-family: 'Space Grotesk', sans-serif; user-select: none; touch-action: none; cursor: crosshair; }
-    canvas { display: block; }
-    .ui { position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; color: #0f172a; z-index: 10; pointer-events: none; }
-    .hud-box { background: rgba(255, 255, 255, 0.9); border: 1px solid #cbd5e1; padding: 10px 20px; border-radius: 10px; backdrop-filter: blur(8px); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); }
-    h2 { margin: 0; font-size: 0.9rem; color: #4f46e5; text-transform: uppercase; letter-spacing: 2px; }
-    span.val { color: #0f172a; font-size: 1.4rem; font-weight: bold; }
+    :root {
+        --bg-pure: #ffffff;
+        --text-main: #000000;
+        --text-sub: #64748b;
+        --border-color: #cbd5e1;
+    }
+    body.dark-mode {
+        --bg-pure: #000000;
+        --text-main: #ffffff;
+        --text-sub: #94a3b8;
+        --border-color: #262626;
+    }
+
+    body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--bg-pure); color: var(--text-main); overflow: hidden; font-family: 'Space Grotesk', sans-serif; user-select: none; touch-action: none; cursor: crosshair; }
+    canvas { display: block; width: 100vw; height: 100vh; }
+    
+    .ui { position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; color: var(--text-main); z-index: 10; pointer-events: none; }
+    .hud-box { background: var(--bg-pure); border: 1px solid var(--border-color); padding: 12px 24px; border-radius: 14px; box-shadow: 0 8px 25px rgba(79, 70, 229, 0.12); min-width: 130px; text-align: center; }
+    h2 { margin: 0 0 4px 0; font-size: 0.8rem; color: #4f46e5; text-transform: uppercase; letter-spacing: 2px; }
+    span.val { color: var(--text-main); font-size: 1.5rem; font-weight: 700; }
     
     /* OVERLAYS & MODALS */
-    .modal-backdrop { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.94); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 25; backdrop-filter: blur(8px); }
-    .modal-card { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 20px; padding: 40px; width: 90%; max-width: 500px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.08); }
-    h1 { font-size: 2.8rem; margin-bottom: 10px; color: #0f172a; }
+    .modal-backdrop { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-pure); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 25; }
+    .modal-card { background: var(--bg-pure); border: 1px solid var(--border-color); border-radius: 24px; padding: 40px; width: 90%; max-width: 520px; text-align: center; box-shadow: 0 20px 50px rgba(79, 70, 229, 0.16); }
+    h1 { font-size: 2.8rem; margin-bottom: 10px; color: var(--text-main); letter-spacing: 1px; }
     
-    /* DIFFICULTY SELECTOR */
     .diff-group { display: flex; justify-content: center; gap: 8px; margin: 25px 0; flex-wrap: wrap; }
     .diff-btn { padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: 0.2s; font-family: inherit; }
-    .diff-btn.active { transform: scale(1.08); box-shadow: 0 4px 12px rgba(0,0,0,0.15); outline: 2px solid #0f172a; }
+    .diff-btn.active { transform: scale(1.08); box-shadow: 0 4px 12px rgba(79,70,229,0.25); outline: 2px solid var(--text-main); }
     
     .btn-easy { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
     .btn-med { background: #fef08a; color: #713f12; border: 1px solid #fde047; }
     .btn-hard { background: #fce7f3; color: #991b1b; border: 1px solid #fbcfe8; }
     .btn-cyanx { background: #ede9fe; color: #581c87; border: 1px solid #ddd6fe; }
 
-    /* ACTION BUTTONS */
-    .btn { padding: 14px 35px; background: #4f46e5; border: none; color: white; font-size: 1.1rem; cursor: pointer; border-radius: 30px; font-family: 'Space Grotesk', sans-serif; transition: 0.3s; margin: 8px; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25); font-weight: bold; }
+    .btn { padding: 14px 35px; background: #4f46e5; border: none; color: white; font-size: 1.1rem; cursor: pointer; border-radius: 30px; font-family: 'Space Grotesk', sans-serif; transition: 0.3s; margin: 8px; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35); font-weight: bold; }
     .btn:hover { background: #4338ca; transform: translateY(-2px); }
-    .btn-outline { background: transparent; border: 2px solid #cbd5e1; color: #1e293b; box-shadow: none; }
-    .btn-outline:hover { background: #f1f5f9; }
+    .btn-outline { background: var(--bg-pure); border: 2px solid var(--border-color); color: var(--text-main); box-shadow: none; }
+    .btn-outline:hover { border-color: #4f46e5; }
 
-    /* SCORE POPUP DETAILS */
-    .score-banner { font-size: 3rem; font-weight: 800; color: #4f46e5; margin: 15px 0; }
+    .score-banner { font-size: 3.2rem; font-weight: 800; color: #4f46e5; margin: 15px 0; }
     .mode-indicator { display: inline-block; padding: 6px 14px; border-radius: 12px; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; font-size: 0.85rem; }
 </style>
 </head>
 <body>
     <div class="ui">
-        <div class="hud-box"><h2>Integrity</h2><span class="val" id="integrity">100%</span></div>
-        <div class="hud-box"><h2>Score</h2><span class="val" id="currentScore">0</span></div>
-        <div class="hud-box"><h2>Time Left</h2><span class="val" id="time">45.0s</span></div>
+        <div class="hud-box"><h2>Core Integrity</h2><span class="val" id="integrity">100%</span></div>
+        <div class="hud-box"><h2>Defense Score</h2><span class="val" id="currentScore">0</span></div>
+        <div class="hud-box"><h2>Override Timer</h2><span class="val" id="time">45.0s</span></div>
     </div>
-    <canvas id="gameCanvas"></canvas>
 
     <!-- START MODAL -->
     <div class="modal-backdrop" id="startOverlay">
         <div class="modal-card">
             <h1>NEURAL FIREWALL</h1>
-            <p style="color:#64748b;">Rotate the curved shield around the core to vaporize attacking data packets.</p>
+            <p style="color:var(--text-sub); line-height: 1.6;">Command the 3D Orbital Plasma Shield around the multi-ring quantum reactor. Intercept incoming rogue virus payloads before core breach.</p>
             
             <div class="diff-group">
                 <button class="diff-btn btn-easy active" onclick="setDifficulty('Easy')">Easy</button>
@@ -74,7 +85,7 @@
         <div class="modal-card">
             <h2 id="resultTitle" style="font-size:1.8rem; margin-bottom: 5px;">SYSTEM REPORT</h2>
             <div id="resultBadge" class="mode-indicator"></div>
-            <div style="color:#64748b; font-size:0.95rem;">INDIVIDUAL RUN SCORE</div>
+            <div style="color:var(--text-sub); font-size:0.95rem;">INDIVIDUAL RUN SCORE</div>
             <div class="score-banner" id="popupScore">0</div>
             <p id="highScoreNote" style="font-size:0.9rem; color:#15803d; font-weight:600; margin-bottom:20px;"></p>
             
@@ -86,34 +97,164 @@
     </div>
 
 <script>
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    // --- PURE BLACK / WHITE THEME SYNC ---
+    let isDarkTheme = false;
+    function checkTheme() {
+        const saved = localStorage.getItem('theme') || localStorage.getItem('cyanx_theme') || 'light';
+        isDarkTheme = (saved === 'dark');
+        document.body.classList.toggle('dark-mode', isDarkTheme);
+        if (scene) {
+            scene.background = new THREE.Color(isDarkTheme ? 0x000000 : 0xffffff);
+            if (arenaGrid) arenaGrid.material.opacity = isDarkTheme ? 0.22 : 0.15;
+        }
+    }
+    window.addEventListener('storage', checkTheme);
 
+    // --- THREE.JS HEAVY 3D SCENE SETUP ---
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const baseCamPos = { x: 0, y: -18, z: 25 };
+    camera.position.set(baseCamPos.x, baseCamPos.y, baseCamPos.z);
+    camera.lookAt(0, 0, 0);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    document.body.appendChild(renderer.domElement);
+
+    // Dynamic Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    scene.add(ambientLight);
+
+    const coreLight = new THREE.PointLight(0x4f46e5, 3.5, 45);
+    coreLight.position.set(0, 0, 4);
+    scene.add(coreLight);
+
+    const rimLight1 = new THREE.DirectionalLight(0x38bdf8, 1.8);
+    rimLight1.position.set(15, -15, 20);
+    scene.add(rimLight1);
+
+    const rimLight2 = new THREE.DirectionalLight(0xec4899, 1.2);
+    rimLight2.position.set(-15, 15, 15);
+    scene.add(rimLight2);
+
+    // 3D Cybernetic Radial Arena Floor
+    const arenaGrid = new THREE.PolarGridHelper(26, 24, 12, 64, 0x4f46e5, 0x6366f1);
+    arenaGrid.rotation.x = Math.PI / 2;
+    arenaGrid.position.z = -1.5;
+    arenaGrid.material.transparent = true;
+    scene.add(arenaGrid);
+
+    checkTheme();
+
+    // Floating 3D Data Dust Starfield
+    const dustCount = 250;
+    const dustGeo = new THREE.BufferGeometry();
+    const dustPositions = new Float32Array(dustCount * 3);
+    for (let i = 0; i < dustCount * 3; i += 3) {
+        dustPositions[i] = (Math.random() - 0.5) * 55;
+        dustPositions[i + 1] = (Math.random() - 0.5) * 55;
+        dustPositions[i + 2] = (Math.random() - 0.5) * 16 - 4;
+    }
+    dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
+    const dustMat = new THREE.PointsMaterial({ color: 0x6366f1, size: 0.22, transparent: true, opacity: 0.6 });
+    const dustSystem = new THREE.Points(dustGeo, dustMat);
+    scene.add(dustSystem);
+
+    // Multi-Layered 3D Quantum Reactor Core
+    const reactorGroup = new THREE.Group();
+    
+    // Nucleus
+    const nucleusGeo = new THREE.OctahedronGeometry(1.35, 2);
+    const nucleusMat = new THREE.MeshStandardMaterial({ color: 0x38bdf8, emissive: 0x2563eb, emissiveIntensity: 0.9, roughness: 0.1, metalness: 0.9 });
+    const nucleusMesh = new THREE.Mesh(nucleusGeo, nucleusMat);
+    reactorGroup.add(nucleusMesh);
+
+    // Wireframe Geodesic Cage
+    const cageGeo = new THREE.IcosahedronGeometry(1.9, 1);
+    const cageMat = new THREE.MeshStandardMaterial({ color: 0x6366f1, emissive: 0x4f46e5, emissiveIntensity: 0.4, wireframe: true });
+    const cageMesh = new THREE.Mesh(cageGeo, cageMat);
+    reactorGroup.add(cageMesh);
+
+    // 3 Gimbal Gyroscope Rings
+    const gimbalMat = new THREE.MeshStandardMaterial({ color: 0x4f46e5, emissive: 0x1e1b4b, metalness: 0.85, roughness: 0.15 });
+    const gimbal1 = new THREE.Mesh(new THREE.TorusGeometry(2.35, 0.08, 16, 64), gimbalMat);
+    const gimbal2 = new THREE.Mesh(new THREE.TorusGeometry(2.65, 0.06, 16, 64), gimbalMat);
+    gimbal2.rotation.x = Math.PI / 3;
+    const gimbal3 = new THREE.Mesh(new THREE.TorusGeometry(2.95, 0.05, 16, 64), new THREE.MeshStandardMaterial({ color: 0x38bdf8, emissive: 0x0284c7, metalness: 0.9, roughness: 0.1 }));
+    gimbal3.rotation.y = Math.PI / 3;
+    reactorGroup.add(gimbal1, gimbal2, gimbal3);
+    scene.add(reactorGroup);
+
+    // Shield Track Ring
+    const shieldRadius = 4.8;
+    const shieldTube = 0.38;
+    const trackGeo = new THREE.TorusGeometry(shieldRadius, 0.04, 12, 96);
+    const trackMat = new THREE.MeshBasicMaterial({ color: 0x6366f1, transparent: true, opacity: 0.35 });
+    scene.add(new THREE.Mesh(trackGeo, trackMat));
+
+    // Heavy 3D Curved Plasma Shield Rig
+    let shieldGroup = new THREE.Group();
+    scene.add(shieldGroup);
+    let shieldAngle = 0;
+    let shieldArcSpan = Math.PI / 1.7;
+
+    function buildShieldRig(arcSpan) {
+        while (shieldGroup.children.length > 0) {
+            shieldGroup.remove(shieldGroup.children[0]);
+        }
+        // Main Armored Energy Arc
+        const mainGeo = new THREE.TorusGeometry(shieldRadius, shieldTube, 20, 64, arcSpan);
+        const mainMat = new THREE.MeshStandardMaterial({
+            color: 0x2563eb,
+            emissive: 0x38bdf8,
+            emissiveIntensity: 0.75,
+            roughness: 0.1,
+            metalness: 0.9
+        });
+        const mainArc = new THREE.Mesh(mainGeo, mainMat);
+        shieldGroup.add(mainArc);
+
+        // Outer Wireframe Energy Field
+        const wireGeo = new THREE.TorusGeometry(shieldRadius, shieldTube * 1.35, 12, 32, arcSpan);
+        const wireMat = new THREE.MeshBasicMaterial({ color: 0x93c5fd, wireframe: true, transparent: true, opacity: 0.45 });
+        const wireArc = new THREE.Mesh(wireGeo, wireMat);
+        shieldGroup.add(wireArc);
+
+        // End-Cap Emitter Nodes
+        const capGeo = new THREE.SphereGeometry(shieldTube * 1.35, 16, 16);
+        const capMat = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0x38bdf8, emissiveIntensity: 1 });
+        const capStart = new THREE.Mesh(capGeo, capMat);
+        capStart.position.set(shieldRadius, 0, 0);
+        const capEnd = new THREE.Mesh(capGeo, capMat);
+        capEnd.position.set(Math.cos(arcSpan) * shieldRadius, Math.sin(arcSpan) * shieldRadius, 0);
+        shieldGroup.add(capStart, capEnd);
+    }
+
+    // --- GAME CONFIGS ---
     let currentDifficulty = 'Easy';
     const configs = {
-        'Easy':     { spawnRate: 1100, minRate: 400, speedMin: 1.8, speedMax: 2.8, arc: Math.PI / 1.7, rateStep: 12 },
-        'Medium':   { spawnRate: 900,  minRate: 280, speedMin: 2.3, speedMax: 3.5, arc: Math.PI / 2.1, rateStep: 16 },
-        'Hard':     { spawnRate: 700,  minRate: 200, speedMin: 3.0, speedMax: 4.8, arc: Math.PI / 2.7, rateStep: 22 },
-        'CYANX AI': { spawnRate: 480,  minRate: 140, speedMin: 4.2, speedMax: 6.5, arc: Math.PI / 3.4, rateStep: 28 }
+        'Easy':     { spawnRate: 1050, minRate: 380, speedMin: 0.085, speedMax: 0.135, arc: Math.PI / 1.65, rateStep: 12 },
+        'Medium':   { spawnRate: 860,  minRate: 270, speedMin: 0.115, speedMax: 0.17,  arc: Math.PI / 2.05, rateStep: 16 },
+        'Hard':     { spawnRate: 680,  minRate: 190, speedMin: 0.145, speedMax: 0.22,  arc: Math.PI / 2.6,  rateStep: 22 },
+        'CYANX AI': { spawnRate: 460,  minRate: 135, speedMin: 0.19,  speedMax: 0.29,  arc: Math.PI / 3.2,  rateStep: 28 }
     };
+
+    buildShieldRig(configs['Easy'].arc);
 
     let integrity = 100;
     let timeLeft = 45;
     let gameActive = false;
     let packets = [];
     let particles = [];
+    let shockwaves = [];
     let lastTime = 0;
     let spawnTimer = 0;
     let eliminatedCount = 0;
-    let score = 0;
+    let cameraShake = 0;
 
-    const core = { x: canvas.width / 2, y: canvas.height / 2, radius: 42 };
-    const shield = { radius: 88, thickness: 14, arcSpan: Math.PI / 2.1, angle: 0 };
-
-    let mouseX = canvas.width / 2 + shield.radius;
-    let mouseY = canvas.height / 2;
+    let mouseX = window.innerWidth / 2 + 100;
+    let mouseY = window.innerHeight / 2;
 
     window.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
     window.addEventListener('touchmove', (e) => {
@@ -129,25 +270,35 @@
         if (mode === 'CYANX AI') document.querySelector('.btn-cyanx').classList.add('active');
     }
 
+    function clear3DEntities() {
+        packets.forEach(p => scene.remove(p.mesh));
+        particles.forEach(pt => scene.remove(pt.mesh));
+        shockwaves.forEach(sw => scene.remove(sw.mesh));
+        packets = [];
+        particles = [];
+        shockwaves = [];
+    }
+
     function startGame() {
         document.getElementById('startOverlay').style.display = 'none';
         document.getElementById('scoreModal').style.display = 'none';
         
         const cfg = configs[currentDifficulty];
-        shield.arcSpan = cfg.arc;
+        shieldArcSpan = cfg.arc;
+        buildShieldRig(shieldArcSpan);
+        clear3DEntities();
 
         integrity = 100;
         timeLeft = 45;
-        packets = [];
-        particles = [];
         eliminatedCount = 0;
-        score = 0;
+        cameraShake = 0;
         
+        nucleusMat.color.setHex(0x38bdf8);
+        nucleusMat.emissive.setHex(0x2563eb);
         document.getElementById('integrity').innerText = integrity + "%";
         document.getElementById('currentScore').innerText = "0";
         gameActive = true;
         lastTime = performance.now();
-        requestAnimationFrame(update);
     }
 
     function retryGame() {
@@ -157,11 +308,8 @@
 
     function endGame(win) {
         gameActive = false;
-        
-        // Final Score Calculation
         const totalScore = (eliminatedCount * 120) + (integrity * 15) + (win ? 1000 : 0);
         
-        // Save Record
         const prevBest = parseInt(localStorage.getItem('cyanx_firewall_best') || 0);
         let isNewHigh = false;
         if (totalScore > prevBest) {
@@ -170,7 +318,6 @@
             isNewHigh = true;
         }
 
-        // Show Score Pop-up
         const modal = document.getElementById('scoreModal');
         const title = document.getElementById('resultTitle');
         const badge = document.getElementById('resultBadge');
@@ -189,151 +336,209 @@
         modal.style.display = 'flex';
     }
 
-    function createExplosion(x, y, color, count = 16) {
-        for(let i = 0; i < count; i++){
+    function createShockwave(x, y, colorHex, maxScale = 3.5) {
+        const geo = new THREE.RingGeometry(0.2, 0.45, 32);
+        const mat = new THREE.MeshBasicMaterial({ color: colorHex, side: THREE.DoubleSide, transparent: true, opacity: 0.9 });
+        const mesh = new THREE.Mesh(geo, mat);
+        mesh.position.set(x, y, 0.2);
+        scene.add(mesh);
+        shockwaves.push({ mesh, scale: 1, maxScale, life: 1.0 });
+    }
+
+    function createExplosion(x, y, colorHex, count = 20) {
+        const geo = new THREE.OctahedronGeometry(0.24, 0);
+        for (let i = 0; i < count; i++) {
+            const mat = new THREE.MeshStandardMaterial({ color: colorHex, emissive: colorHex, emissiveIntensity: 0.8, transparent: true, opacity: 1 });
+            const mesh = new THREE.Mesh(geo, mat);
+            mesh.position.set(x, y, (Math.random() - 0.5) * 0.5);
+            scene.add(mesh);
+            const speed = 0.15 + Math.random() * 0.35;
+            const angle = Math.random() * Math.PI * 2;
             particles.push({
-                x: x, y: y,
-                vx: (Math.random() - 0.5) * 8,
-                vy: (Math.random() - 0.5) * 8,
-                life: 1, color: color
+                mesh,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                vz: (Math.random() - 0.3) * 0.35,
+                life: 1.0
             });
         }
     }
 
-    function update(time) {
-        if(!gameActive) return;
-        const dt = time - lastTime;
-        lastTime = time;
+    function spawnVirusPacket(cfg) {
+        const angle = Math.random() * Math.PI * 2;
+        const dist = 20;
+        
+        // Multi-part Spiked Virus Mesh
+        const virusGroup = new THREE.Group();
+        const core = new THREE.Mesh(
+            new THREE.OctahedronGeometry(0.62, 0),
+            new THREE.MeshStandardMaterial({ color: 0xdc2626, emissive: 0x991b1b, emissiveIntensity: 0.7, roughness: 0.2, metalness: 0.8 })
+        );
+        const spikes = new THREE.Mesh(
+            new THREE.IcosahedronGeometry(0.85, 0),
+            new THREE.MeshBasicMaterial({ color: 0xf87171, wireframe: true })
+        );
+        virusGroup.add(core, spikes);
+        virusGroup.position.set(Math.cos(angle) * dist, Math.sin(angle) * dist, 0);
+        scene.add(virusGroup);
 
-        timeLeft -= dt / 1000;
-        document.getElementById('time').innerText = Math.max(0, timeLeft).toFixed(1) + "s";
-        if(timeLeft <= 0) { endGame(true); return; }
+        packets.push({
+            mesh: virusGroup,
+            radius: 0.7,
+            speed: cfg.speedMin + Math.random() * (cfg.speedMax - cfg.speedMin),
+            trailTick: 0
+        });
+    }
 
-        const cfg = configs[currentDifficulty];
-        spawnTimer += dt;
-        let currentRate = Math.max(cfg.minRate, cfg.spawnRate - (45 - timeLeft) * cfg.rateStep);
-        if(spawnTimer > currentRate) {
-            spawnTimer = 0;
-            let angle = Math.random() * Math.PI * 2;
-            let dist = Math.hypot(canvas.width, canvas.height) / 2 + 50;
-            packets.push({
-                x: core.x + Math.cos(angle) * dist,
-                y: core.y + Math.sin(angle) * dist,
-                radius: 11,
-                speed: cfg.speedMin + Math.random() * (cfg.speedMax - cfg.speedMin)
-            });
-        }
+    function animate(time) {
+        requestAnimationFrame(animate);
 
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.32)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // Animate 3D Reactor Core
+        nucleusMesh.rotation.y += 0.025;
+        nucleusMesh.rotation.x += 0.015;
+        cageMesh.rotation.y -= 0.015;
+        gimbal1.rotation.x += 0.02;
+        gimbal1.rotation.y += 0.01;
+        gimbal2.rotation.y -= 0.025;
+        gimbal2.rotation.z += 0.015;
+        gimbal3.rotation.z -= 0.03;
+        const pulse = 1 + Math.sin(time / 180) * 0.09;
+        nucleusMesh.scale.set(pulse, pulse, pulse);
 
-        // Core Ring
-        ctx.beginPath();
-        ctx.arc(core.x, core.y, shield.radius, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(79, 70, 229, 0.12)';
-        ctx.lineWidth = 1.5;
-        ctx.setLineDash([6, 6]);
-        ctx.stroke();
-        ctx.setLineDash([]);
+        dustSystem.rotation.z += 0.0008;
 
-        // Core Center
-        ctx.beginPath();
-        ctx.arc(core.x, core.y, core.radius + Math.sin(time / 200) * 4, 0, Math.PI * 2);
-        ctx.fillStyle = '#4f46e5';
-        ctx.shadowBlur = 24;
-        ctx.shadowColor = 'rgba(79, 70, 229, 0.5)';
-        ctx.fill();
-        ctx.shadowBlur = 0;
+        // Subtle 3D Camera Parallax + Shake
+        const normX = (mouseX / window.innerWidth) - 0.5;
+        const normY = (mouseY / window.innerHeight) - 0.5;
+        cameraShake *= 0.88;
+        const shakeX = (Math.random() - 0.5) * cameraShake;
+        const shakeY = (Math.random() - 0.5) * cameraShake;
 
-        ctx.beginPath();
-        ctx.arc(core.x, core.y, core.radius * 0.55, 0, Math.PI * 2);
-        ctx.fillStyle = '#ffffff';
-        ctx.fill();
+        camera.position.x += (baseCamPos.x + normX * 4 - camera.position.x) * 0.08 + shakeX;
+        camera.position.y += (baseCamPos.y - normY * 4 - camera.position.y) * 0.08 + shakeY;
+        camera.lookAt(0, 0, 0);
 
-        // Calculate Curved Shield
-        shield.angle = Math.atan2(mouseY - core.y, mouseX - core.x);
+        // Shield Rotation Tracking
+        const cx = window.innerWidth / 2;
+        const cy = window.innerHeight / 2;
+        shieldAngle = Math.atan2(-(mouseY - cy), mouseX - cx);
+        shieldGroup.rotation.z = shieldAngle - shieldArcSpan / 2;
 
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(core.x, core.y, shield.radius, shield.angle - shield.arcSpan / 2, shield.angle + shield.arcSpan / 2);
-        ctx.strokeStyle = '#2563eb';
-        ctx.lineWidth = shield.thickness;
-        ctx.lineCap = 'round';
-        ctx.shadowBlur = 18;
-        ctx.shadowColor = 'rgba(37, 99, 235, 0.7)';
-        ctx.stroke();
+        if (gameActive) {
+            const dt = time - lastTime;
+            lastTime = time;
 
-        ctx.beginPath();
-        ctx.arc(core.x, core.y, shield.radius, shield.angle - (shield.arcSpan / 2) + 0.08, shield.angle + (shield.arcSpan / 2) - 0.08);
-        ctx.strokeStyle = '#93c5fd';
-        ctx.lineWidth = shield.thickness * 0.35;
-        ctx.stroke();
-        ctx.restore();
+            timeLeft -= dt / 1000;
+            document.getElementById('time').innerText = Math.max(0, timeLeft).toFixed(1) + "s";
+            if (timeLeft <= 0) { endGame(true); return; }
 
-        // Packets
-        for(let i = packets.length - 1; i >= 0; i--) {
-            let p = packets[i];
-            let angleToCore = Math.atan2(core.y - p.y, core.x - p.x);
-            p.x += Math.cos(angleToCore) * p.speed;
-            p.y += Math.sin(angleToCore) * p.speed;
+            const cfg = configs[currentDifficulty];
+            spawnTimer += dt;
+            let currentRate = Math.max(cfg.minRate, cfg.spawnRate - (45 - timeLeft) * cfg.rateStep);
+            if (spawnTimer > currentRate) {
+                spawnTimer = 0;
+                spawnVirusPacket(cfg);
+            }
 
-            let distToCore = Math.hypot(core.x - p.x, core.y - p.y);
+            // Update Virus Packets
+            for (let i = packets.length - 1; i >= 0; i--) {
+                let p = packets[i];
+                p.mesh.rotation.x += 0.07;
+                p.mesh.rotation.y += 0.08;
 
-            // 1. Shield Arc Collision
-            if (Math.abs(distToCore - shield.radius) <= (p.radius + shield.thickness / 2 + 5)) {
-                let packetAngle = Math.atan2(p.y - core.y, p.x - core.x);
-                let angleDiff = Math.atan2(Math.sin(packetAngle - shield.angle), Math.cos(packetAngle - shield.angle));
-                let edgeForgiveness = (p.radius + 6) / shield.radius;
+                let angleToCore = Math.atan2(-p.mesh.position.y, -p.mesh.position.x);
+                p.mesh.position.x += Math.cos(angleToCore) * p.speed;
+                p.mesh.position.y += Math.sin(angleToCore) * p.speed;
 
-                if (Math.abs(angleDiff) <= (shield.arcSpan / 2 + edgeForgiveness)) {
-                    createExplosion(p.x, p.y, '#38bdf8', 12);
-                    createExplosion(p.x, p.y, '#dc2626', 10);
+                // Emit Plasma Trail
+                p.trailTick++;
+                if (p.trailTick % 4 === 0) {
+                    const trailMesh = new THREE.Mesh(
+                        new THREE.BoxGeometry(0.18, 0.18, 0.18),
+                        new THREE.MeshBasicMaterial({ color: 0xef4444, transparent: true, opacity: 0.7 })
+                    );
+                    trailMesh.position.copy(p.mesh.position);
+                    scene.add(trailMesh);
+                    particles.push({ mesh: trailMesh, vx: 0, vy: 0, vz: 0.04, life: 0.55 });
+                }
+
+                let distToCore = Math.hypot(p.mesh.position.x, p.mesh.position.y);
+
+                // 1. Shield Intercept Collision
+                if (Math.abs(distToCore - shieldRadius) <= (p.radius + shieldTube + 0.3)) {
+                    let packetAngle = Math.atan2(p.mesh.position.y, p.mesh.position.x);
+                    let angleDiff = Math.atan2(Math.sin(packetAngle - shieldAngle), Math.cos(packetAngle - shieldAngle));
+                    let edgeForgiveness = (p.radius + 0.35) / shieldRadius;
+
+                    if (Math.abs(angleDiff) <= (shieldArcSpan / 2 + edgeForgiveness)) {
+                        createExplosion(p.mesh.position.x, p.mesh.position.y, 0x38bdf8, 16);
+                        createExplosion(p.mesh.position.x, p.mesh.position.y, 0xef4444, 12);
+                        createShockwave(p.mesh.position.x, p.mesh.position.y, 0x38bdf8, 3.2);
+                        cameraShake = 0.45;
+                        scene.remove(p.mesh);
+                        packets.splice(i, 1);
+                        eliminatedCount++;
+                        document.getElementById('currentScore').innerText = eliminatedCount * 120;
+                        continue;
+                    }
+                }
+
+                // 2. Reactor Core Breach Collision
+                if (distToCore <= 2.2 + p.radius) {
+                    integrity -= 10;
+                    document.getElementById('integrity').innerText = integrity + "%";
+                    createExplosion(p.mesh.position.x, p.mesh.position.y, 0xdc2626, 28);
+                    createShockwave(0, 0, 0xdc2626, 6.5);
+                    cameraShake = 1.2;
+                    if (integrity <= 40) {
+                        nucleusMat.color.setHex(0xef4444);
+                        nucleusMat.emissive.setHex(0xdc2626);
+                    }
+                    scene.remove(p.mesh);
                     packets.splice(i, 1);
-                    eliminatedCount++;
-                    document.getElementById('currentScore').innerText = eliminatedCount * 120;
-                    continue;
+                    if (integrity <= 0) { endGame(false); return; }
                 }
             }
+        }
 
-            // 2. Core Collision
-            if (distToCore <= core.radius + p.radius) {
-                integrity -= 10;
-                document.getElementById('integrity').innerText = integrity + "%";
-                createExplosion(p.x, p.y, '#dc2626', 20);
-                packets.splice(i, 1);
-                if (integrity <= 0) { endGame(false); return; }
-                continue;
+        // Update Shockwaves
+        for (let i = shockwaves.length - 1; i >= 0; i--) {
+            let sw = shockwaves[i];
+            sw.scale += (sw.maxScale - sw.scale) * 0.16;
+            sw.mesh.scale.set(sw.scale, sw.scale, 1);
+            sw.life -= 0.05;
+            sw.mesh.material.opacity = Math.max(0, sw.life);
+            if (sw.life <= 0) {
+                scene.remove(sw.mesh);
+                shockwaves.splice(i, 1);
             }
-
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-            ctx.fillStyle = '#dc2626';
-            ctx.shadowBlur = 12;
-            ctx.shadowColor = 'rgba(220, 38, 38, 0.5)';
-            ctx.fill();
-            ctx.shadowBlur = 0;
         }
 
-        // Particles
-        for(let i = particles.length - 1; i >= 0; i--) {
+        // Update 3D Shrapnel Particles
+        for (let i = particles.length - 1; i >= 0; i--) {
             let pt = particles[i];
-            pt.x += pt.vx; pt.y += pt.vy; pt.life -= 0.045;
-            ctx.globalAlpha = Math.max(0, pt.life);
-            ctx.fillStyle = pt.color;
-            ctx.beginPath();
-            ctx.arc(pt.x, pt.y, 3, 0, Math.PI * 2);
-            ctx.fill();
-            if(pt.life <= 0) particles.splice(i, 1);
+            pt.mesh.position.x += pt.vx;
+            pt.mesh.position.y += pt.vy;
+            pt.mesh.position.z += pt.vz;
+            pt.mesh.rotation.x += 0.12;
+            pt.mesh.rotation.y += 0.12;
+            pt.life -= 0.038;
+            pt.mesh.material.opacity = Math.max(0, pt.life);
+            if (pt.life <= 0) {
+                scene.remove(pt.mesh);
+                particles.splice(i, 1);
+            }
         }
-        ctx.globalAlpha = 1;
 
-        requestAnimationFrame(update);
+        renderer.render(scene, camera);
     }
 
+    requestAnimationFrame(animate);
+
     window.addEventListener('resize', () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        core.x = canvas.width / 2; core.y = canvas.height / 2;
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
     });
 </script>
 </body>

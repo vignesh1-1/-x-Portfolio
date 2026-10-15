@@ -1,24 +1,12 @@
 lucide.createIcons();
 
-// =============== LOGO CLICK EASTER EGG ===============
+// =============== LOGO CLICK REDIRECT ===============
 const navLogo = document.querySelector('.logo img');
-let logoClicks = 0;
-let logoClickTimer;
 
 if (navLogo) {
   navLogo.addEventListener('click', (e) => {
     e.preventDefault(); 
-    logoClicks++;
-    
-    if (logoClicks === 5) {
-      triggerArcadeRedirect();
-      logoClicks = 0; 
-    }
-    
-    clearTimeout(logoClickTimer);
-    logoClickTimer = setTimeout(() => {
-      logoClicks = 0;
-    }, 2000);
+    triggerArcadeRedirect();
   });
 }
 
@@ -232,7 +220,7 @@ document.querySelectorAll("a").forEach(link => {
 // ACTIVE LINK OBSERVER & AI CHAT CONTEXT CHIPS
 // ==========================================
 const sections = document.querySelectorAll("section");
-const navLinksList = document.querySelectorAll("nav a");
+const navLinksList = document.querySelectorAll(".nav-links a");
 const chatContextChips = document.getElementById("chatContextChips");
 const observerOptions = { root: null, rootMargin: "-20% 0px -60% 0px", threshold: 0 }; 
 
@@ -266,8 +254,9 @@ function updateContextChips(sectionId) {
 const observer = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
     if (entry.isIntersecting) {
+      if (window.scrollY < 100 && entry.target.id !== "home") return;
       navLinksList.forEach((link) => link.classList.remove("active"));
-      const activeLink = document.querySelector(`nav a[href="#${entry.target.id}"]`);
+      const activeLink = document.querySelector(`.nav-links a[href="#${entry.target.id}"]`);
       if (activeLink) activeLink.classList.add("active");
       updateContextChips(entry.target.id);
     }
@@ -275,6 +264,16 @@ const observer = new IntersectionObserver((entries) => {
 }, observerOptions);
 
 sections.forEach((section) => observer.observe(section));
+
+// Ensure Home link stays active when scrolled to top
+window.addEventListener("scroll", () => {
+  if (window.scrollY < 100) {
+    navLinksList.forEach((link) => link.classList.remove("active"));
+    const homeLink = document.querySelector('.nav-links a[href="#home"]');
+    if (homeLink) homeLink.classList.add("active");
+    updateContextChips("home");
+  }
+});
 
 // ==========================================
 // HARDWARE-ACCELERATED MOBILE CANVAS BACKGROUND
@@ -660,31 +659,58 @@ const counterObserver = new IntersectionObserver((entries, observer) => {
 
 counters.forEach(counter => counterObserver.observe(counter));
 
-// =============== PROJECT MATRIX FILTER ===============
+// ==========================================
+// UNIFIED PROJECT FILTER (DESKTOP & MOBILE DROPDOWN)
+// ==========================================
 const filterBtns = document.querySelectorAll('.filter-btn');
+const mobileFilterSelect = document.getElementById('projectFilterSelect');
 const projectCardsGrid = document.querySelectorAll('.project-card[data-tags]');
+
+function applyProjectFilter(filterValue) {
+  // Synchronize button styling
+  filterBtns.forEach(btn => {
+    if (btn.getAttribute('data-filter') === filterValue) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+
+  // Synchronize mobile select if available
+  if (mobileFilterSelect && mobileFilterSelect.value !== filterValue) {
+    mobileFilterSelect.value = filterValue;
+  }
+
+  // Filter project cards
+  projectCardsGrid.forEach(card => {
+    if (filterValue === 'all') {
+      card.classList.remove('hidden-project');
+    } else {
+      const tags = (card.getAttribute('data-tags') || '').split(' ');
+      if (tags.includes(filterValue)) {
+        card.classList.remove('hidden-project');
+      } else {
+        card.classList.add('hidden-project');
+      }
+    }
+  });
+}
 
 filterBtns.forEach(btn => {
   btn.addEventListener('click', () => {
-    filterBtns.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    
-    const filterValue = btn.getAttribute('data-filter');
-    
-    projectCardsGrid.forEach(card => {
-      if (filterValue === 'all') {
-        card.classList.remove('hidden-project');
-      } else {
-        const tags = (card.getAttribute('data-tags') || '').split(' ');
-        if (tags.includes(filterValue)) {
-          card.classList.remove('hidden-project');
-        } else {
-          card.classList.add('hidden-project');
-        }
-      }
-    });
+    const filterValue = btn.getAttribute('data-filter') || 'all';
+    applyProjectFilter(filterValue);
   });
 });
+
+if (mobileFilterSelect) {
+  mobileFilterSelect.addEventListener('change', (e) => {
+    applyProjectFilter(e.target.value || 'all');
+  });
+}
+
+// Ensure default state is 'all'
+applyProjectFilter('all');
 
 // ==============================================================
 // AI CHATBOT LOGIC WITH NON-INTRUSIVE AUTO-SCROLL
@@ -818,7 +844,7 @@ async function sendChatMessage() {
   const startTime = performance.now();
 
   try {
-    const activeNav = document.querySelector('nav a.active');
+    const activeNav = document.querySelector('.nav-links a.active');
     const currentContext = activeNav ? activeNav.getAttribute('href').substring(1) : 'unknown';
 
     const targetUrl = await resolveActiveBackend();
@@ -855,7 +881,7 @@ async function sendChatMessage() {
     for (let i = 0; i < replyText.length; i++) {
       botMsg.textContent += replyText.charAt(i);
 
-      // Smart Auto-Scroll: Stick to bottom only if reading along
+      // Stick to bottom only if user is already near bottom
       const distanceFromBottom = chatWin.scrollHeight - chatWin.scrollTop - chatWin.clientHeight;
       if (distanceFromBottom <= 80) {
         chatWin.scrollTop = chatWin.scrollHeight;
@@ -1134,7 +1160,7 @@ function initPointsPopup() {
   setTimeout(popupCycle, 600);
 }
 
-// =============== ADVANCED TERMINAL WITH THEME RESTORE ===============
+// =============== TERMINAL UI ===============
 window.insertTerminalCmd = function(cmd) {
   const terminalInput = document.getElementById("terminalInput");
   if (terminalInput) {
@@ -1486,6 +1512,16 @@ if (terminalInput && terminalBody) {
   });
 }
 
+// =============== ESCAPE KEY MODAL CLOSING ===============
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeArchitectureDrawer();
+    document.getElementById("arcadeModal")?.classList.remove("show");
+    document.getElementById("cookiePreferencesPanel")?.classList.remove("show");
+    window.closeCookieModal?.();
+  }
+});
+
 // =============== FEED-FORWARD NETWORK CANVAS ===============
 const ffCanvas = document.getElementById('ffNetworkCanvas');
 if (ffCanvas) {
@@ -1754,7 +1790,7 @@ if (ffCanvas) {
   animateNetwork();
 }
 
-// =============== ARCHITECTURE DRAWER (Interactive Node Graph) ===============
+// =============== ARCHITECTURE DRAWER (CYTOSCAPE TOPOLOGY & SIMULATOR) ===============
 const architectureRegistry = {
   "exotic-hub": {
     title: "EXOTIC GB HUB | Architecture",
@@ -1860,79 +1896,113 @@ function renderCytoscape(graphData) {
   cytoscapeInstance = cytoscape({
     container: container,
     elements: graphData,
+    boxSelectionEnabled: false,
+    autoungrabify: false,
     style: [
       {
         selector: 'node',
         style: {
-          'background-color': '#1e293b',
+          'background-color': '#111827',
           'label': 'data(label)',
-          'color': '#ffffff',
+          'color': '#f8fafc',
           'text-valign': 'center',
-          'font-size': '11px',
-          'font-family': 'Inter, sans-serif',
+          'text-halign': 'center',
+          'font-size': '11.5px',
+          'font-family': 'Space Grotesk, Inter, sans-serif',
           'font-weight': '600',
-          'width': '120px',
-          'height': '40px',
+          'width': 'label',
+          'height': '38px',
+          'padding': '14px',
           'shape': 'round-rectangle',
           'border-width': 1.5,
-          'border-color': '#38bdf8'
+          'border-color': '#38bdf8',
+          'text-max-width': '110px',
+          'text-wrap': 'wrap'
         }
       },
       {
         selector: 'edge',
         style: {
-          'width': 2,
+          'width': 2.5,
           'line-color': '#64748b',
-          'target-arrow-color': '#64748b',
+          'target-arrow-color': '#38bdf8',
           'target-arrow-shape': 'triangle',
-          'curve-style': 'bezier'
+          'curve-style': 'bezier',
+          'arrow-scale': 1.2
         }
       },
       {
-        selector: '.packet',
+        selector: 'node.packet',
         style: {
-          'width': 8,
-          'height': 8,
-          'background-color': '#39ff14',
+          'width': 10,
+          'height': 10,
+          'background-color': '#22c55e',
+          'border-width': 2,
+          'border-color': '#ffffff',
           'shape': 'ellipse',
           'label': '',
-          'border-width': 0
+          'z-index': 9999
         }
       }
     ],
     layout: {
       name: 'breadthfirst',
       directed: true,
-      padding: 30
-    },
-    zoomingEnabled: false,
-    userZoomingEnabled: false,
-    panningEnabled: true,
-    userPanningEnabled: true,
-    boxSelectionEnabled: false
+      padding: 30,
+      spacingFactor: 1.15,
+      fit: true
+    }
   });
 
-  cytoscapeInstance.resize();
+  cytoscapeInstance.ready(() => {
+    cytoscapeInstance.resize();
+    cytoscapeInstance.fit(undefined, 25);
+  });
 }
 
 function simulatePacketHops() {
   if (!cytoscapeInstance) return;
+  
+  // Clear any existing packets first to avoid hanging nodes
+  cytoscapeInstance.nodes('.packet').remove();
+  
   const edges = cytoscapeInstance.edges();
   if (edges.length === 0) return;
 
   edges.forEach((edge, i) => {
     setTimeout(() => {
+      if (!cytoscapeInstance) return;
+      const srcPos = edge.source().position();
+      const tgtPos = edge.target().position();
+      
       const packet = cytoscapeInstance.add({
         group: 'nodes',
         classes: 'packet',
-        position: edge.source().position()
+        position: { x: srcPos.x, y: srcPos.y }
       });
+      
       packet.animate({
-        position: edge.target().position(),
-        duration: 800,
+        position: { x: tgtPos.x, y: tgtPos.y },
+        duration: 700,
         easing: 'ease-in-out'
-      }).promise().then(() => packet.remove());
-    }, i * 400); 
+      }).promise().then(() => {
+        try {
+          if (cytoscapeInstance && cytoscapeInstance.hasElementWithId(packet.id())) {
+            cytoscapeInstance.remove(packet);
+          }
+        } catch (e) {}
+      });
+
+      // Absolute fallback cleanup
+      setTimeout(() => {
+        try {
+          if (cytoscapeInstance && cytoscapeInstance.hasElementWithId(packet.id())) {
+            cytoscapeInstance.remove(packet);
+          }
+        } catch (err) {}
+      }, 900);
+
+    }, i * 450); 
   });
 }
 
@@ -1953,8 +2023,6 @@ function openArchitectureDrawer(projectId) {
     techContainer.innerHTML = data.technologies.map(t => `<span class="stack-tag">${t}</span>`).join('');
   }
 
-  setTimeout(() => renderCytoscape(data.graphData), 300);
-  
   const tradeoffsContainer = document.getElementById("archTradeoffsContainer");
   if (tradeoffsContainer) {
     tradeoffsContainer.innerHTML = data.tradeoffs.map(t => `
@@ -1985,6 +2053,11 @@ function openArchitectureDrawer(projectId) {
   archOverlay?.classList.add("active");
   archDrawer.setAttribute("aria-hidden", "false");
   document.body.style.overflow = "hidden";
+
+  // Wait for slide-in animation before initializing and fitting diagram
+  setTimeout(() => {
+    renderCytoscape(data.graphData);
+  }, 460);
 }
 
 function closeArchitectureDrawer() {
@@ -1993,7 +2066,11 @@ function closeArchitectureDrawer() {
   archOverlay?.classList.remove("active");
   archDrawer.setAttribute("aria-hidden", "true");
   document.body.style.overflow = "";
-  if (cytoscapeInstance) cytoscapeInstance.destroy();
+  if (cytoscapeInstance) {
+    cytoscapeInstance.nodes('.packet').remove();
+    cytoscapeInstance.destroy();
+    cytoscapeInstance = null;
+  }
 }
 
 document.querySelectorAll(".inspect-arch-btn").forEach(btn => {
@@ -2088,74 +2165,3 @@ if (chatContent && trackBody && thumb && upBtn && downBtn) {
 // Custom Cursor Copy Logic
 document.addEventListener('mousedown', () => { document.body.classList.add('is-copying'); });
 document.addEventListener('mouseup', () => { document.body.classList.remove('is-copying'); });
-
-// =============== COMMAND PALETTE (Cmd+K) ===============
-const cmdPalette = document.getElementById('commandPalette');
-const cmdInput = document.getElementById('cmdPaletteInput');
-const cmdItems = document.querySelectorAll('.cmd-item');
-
-function togglePalette() {
-  if (!cmdPalette) return;
-  const isActive = cmdPalette.classList.contains('active');
-  if (isActive) {
-    cmdPalette.classList.remove('active');
-    cmdInput?.blur();
-  } else {
-    cmdPalette.classList.add('active');
-    if (cmdInput) {
-      cmdInput.value = '';
-      cmdItems.forEach(item => item.style.display = 'flex'); 
-      setTimeout(() => cmdInput.focus(), 100);
-    }
-  }
-}
-
-document.addEventListener('keydown', (e) => {
-  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-    e.preventDefault();
-    togglePalette();
-  }
-  if (e.key === 'Escape') {
-    if (cmdPalette?.classList.contains('active')) togglePalette();
-    closeArchitectureDrawer();
-    document.getElementById("arcadeModal")?.classList.remove("show");
-    document.getElementById("cookiePreferencesPanel")?.classList.remove("show");
-    window.closeCookieModal?.();
-  }
-});
-
-if (cmdInput) {
-  cmdInput.addEventListener('input', (e) => {
-    const term = e.target.value.toLowerCase();
-    cmdItems.forEach(item => {
-      const text = item.textContent.toLowerCase();
-      item.style.display = text.includes(term) ? 'flex' : 'none';
-    });
-  });
-}
-
-cmdItems.forEach(item => {
-  item.addEventListener('click', () => {
-    const action = item.getAttribute('data-action');
-    
-    if (action === 'scroll') {
-      const targetId = item.getAttribute('data-target');
-      document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' });
-    } else if (action === 'terminal') {
-      document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-      const cmd = item.getAttribute('data-command');
-      if (window.insertTerminalCmd && cmd) {
-        window.insertTerminalCmd(cmd);
-      }
-    } else if (action === 'download') {
-      const link = document.createElement('a');
-      link.href = 'resumeee.html'; 
-      link.download = 'Vignesh_Resume.html'; 
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-    
-    togglePalette();
-  });
-});

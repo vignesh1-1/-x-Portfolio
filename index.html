@@ -91,8 +91,6 @@
           Explore Projects <i class="fa-solid fa-arrow-right btn-arrow" aria-hidden="true"></i>
         </a>
         <a href="#contact" class="secondary-btn">Let's Collaborate</a>
-        <!-- Cmd+K Hint -->
-        <span class="cmd-k-hint"><kbd>Cmd</kbd> + <kbd>K</kbd> to jump</span>
       </div>
     </div>
 
@@ -317,11 +315,11 @@
         <p>2024-2027 | Bengaluru, IN</p>
       </div>
       <div class="edu-card">
-        <div class="edu-icon"><i class="fa-solid fa-code" aria-hidden="true"></i></div>
-        <h4>Technical Focus</h4>
-        <h5>Full-Stack AI Engineering</h5>
-        <p>Building scalable web applications and interactive architectures.</p>
-      </div>
+  <div class="edu-icon"><i class="fa-solid fa-code" aria-hidden="true"></i></div>
+  <h4>Current Status</h4>
+  <h5>Open to Opportunities</h5>
+  <p>Available for Full-Stack, AI Engineer, and backend system engineering roles.</p>
+</div>
     </div>
   </section>
 
@@ -337,11 +335,21 @@
 
     <!-- Filterable Project Matrix Toolbar -->
     <div class="project-filters reveal" role="toolbar" aria-label="Project filter options">
+      <!-- Desktop Filter Buttons -->
       <button class="filter-btn active" data-filter="all" type="button">All Projects</button>
       <button class="filter-btn" data-filter="ai" type="button">AI / LLM</button>
       <button class="filter-btn" data-filter="fullstack" type="button">Full-Stack</button>
       <button class="filter-btn" data-filter="fastapi" type="button">FastAPI / Python</button>
       <button class="filter-btn" data-filter="database" type="button">Database</button>
+
+      <!-- Mobile Filter Dropdown -->
+      <select id="projectFilterSelect" class="mobile-project-select" aria-label="Filter Projects by category">
+        <option value="all" selected>All Projects</option>
+        <option value="ai">AI / LLM</option>
+        <option value="fullstack">Full-Stack</option>
+        <option value="fastapi">FastAPI / Python</option>
+        <option value="database">Database</option>
+      </select>
     </div>
 
     <div class="projects-wrapper prod-wrapper">
@@ -525,7 +533,7 @@
             <div class="holo-system" aria-hidden="true">
               <div class="monitor" id="retroTerm">
                 <div class="screen">
-                  <div class="face" id="faceText">◕⁠‿⁠⁠◕</div>
+                  <div class="face" id="faceText">◕⁠‿⁠◕</div>
                 </div>
               </div>
               <div class="holo-cone"></div>
@@ -724,32 +732,6 @@
     </button>
   </div>
 
-  <!-- COMMAND PALETTE MODAL (Cmd+K) -->
-  <div id="commandPalette" class="command-palette-overlay" role="dialog" aria-modal="true" aria-label="Quick command navigation palette">
-    <div class="cmd-palette-box">
-      <div class="cmd-header">
-        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-        <input type="text" id="cmdPaletteInput" class="cmd-input" placeholder="Search sections, run commands, or download resume..." aria-label="Command search palette">
-        <span class="cmd-esc">ESC</span>
-      </div>
-      <div class="cmd-body">
-        <div class="cmd-category">Navigation</div>
-        <ul class="cmd-list" id="cmdNavList">
-          <li class="cmd-item" data-action="scroll" data-target="home"><i class="fa-solid fa-house" aria-hidden="true"></i> Go to Home</li>
-          <li class="cmd-item" data-action="scroll" data-target="about"><i class="fa-solid fa-microchip" aria-hidden="true"></i> View Capabilities & Stack</li>
-          <li class="cmd-item" data-action="scroll" data-target="projects"><i class="fa-solid fa-folder-open" aria-hidden="true"></i> Browse Projects</li>
-          <li class="cmd-item" data-action="scroll" data-target="experience"><i class="fa-solid fa-briefcase" aria-hidden="true"></i> Check Experience</li>
-        </ul>
-        <div class="cmd-category">Actions</div>
-        <ul class="cmd-list" id="cmdActionList">
-          <li class="cmd-item" data-action="download"><i class="fa-solid fa-download" aria-hidden="true"></i> Download Resume</li>
-          <li class="cmd-item" data-action="terminal" data-command="matrix"><i class="fa-solid fa-terminal" aria-hidden="true"></i> Run Terminal: matrix scan</li>
-          <li class="cmd-item" data-action="terminal" data-command="arcade"><i class="fa-solid fa-gamepad" aria-hidden="true"></i> Launch Neural Arcade</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
   <!-- COOKIES PREFERENCES PANEL -->
   <div id="cookiePreferencesPanel" class="cookie-panel" role="region" aria-label="Cookie Settings">
     <div class="cookie-box">
@@ -855,7 +837,7 @@
         <!-- Modified to hold Cytoscape rendering -->
         <div class="arch-diagram-wrapper" id="archDiagramContainer" aria-label="Cytoscape topology canvas" tabindex="0"></div>
         <div style="text-align: right; margin-top: 8px;">
-          <button id="simulatePacketBtn" class="secondary-btn" style="padding: 6px 12px; font-size: 11px;" type="button">Simulate Hops</button>
+          <button id="simulatePacketBtn" class="secondary-btn" type="button">Simulate Hops</button>
         </div>
       </div>
 

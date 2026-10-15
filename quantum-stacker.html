@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Quantum Stacker</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="icon" type="image/png" href="Gemini_Generated_Image_ko64ocko64ocko64-removebg-preview.png">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+    :root { --bg-pure: #ffffff; --text-main: #000000; --text-sub: #64748b; --border-color: #cbd5e1; }
+    body.dark-mode { --bg-pure: #000000; --text-main: #ffffff; --text-sub: #94a3b8; --border-color: #262626; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--bg-pure); color: var(--text-main); overflow: hidden; font-family: 'Space Grotesk', sans-serif; user-select: none; touch-action: none; }
+    canvas { display: block; width: 100vw; height: 100vh; }
+
+    .hud { position: absolute; top: 16px; left: 16px; right: 16px; display: flex; justify-content: space-between; gap: 10px; z-index: 10; pointer-events: none; }
+    .hud-box { background: var(--bg-pure); border: 1px solid var(--border-color); padding: 8px 18px; border-radius: 12px; box-shadow: 0 8px 25px rgba(79,70,229,0.1); }
+    h2 { margin: 0; font-size: clamp(0.68rem, 2vw, 0.85rem); color: #4f46e5; text-transform: uppercase; letter-spacing: 1.5px; }
+    span.val { color: var(--text-main); font-size: clamp(1.15rem, 3.5vw, 1.5rem); font-weight: bold; }
+
+    .modal-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-pure); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 25; padding: 16px; }
+    .modal-card { background: var(--bg-pure); border: 1px solid var(--border-color); border-radius: 22px; padding: clamp(22px, 5vw, 38px); width: 100%; max-width: 500px; text-align: center; box-shadow: 0 20px 50px rgba(79,70,229,0.15); }
+    h1 { font-size: clamp(1.9rem, 6vw, 2.7rem); margin: 0 0 10px 0; color: var(--text-main); }
+
+    .diff-group { display: flex; justify-content: center; gap: 6px; margin: 18px 0; flex-wrap: wrap; }
+    .diff-btn { padding: 7px 14px; border-radius: 20px; font-weight: 700; font-size: 0.8rem; cursor: pointer; font-family: inherit; }
+    .diff-btn.active { transform: scale(1.06); outline: 2px solid var(--text-main); }
+    .btn-easy { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+    .btn-med { background: #fef08a; color: #713f12; border: 1px solid #fde047; }
+    .btn-hard { background: #fce7f3; color: #991b1b; border: 1px solid #fbcfe8; }
+    .btn-cyanx { background: #ede9fe; color: #581c87; border: 1px solid #ddd6fe; }
+
+    .btn { padding: 12px 28px; background: #4f46e5; border: none; color: white; font-size: 1rem; cursor: pointer; border-radius: 30px; font-family: inherit; margin: 6px; font-weight: bold; }
+    .btn-outline { background: var(--bg-pure); border: 2px solid var(--border-color); color: var(--text-main); }
+    .score-banner { font-size: clamp(2.3rem, 7vw, 3.2rem); font-weight: 800; color: #4f46e5; margin: 12px 0; }
+    .mode-indicator { display: inline-block; padding: 6px 14px; border-radius: 12px; font-weight: 700; margin-bottom: 16px; text-transform: uppercase; font-size: 0.8rem; }
+</style>
+</head>
+<body>
+    <div class="hud">
+        <div class="hud-box"><h2>Stack Height</h2><span class="val" id="scoreDisplay">0</span></div>
+        <div class="hud-box"><h2>Combo Streak</h2><span class="val" id="comboDisplay">0x</span></div>
+        <div class="hud-box"><h2>Best Stack</h2><span class="val" id="bestDisplay">0</span></div>
+    </div>
+
+    <div class="modal-backdrop" id="startOverlay">
+        <div class="modal-card">
+            <h1>QUANTUM STACKER</h1>
+            <p style="color:var(--text-sub); font-size:0.9rem; line-height: 1.5;">Tap, click, or press SPACE to lock each oscillating data slab onto the tower. Overhanging edges are sheared off.</p>
+            <div class="diff-group">
+                <button class="diff-btn btn-easy active" onclick="setDifficulty('Easy')">Easy</button>
+                <button class="diff-btn btn-med" onclick="setDifficulty('Medium')">Medium</button>
+                <button class="diff-btn btn-hard" onclick="setDifficulty('Hard')">Hard</button>
+                <button class="diff-btn btn-cyanx" onclick="setDifficulty('CYANX AI')">CYANX AI</button>
+            </div>
+            <div>
+                <button class="btn" onclick="startGame()">INITIALIZE STACK</button>
+                <button class="btn btn-outline" onclick="window.location.href='game.html'">BACK</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-backdrop" id="scoreModal" style="display: none;">
+        <div class="modal-card">
+            <h2 style="font-size:1.6rem; color:#dc2626; margin-bottom: 5px;">ALIGNMENT LOST</h2>
+            <div id="resultBadge" class="mode-indicator"></div>
+            <div style="color:var(--text-sub); font-size:0.9rem;">BLOCKS STACKED</div>
+            <div class="score-banner" id="popupScore">0</div>
+            <p id="highScoreNote" style="font-size:0.88rem; color:#15803d; font-weight:600; margin-bottom:18px;"></p>
+            <div>
+                <button class="btn" onclick="retryGame()">PLAY AGAIN</button>
+                <button class="btn btn-outline" onclick="window.location.href='game.html'">MAIN MENU</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    const scene = new THREE.Scene();
+    function checkTheme() {
+        const saved = localStorage.getItem('theme') || localStorage.getItem('cyanx_theme') || 'light';
+        const isDark = (saved === 'dark');
+        document.body.classList.toggle('dark-mode', isDark);
+        scene.background = new THREE.Color(isDark ? 0x000000 : 0xffffff);
+    }
+    checkTheme();
+    window.addEventListener('storage', checkTheme);
+
+    let d = 7;
+    const camera = new THREE.OrthographicCamera(-d, d, d, -d, 1, 100);
+    function updateCamera() {
+        const aspect = window.innerWidth / window.innerHeight;
+        d = aspect < 0.75 ? 6.2 / aspect : 6.5;
+        camera.left = -d * aspect;
+        camera.right = d * aspect;
+        camera.top = d;
+        camera.bottom = -d;
+        camera.updateProjectionMatrix();
+    }
+    updateCamera();
+    camera.position.set(14, 14, 14);
+    camera.lookAt(0, 0, 0);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    document.body.appendChild(renderer.domElement);
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.75));
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.9);
+    dirLight.position.set(10, 25, 15);
+    scene.add(dirLight);
+
+    const BOX_HEIGHT = 0.75;
+    const INITIAL_SIZE = 4.2;
+
+    let currentDifficulty = 'Easy';
+    const diffConfigs = {
+        'Easy':     { speed: 0.09, accel: 0.002, tolerance: 0.22 },
+        'Medium':   { speed: 0.12, accel: 0.003, tolerance: 0.18 },
+        'Hard':     { speed: 0.15, accel: 0.004, tolerance: 0.14 },
+        'CYANX AI': { speed: 0.19, accel: 0.005, tolerance: 0.10 }
+    };
+
+    let stack = [], debris = [], pulses = [];
+    let gameActive = false, score = 0, combo = 0, targetCamY = 0;
+    let moveAxis = 'x', moveDir = 1, currentSpeed = 0.1;
+
+    document.getElementById('bestDisplay').innerText = localStorage.getItem('cyanx_stacker_best') || 0;
+
+    function setDifficulty(mode) {
+        currentDifficulty = mode;
+        document.querySelectorAll('.diff-btn').forEach(btn => btn.classList.remove('active'));
+        if (mode === 'Easy') document.querySelector('.btn-easy').classList.add('active');
+        if (mode === 'Medium') document.querySelector('.btn-med').classList.add('active');
+        if (mode === 'Hard') document.querySelector('.btn-hard').classList.add('active');
+        if (mode === 'CYANX AI') document.querySelector('.btn-cyanx').classList.add('active');
+    }
+
+    function getLayerColor(index) {
+        const hue = (235 + index * 9) % 360;
+        return new THREE.Color(`hsl(${hue}, 82%, 56%)`);
+    }
+
+    function createSlab(x, y, z, w, d, color) {
+        const geo = new THREE.BoxGeometry(w, BOX_HEIGHT, d);
+        const mat = new THREE.MeshStandardMaterial({ color, roughness: 0.2, metalness: 0.65 });
+        const mesh = new THREE.Mesh(geo, mat);
+        mesh.position.set(x, y, z);
+        scene.add(mesh);
+        return { mesh, x, y, z, w, d, color };
+    }
+
+    function spawnNextSlab() {
+        const prev = stack[stack.length - 1];
+        const y = stack.length * BOX_HEIGHT;
+        moveAxis = stack.length % 2 === 1 ? 'x' : 'z';
+        moveDir = 1;
+        const startOffset = -7.5;
+        const x = moveAxis === 'x' ? startOffset : prev.x;
+        const z = moveAxis === 'z' ? startOffset : prev.z;
+        const slab = createSlab(x, y, z, prev.w, prev.d, getLayerColor(stack.length));
+        stack.push(slab);
+        targetCamY = y - 2;
+    }
+
+    function startGame() {
+        document.getElementById('startOverlay').style.display = 'none';
+        document.getElementById('scoreModal').style.display = 'none';
+        stack.forEach(s => scene.remove(s.mesh));
+        debris.forEach(d => scene.remove(d.mesh));
+        pulses.forEach(p => scene.remove(p.mesh));
+        stack = []; debris = []; pulses = [];
+
+        score = 0; combo = 0; targetCamY = 0;
+        currentSpeed = diffConfigs[currentDifficulty].speed;
+        document.getElementById('scoreDisplay').innerText = '0';
+        document.getElementById('comboDisplay').innerText = '0x';
+
+        // Base Pedestal
+        stack.push(createSlab(0, 0, 0, INITIAL_SIZE, INITIAL_SIZE, getLayerColor(0)));
+        spawnNextSlab();
+        gameActive = true;
+    }
+
+    function spawnPulseRing(x, y, z, w, d) {
+        const geo = new THREE.RingGeometry(Math.max(w, d) * 0.65, Math.max(w, d) * 0.78, 4);
+        geo.rotateX(-Math.PI / 2);
+        geo.rotateY(Math.PI / 4);
+        const mat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, side: THREE.DoubleSide, transparent: true, opacity: 0.9 });
+        const mesh = new THREE.Mesh(geo, mat);
+        mesh.position.set(x, y - BOX_HEIGHT / 2, z);
+        scene.add(mesh);
+        pulses.push({ mesh, scale: 1, life: 1 });
+    }
+
+    function placeSlab() {
+        if (!gameActive || stack.length < 2) return;
+        const top = stack[stack.length - 1];
+        const prev = stack[stack.length - 2];
+        const cfg = diffConfigs[currentDifficulty];
+
+        const delta = top.mesh.position[moveAxis] - prev.mesh.position[moveAxis];
+        const sizeProp = moveAxis === 'x' ? 'w' : 'd';
+        const maxSpan = top[sizeProp];
+        const absDelta = Math.abs(delta);
+
+        if (absDelta >= maxSpan) {
+            // Missed completely
+            debris.push({ mesh: top.mesh, vy: 0, rx: (Math.random()-0.5)*0.1, rz: (Math.random()-0.5)*0.1 });
+            stack.pop();
+            endGame();
+            return;
+        }
+
+        if (absDelta <= cfg.tolerance) {
+            // Perfect snap
+            top.mesh.position[moveAxis] = prev.mesh.position[moveAxis];
+            top[moveAxis] = prev.mesh.position[moveAxis];
+            combo++;
+            spawnPulseRing(top.x, top.y, top.z, top.w, top.d);
+        } else {
+            // Slice overhang
+            combo = 0;
+            const newSize = maxSpan - absDelta;
+            const newCenter = prev.mesh.position[moveAxis] + delta / 2;
+            const cutSize = absDelta;
+            const cutCenter = newCenter + (delta > 0 ? 1 : -1) * (newSize / 2 + cutSize / 2);
+
+            scene.remove(top.mesh);
+            top[sizeProp] = newSize;
+            top[moveAxis] = newCenter;
+            const updated = createSlab(top.x, top.y, top.z, top.w, top.d, top.color);
+            top.mesh = updated.mesh;
+
+            // Falling sliced piece
+            const cutW = moveAxis === 'x' ? cutSize : top.w;
+            const cutD = moveAxis === 'z' ? cutSize : top.d;
+            const cutX = moveAxis === 'x' ? cutCenter : top.x;
+            const cutZ = moveAxis === 'z' ? cutCenter : top.z;
+            const cutPiece = createSlab(cutX, top.y, cutZ, cutW, cutD, top.color);
+            debris.push({
+                mesh: cutPiece.mesh,
+                vy: -0.05,
+                rx: moveAxis === 'z' ? (delta > 0 ? 0.06 : -0.06) : 0,
+                rz: moveAxis === 'x' ? (delta > 0 ? -0.06 : 0.06) : 0
+            });
+        }
+
+        score++;
+        currentSpeed += cfg.accel;
+        document.getElementById('scoreDisplay').innerText = score;
+        document.getElementById('comboDisplay').innerText = combo + 'x';
+        spawnNextSlab();
+    }
+
+    function endGame() {
+        gameActive = false;
+        const prevBest = parseInt(localStorage.getItem('cyanx_stacker_best') || 0);
+        let isNewHigh = false;
+        if (score > prevBest) {
+            localStorage.setItem('cyanx_stacker_best', score);
+            localStorage.setItem('cyanx_stacker_mode', currentDifficulty);
+            document.getElementById('bestDisplay').innerText = score;
+            isNewHigh = true;
+        }
+        const badge = document.getElementById('resultBadge');
+        badge.innerText = currentDifficulty;
+        badge.className = `mode-indicator btn-${currentDifficulty === 'Easy' ? 'easy' : currentDifficulty === 'Medium' ? 'med' : currentDifficulty === 'Hard' ? 'hard' : 'cyanx'}`;
+        document.getElementById('popupScore').innerText = score + " blocks";
+        document.getElementById('highScoreNote').innerText = isNewHigh ? "🎉 NEW STACK RECORD RECORDED!" : `Best Stack: ${prevBest} blocks`;
+        document.getElementById('scoreModal').style.display = 'flex';
+    }
+
+    function retryGame() {
+        document.getElementById('scoreModal').style.display = 'none';
+        document.getElementById('startOverlay').style.display = 'flex';
+    }
+
+    window.addEventListener('keydown', e => { if (e.code === 'Space') placeSlab(); });
+    renderer.domElement.addEventListener('pointerdown', e => { e.preventDefault(); placeSlab(); });
+
+    function animate() {
+        requestAnimationFrame(animate);
+
+        if (gameActive && stack.length > 1) {
+            const top = stack[stack.length - 1];
+            top.mesh.position[moveAxis] += currentSpeed * moveDir;
+            top[moveAxis] = top.mesh.position[moveAxis];
+            if (top.mesh.position[moveAxis] > 7.5) moveDir = -1;
+            if (top.mesh.position[moveAxis] < -7.5) moveDir = 1;
+        }
+
+        // Smooth camera vertical follow
+        const currentLookY = camera.position.y - 14;
+        const nextLookY = currentLookY + (targetCamY - currentLookY) * 0.08;
+        camera.position.y = nextLookY + 14;
+        camera.lookAt(0, nextLookY, 0);
+
+        for (let i = debris.length - 1; i >= 0; i--) {
+            let d = debris[i];
+            d.vy -= 0.015;
+            d.mesh.position.y += d.vy;
+            d.mesh.rotation.x += d.rx;
+            d.mesh.rotation.z += d.rz;
+            if (d.mesh.position.y < nextLookY - 15) {
+                scene.remove(d.mesh);
+                debris.splice(i, 1);
+            }
+        }
+
+        for (let i = pulses.length - 1; i >= 0; i--) {
+            let p = pulses[i];
+            p.scale += 0.08;
+            p.life -= 0.04;
+            p.mesh.scale.set(p.scale, 1, p.scale);
+            p.mesh.material.opacity = Math.max(0, p.life);
+            if (p.life <= 0) {
+                scene.remove(p.mesh);
+                pulses.splice(i, 1);
+            }
+        }
+
+        renderer.render(scene, camera);
+    }
+    requestAnimationFrame(animate);
+    window.addEventListener('resize', () => { updateCamera(); renderer.setSize(window.innerWidth, window.innerHeight); });
+</script>
+</body>
+</html>

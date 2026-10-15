@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Hyper-Grid Drift</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="icon" type="image/png" href="Gemini_Generated_Image_ko64ocko64ocko64-removebg-preview.png">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+    :root { --bg-pure: #ffffff; --text-main: #000000; --text-sub: #64748b; --border-color: #cbd5e1; }
+    body.dark-mode { --bg-pure: #000000; --text-main: #ffffff; --text-sub: #94a3b8; --border-color: #262626; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--bg-pure); color: var(--text-main); overflow: hidden; font-family: 'Space Grotesk', sans-serif; user-select: none; touch-action: none; }
+    canvas { display: block; width: 100vw; height: 100vh; }
+
+    .hud { position: absolute; top: 16px; left: 16px; right: 16px; display: flex; justify-content: space-between; gap: 10px; z-index: 10; pointer-events: none; }
+    .hud-box { background: var(--bg-pure); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 12px; box-shadow: 0 8px 25px rgba(79,70,229,0.1); }
+    h2 { margin: 0; font-size: clamp(0.65rem, 2vw, 0.82rem); color: #4f46e5; text-transform: uppercase; letter-spacing: 1.5px; }
+    span.val { color: var(--text-main); font-size: clamp(1.1rem, 3.5vw, 1.45rem); font-weight: bold; }
+
+    .mobile-controls { position: fixed; bottom: 22px; left: 20px; right: 20px; display: none; justify-content: space-between; z-index: 15; pointer-events: none; }
+    @media (max-width: 900px), (pointer: coarse) { .mobile-controls.active-hud { display: flex; } }
+    .turn-btn { width: 72px; height: 64px; border-radius: 18px; background: var(--bg-pure); border: 2px solid var(--border-color); color: var(--text-main); font-size: 1.4rem; display: flex; align-items: center; justify-content: center; pointer-events: auto; cursor: pointer; box-shadow: 0 8px 20px rgba(79,70,229,0.15); }
+    .turn-btn:active { border-color: #4f46e5; transform: scale(0.92); }
+
+    .modal-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-pure); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 25; padding: 16px; }
+    .modal-card { background: var(--bg-pure); border: 1px solid var(--border-color); border-radius: 22px; padding: clamp(22px, 5vw, 38px); width: 100%; max-width: 500px; text-align: center; box-shadow: 0 20px 50px rgba(79,70,229,0.15); }
+    h1 { font-size: clamp(1.85rem, 6vw, 2.7rem); margin: 0 0 10px 0; color: var(--text-main); }
+
+    .diff-group { display: flex; justify-content: center; gap: 6px; margin: 18px 0; flex-wrap: wrap; }
+    .diff-btn { padding: 7px 14px; border-radius: 20px; font-weight: 700; font-size: 0.8rem; cursor: pointer; font-family: inherit; }
+    .diff-btn.active { transform: scale(1.06); outline: 2px solid var(--text-main); }
+    .btn-easy { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+    .btn-med { background: #fef08a; color: #713f12; border: 1px solid #fde047; }
+    .btn-hard { background: #fce7f3; color: #991b1b; border: 1px solid #fbcfe8; }
+    .btn-cyanx { background: #ede9fe; color: #581c87; border: 1px solid #ddd6fe; }
+
+    .btn { padding: 12px 28px; background: #4f46e5; border: none; color: white; font-size: 1rem; cursor: pointer; border-radius: 30px; font-family: inherit; margin: 6px; font-weight: bold; }
+    .btn-outline { background: var(--bg-pure); border: 2px solid var(--border-color); color: var(--text-main); }
+    .score-banner { font-size: clamp(2.3rem, 7vw, 3.2rem); font-weight: 800; color: #4f46e5; margin: 12px 0; }
+    .mode-indicator { display: inline-block; padding: 6px 14px; border-radius: 12px; font-weight: 700; margin-bottom: 16px; text-transform: uppercase; font-size: 0.8rem; }
+</style>
+</head>
+<body>
+    <div class="hud">
+        <div class="hud-box"><h2>Score</h2><span class="val" id="scoreDisplay">0</span></div>
+        <div class="hud-box"><h2>Best Drift</h2><span class="val" id="bestDisplay">0</span></div>
+    </div>
+
+    <div class="mobile-controls" id="mobileControls">
+        <button type="button" class="turn-btn" id="btnTurnLeft"><i class="fa-solid fa-rotate-left"></i></button>
+        <button type="button" class="turn-btn" id="btnTurnRight"><i class="fa-solid fa-rotate-right"></i></button>
+    </div>
+
+    <div class="modal-backdrop" id="startOverlay">
+        <div class="modal-card">
+            <h1>HYPER-GRID DRIFT</h1>
+            <p style="color:var(--text-sub); font-size:0.9rem; line-height: 1.5;">Steer your light-cycle with A/D, Arrow Keys, Swipe, or on-screen turn buttons. Harvest energy nodes and box in rogue AI cycles without crossing any light-wall.</p>
+            <div class="diff-group">
+                <button class="diff-btn btn-easy active" onclick="setDifficulty('Easy')">Easy</button>
+                <button class="diff-btn btn-med" onclick="setDifficulty('Medium')">Medium</button>
+                <button class="diff-btn btn-hard" onclick="setDifficulty('Hard')">Hard</button>
+                <button class="diff-btn btn-cyanx" onclick="setDifficulty('CYANX AI')">CYANX AI</button>
+            </div>
+            <div>
+                <button class="btn" onclick="startGame()">ENTER GRID</button>
+                <button class="btn btn-outline" onclick="window.location.href='game.html'">BACK</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-backdrop" id="scoreModal" style="display: none;">
+        <div class="modal-card">
+            <h2 style="font-size:1.6rem; color:#dc2626; margin-bottom: 5px;">DERESOLUTION</h2>
+            <div id="resultBadge" class="mode-indicator"></div>
+            <div style="color:var(--text-sub); font-size:0.9rem;">GRID SCORE</div>
+            <div class="score-banner" id="popupScore">0</div>
+            <p id="highScoreNote" style="font-size:0.88rem; color:#15803d; font-weight:600; margin-bottom:18px;"></p>
+            <div>
+                <button class="btn" onclick="retryGame()">PLAY AGAIN</button>
+                <button class="btn btn-outline" onclick="window.location.href='game.html'">MAIN MENU</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    const mobileControls = document.getElementById('mobileControls');
+    const scene = new THREE.Scene();
+    function checkTheme() {
+        const saved = localStorage.getItem('theme') || localStorage.getItem('cyanx_theme') || 'light';
+        const isDark = (saved === 'dark');
+        document.body.classList.toggle('dark-mode', isDark);
+        scene.background = new THREE.Color(isDark ? 0x000000 : 0xffffff);
+    }
+    checkTheme();
+    window.addEventListener('storage', checkTheme);
+
+    const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 200);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    document.body.appendChild(renderer.domElement);
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+    const dirLight = new THREE.DirectionalLight(0x6366f1, 1.5);
+    dirLight.position.set(15, 30, 20);
+    scene.add(dirLight);
+
+    const GRID_SIZE = 44; // -22 to +22
+    const BOUND = GRID_SIZE / 2;
+    const gridHelper = new THREE.GridHelper(GRID_SIZE, GRID_SIZE, 0x4f46e5, 0x6366f1);
+    gridHelper.material.transparent = true;
+    gridHelper.material.opacity = 0.28;
+    scene.add(gridHelper);
+
+    // Perimeter Neon Fence
+    const borderGeo = new THREE.EdgesGeometry(new THREE.BoxGeometry(GRID_SIZE, 1.2, GRID_SIZE));
+    const borderLines = new THREE.LineSegments(borderGeo, new THREE.LineBasicMaterial({ color: 0x4f46e5 }));
+    borderLines.position.y = 0.6;
+    scene.add(borderLines);
+
+    // Collectible Energy Node
+    const nodeMesh = new THREE.Mesh(
+        new THREE.OctahedronGeometry(0.75, 0),
+        new THREE.MeshStandardMaterial({ color: 0x38bdf8, emissive: 0x0284c7, emissiveIntensity: 0.9 })
+    );
+    nodeMesh.position.y = 0.8;
+    scene.add(nodeMesh);
+
+    const DIRS = [
+        { dx: 0, dz: -1 }, // North
+        { dx: 1, dz: 0 },  // East
+        { dx: 0, dz: 1 },  // South
+        { dx: -1, dz: 0 }  // West
+    ];
+
+    let currentDifficulty = 'Easy';
+    const diffConfigs = {
+        'Easy':     { tickMs: 95, maxTrail: 45 },
+        'Medium':   { tickMs: 75, maxTrail: 65 },
+        'Hard':     { tickMs: 58, maxTrail: 90 },
+        'CYANX AI': { tickMs: 44, maxTrail: 130 }
+    };
+
+    let gameActive = false, score = 0, lastStep = 0;
+    let occupied = new Set();
+    let playerCycle = null, aiCycle = null;
+
+    document.getElementById('bestDisplay').innerText = localStorage.getItem('cyanx_drift_best') || 0;
+
+    function createCycle(x, z, dirIdx, colorHex) {
+        const mesh = new THREE.Mesh(
+            new THREE.BoxGeometry(0.85, 0.7, 1.4),
+            new THREE.MeshStandardMaterial({ color: colorHex, emissive: colorHex, emissiveIntensity: 0.5, roughness: 0.2, metalness: 0.8 })
+        );
+        mesh.position.set(x, 0.35, z);
+        scene.add(mesh);
+        return { x, z, dirIdx, nextDirIdx: dirIdx, mesh, colorHex, trail: [] };
+    }
+
+    function addTrailSegment(cycle, x, z) {
+        const key = `${x},${z}`;
+        occupied.add(key);
+        const seg = new THREE.Mesh(
+            new THREE.BoxGeometry(0.7, 0.65, 0.7),
+            new THREE.MeshBasicMaterial({ color: cycle.colorHex, transparent: true, opacity: 0.75 })
+        );
+        seg.position.set(x, 0.32, z);
+        scene.add(seg);
+        cycle.trail.push({ key, mesh: seg });
+
+        const maxLen = diffConfigs[currentDifficulty].maxTrail;
+        if (cycle.trail.length > maxLen) {
+            const oldest = cycle.trail.shift();
+            occupied.delete(oldest.key);
+            scene.remove(oldest.mesh);
+        }
+    }
+
+    function clearCycle(c) {
+        if (!c) return;
+        scene.remove(c.mesh);
+        c.trail.forEach(t => scene.remove(t.mesh));
+    }
+
+    function relocateNode() {
+        let nx, nz;
+        do {
+            nx = Math.floor((Math.random() * (GRID_SIZE - 6)) - BOUND + 3);
+            nz = Math.floor((Math.random() * (GRID_SIZE - 6)) - BOUND + 3);
+        } while (occupied.has(`${nx},${nz}`));
+        nodeMesh.position.set(nx, 0.8, nz);
+    }
+
+    function setDifficulty(mode) {
+        currentDifficulty = mode;
+        document.querySelectorAll('.diff-btn').forEach(btn => btn.classList.remove('active'));
+        if (mode === 'Easy') document.querySelector('.btn-easy').classList.add('active');
+        if (mode === 'Medium') document.querySelector('.btn-med').classList.add('active');
+        if (mode === 'Hard') document.querySelector('.btn-hard').classList.add('active');
+        if (mode === 'CYANX AI') document.querySelector('.btn-cyanx').classList.add('active');
+    }
+
+    function startGame() {
+        document.getElementById('startOverlay').style.display = 'none';
+        document.getElementById('scoreModal').style.display = 'none';
+        mobileControls.classList.add('active-hud');
+        clearCycle(playerCycle);
+        clearCycle(aiCycle);
+        occupied.clear();
+
+        playerCycle = createCycle(0, 10, 0, 0x4f46e5);
+        aiCycle = createCycle(0, -10, 2, 0xdc2626);
+        relocateNode();
+
+        score = 0;
+        document.getElementById('scoreDisplay').innerText = '0';
+        lastStep = performance.now();
+        gameActive = true;
+    }
+
+    function endGame() {
+        gameActive = false;
+        mobileControls.classList.remove('active-hud');
+        const prevBest = parseInt(localStorage.getItem('cyanx_drift_best') || 0);
+        let isNewHigh = false;
+        if (score > prevBest) {
+            localStorage.setItem('cyanx_drift_best', score);
+            localStorage.setItem('cyanx_drift_mode', currentDifficulty);
+            document.getElementById('bestDisplay').innerText = score;
+            isNewHigh = true;
+        }
+        const badge = document.getElementById('resultBadge');
+        badge.innerText = currentDifficulty;
+        badge.className = `mode-indicator btn-${currentDifficulty === 'Easy' ? 'easy' : currentDifficulty === 'Medium' ? 'med' : currentDifficulty === 'Hard' ? 'hard' : 'cyanx'}`;
+        document.getElementById('popupScore').innerText = score + " pts";
+        document.getElementById('highScoreNote').innerText = isNewHigh ? "🎉 NEW DRIFT RECORD RECORDED!" : `Best Score: ${prevBest} pts`;
+        document.getElementById('scoreModal').style.display = 'flex';
+    }
+
+    function retryGame() {
+        document.getElementById('scoreModal').style.display = 'none';
+        document.getElementById('startOverlay').style.display = 'flex';
+    }
+
+    function turnRelative(step) {
+        if (!gameActive || !playerCycle) return;
+        playerCycle.nextDirIdx = (playerCycle.dirIdx + step + 4) % 4;
+    }
+
+    document.getElementById('btnTurnLeft').addEventListener('pointerdown', e => { e.stopPropagation(); turnRelative(-1); });
+    document.getElementById('btnTurnRight').addEventListener('pointerdown', e => { e.stopPropagation(); turnRelative(1); });
+
+    window.addEventListener('keydown', e => {
+        if (!gameActive) return;
+        if (e.code === 'ArrowLeft' || e.code === 'KeyA') turnRelative(-1);
+        if (e.code === 'ArrowRight' || e.code === 'KeyD') turnRelative(1);
+    });
+
+    function isCellSafe(x, z) {
+        if (x <= -BOUND || x >= BOUND || z <= -BOUND || z >= BOUND) return false;
+        return !occupied.has(`${x},${z}`);
+    }
+
+    function stepAI() {
+        if (!aiCycle) return;
+        const cur = DIRS[aiCycle.dirIdx];
+        let nx = aiCycle.x + cur.dx, nz = aiCycle.z + cur.dz;
+        if (!isCellSafe(nx, nz) || Math.random() < 0.12) {
+            const leftIdx = (aiCycle.dirIdx + 3) % 4;
+            const rightIdx = (aiCycle.dirIdx + 1) % 4;
+            const lSafe = isCellSafe(aiCycle.x + DIRS[leftIdx].dx, aiCycle.z + DIRS[leftIdx].dz);
+            const rSafe = isCellSafe(aiCycle.x + DIRS[rightIdx].dx, aiCycle.z + DIRS[rightIdx].dz);
+            if (lSafe && rSafe) aiCycle.dirIdx = Math.random() > 0.5 ? leftIdx : rightIdx;
+            else if (lSafe) aiCycle.dirIdx = leftIdx;
+            else if (rSafe) aiCycle.dirIdx = rightIdx;
+        }
+        addTrailSegment(aiCycle, aiCycle.x, aiCycle.z);
+        aiCycle.x += DIRS[aiCycle.dirIdx].dx;
+        aiCycle.z += DIRS[aiCycle.dirIdx].dz;
+        aiCycle.mesh.position.set(aiCycle.x, 0.35, aiCycle.z);
+        aiCycle.mesh.rotation.y = -aiCycle.dirIdx * (Math.PI / 2);
+
+        if (!isCellSafe(aiCycle.x, aiCycle.z)) {
+            // AI crashed! Bonus + respawn AI
+            score += 400;
+            document.getElementById('scoreDisplay').innerText = score;
+            aiCycle.trail.forEach(t => { occupied.delete(t.key); scene.remove(t.mesh); });
+            aiCycle.trail = [];
+            aiCycle.x = 0; aiCycle.z = -12; aiCycle.dirIdx = 2;
+        }
+    }
+
+    function animate(time) {
+        requestAnimationFrame(animate);
+        nodeMesh.rotation.y += 0.05;
+
+        if (gameActive && playerCycle) {
+            const cfg = diffConfigs[currentDifficulty];
+            if (time - lastStep >= cfg.tickMs) {
+                lastStep = time;
+                playerCycle.dirIdx = playerCycle.nextDirIdx;
+                addTrailSegment(playerCycle, playerCycle.x, playerCycle.z);
+
+                const d = DIRS[playerCycle.dirIdx];
+                playerCycle.x += d.dx;
+                playerCycle.z += d.dz;
+                playerCycle.mesh.position.set(playerCycle.x, 0.35, playerCycle.z);
+                playerCycle.mesh.rotation.y = -playerCycle.dirIdx * (Math.PI / 2);
+
+                if (!isCellSafe(playerCycle.x, playerCycle.z)) {
+                    endGame();
+                    return;
+                }
+
+                // Check Energy Node Pickup
+                if (Math.hypot(playerCycle.x - nodeMesh.position.x, playerCycle.z - nodeMesh.position.z) < 1.6) {
+                    score += 200;
+                    relocateNode();
+                } else {
+                    score += 5;
+                }
+                document.getElementById('scoreDisplay').innerText = score;
+
+                stepAI();
+            }
+
+            // Smooth Overhead Isometric Chase Camera
+            const aspect = window.innerWidth / window.innerHeight;
+            const camDist = aspect < 0.75 ? 24 : 17;
+            const camHeight = aspect < 0.75 ? 24 : 16;
+            camera.position.x += (playerCycle.x - camera.position.x) * 0.1;
+            camera.position.z += (playerCycle.z + camDist - camera.position.z) * 0.1;
+            camera.position.y = camHeight;
+            camera.lookAt(playerCycle.x, 0, playerCycle.z - 2);
+        }
+
+        renderer.render(scene, camera);
+    }
+    requestAnimationFrame(animate);
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+</script>
+</body>
+</html>

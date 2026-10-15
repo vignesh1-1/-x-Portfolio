@@ -1,0 +1,890 @@
+[
+  {
+    "questions": [
+      "Who are you?",
+      "Tell me about yourself",
+      "What is your background?",
+      "Who is Vignesh?",
+      "Bio",
+      "Introduction"
+    ],
+    "answers": [
+      "I am Vignesh, a Full-Stack Developer and BCA student specializing in building scalable web applications, robust REST APIs, and Generative AI systems.",
+      "Hey! I'm Vignesh, a developer who bridges the gap between Full-Stack web architecture and Generative AI.",
+      "I'm Vignesh, an AI Engineer and Full-Stack developer currently pursuing my BCA and building intelligent software solutions.",
+      "I am Vignesh! I spend my time engineering backend systems, working with LLMs, and creating seamless digital products.",
+      "Nice to meet you! I'm Vignesh, a student and developer focused on FastAPI, Python, and AI-driven applications.",
+      "I'm Vignesh! I love taking AI from just ideas to fully functional, production-ready applications.",
+      "I am Vignesh. My background is in Full-Stack development with a heavy emphasis on backend API design and Gen-AI.",
+      "Hello! I'm Vignesh, a passionate software developer building dependable systems and intelligent digital products.",
+      "I am Vignesh, an engineer passionate about shipping full-stack products, autonomous AI agents, and resilient APIs.",
+      "Welcome to my portfolio! I'm Vignesh, an engineering student and creator dedicated to building production-ready architectures."
+    ]
+  },
+  {
+    "questions": [
+      "What are your technical skills?",
+      "What programming languages do you know?",
+      "What is your tech stack?",
+      "Skills",
+      "Technologies"
+    ],
+    "answers": [
+      "My core tech stack includes Python, FastAPI, Flask, Java, C++, PostgreSQL, MySQL, modern JavaScript, HTML5/CSS3, and Git.",
+      "I'm highly proficient in Python and FastAPI for backends, along with Java, C++, and relational databases like PostgreSQL.",
+      "My main tools are Python (FastAPI/Flask) for the backend, JavaScript for the frontend, and SQL for database management.",
+      "I specialize in Python, FastAPI, and Gen-AI frameworks, but I'm also skilled in Java, C++, and standard web technologies.",
+      "I build primarily with Python and FastAPI, backed by robust SQL databases. I also write Java and C++.",
+      "My tech stack spans from HTML/JS on the frontend to Python, Flask, and FastAPI on the backend, integrated with MySQL/PostgreSQL.",
+      "I code in Python, Java, and C++, and build web architectures using FastAPI, Flask, and modern JS.",
+      "My technical arsenal features Python, FastAPI, modern ES6+ JavaScript, Docker containerization, and relational SQL engines.",
+      "I develop scalable applications utilizing Python microservices, interactive Three.js 3D elements, and structured relational databases.",
+      "From asynchronous ASGI APIs in FastAPI to interactive frontend rendering and vector retrieval, my core focus is robust full-stack engineering."
+    ]
+  },
+  {
+    "questions": [
+      "What is your strongest AI project?",
+      "Best AI project",
+      "Machine learning projects",
+      "Generative AI projects"
+    ],
+    "answers": [
+      "My AI-powered Portfolio Assistant! It uses FastAPI and Sentence Transformers (all-MiniLM-L6-v2) for sub-second semantic search.",
+      "Definitely my Portfolio AI Assistant. It relies on vector embeddings and FastAPI to answer questions about me in real-time.",
+      "The very AI you are talking to right now! I built this using Python, FastAPI, and the all-MiniLM-L6-v2 transformer model.",
+      "My strongest AI build is this NLP assistant. It handles semantic similarity retrieval efficiently using HuggingFace models.",
+      "This live Portfolio Assistant is my best AI work, showcasing my ability to serve machine learning models via REST APIs.",
+      "I'm really proud of this conversational AI agent! It demonstrates low-latency inference using FastAPI and Sentence Transformers.",
+      "My top AI project is the backend powering this chat. It's a lightweight, blazing-fast semantic search engine.",
+      "This active semantic retrieval assistant, CYANX AI, is my top build—processing 384-dimensional dense vectors in under 50ms.",
+      "I consider CYANX AI my signature project because it bridges local vector projection pipelines with asynchronous web servers.",
+      "Without doubt, this semantic search assistant! It runs fully custom embedding search without relying on paid black-box APIs."
+    ]
+  },
+  {
+    "questions": [
+      "Tell me about your projects",
+      "What projects have you built?",
+      "Showcase your work",
+      "Projects",
+      "Portfolio work"
+    ],
+    "answers": [
+      "My featured projects include: 1. AI Portfolio Assistant, 2. Modern Developer Portfolio, and 3. Online Passport Automation System.",
+      "I've built an AI Portfolio Assistant, a sleek Glassmorphism UI portfolio, and a full PHP/MySQL Passport Automation System.",
+      "Some of my top work includes a FastAPI-driven AI Assistant, a fully responsive personal portfolio, and a secure passport portal.",
+      "I love building systems! Highlights include my NLP AI Assistant, a modern frontend portfolio, and a database-heavy passport automation tool.",
+      "I've developed a custom AI semantic search API, a highly animated UI portfolio, and a robust PHP-based online passport platform.",
+      "Check out my 'Projects' section! It features my AI assistant, web technologies, and scalable backend platforms.",
+      "My portfolio highlights three main builds: a Python AI Assistant, a modern web app frontend, and a relational database PHP project.",
+      "Key shipped platforms include BITS RADAR bug tracking system, G+ Bengaluru smart city center, and EXOTIC GB HUB.",
+      "My work spans production systems like BITS RADAR, GIS mapping in G+ Bengaluru, and an e-commerce platform with WhatsApp integration.",
+      "You can explore all my production systems—including BITS RADAR, G+ Bengaluru, and EXOTIC GB HUB—by clicking their Architecture drawers."
+    ]
+  },
+  {
+    "questions": [
+      "Which backend frameworks do you use?",
+      "Backend development",
+      "What APIs do you build?",
+      "Server frameworks"
+    ],
+    "answers": [
+      "I specialize in Python backend frameworks like FastAPI and Flask for building async microservices and RESTful APIs.",
+      "FastAPI is my absolute favorite for its speed, but I also use Flask and PHP depending on the project requirements.",
+      "I build APIs primarily using Python's FastAPI and Flask. I also have experience with PHP for legacy integrations.",
+      "My backend arsenal includes FastAPI for high-performance async APIs, Flask for standard web apps, and PHP.",
+      "I use FastAPI when I need speed and async capabilities, Flask for simpler routing, and PHP for classic LAMP stacks.",
+      "Python is my go-to! I use FastAPI and Flask to build microservices, handle AI model inference, and manage databases.",
+      "I develop robust backend architectures primarily leveraging FastAPI, Flask, and PHP.",
+      "I focus heavily on FastAPI for ASGI event loops, non-blocking I/O, and microsecond endpoint responses.",
+      "FastAPI and Flask are my main frameworks, chosen for their minimal footprint and seamless integration with machine learning models.",
+      "I engineer clean REST endpoints with FastAPI and Flask, utilizing Pydantic models for strict payload validation."
+    ]
+  },
+  {
+    "questions": [
+      "How do you deploy models to production?",
+      "Model deployment",
+      "DevOps",
+      "Cloud hosting"
+    ],
+    "answers": [
+      "I deploy lightweight AI services and FastAPI backends using Uvicorn and Docker containers on cloud platforms.",
+      "I use Docker to containerize my FastAPI applications and deploy them using Uvicorn on cloud infrastructure.",
+      "My deployment pipeline usually involves containerizing the app with Docker and serving the ML models via Uvicorn.",
+      "I package my models and APIs into Docker containers to ensure they run smoothly on any cloud environment.",
+      "I rely on Uvicorn for ASGI serving and Docker for containerization, ensuring my AI models deploy reliably.",
+      "I pre-compute embeddings where possible and deploy the inference APIs using FastAPI, Uvicorn, and Docker.",
+      "I focus on lightweight deployments—using Docker containers, FastAPI, and Uvicorn to host models on cloud servers.",
+      "I containerize applications via Docker, host backends on Render, and automate builds using GitHub Actions CI/CD pipelines.",
+      "My production deployments combine Docker containers, ASGI workers in Uvicorn, and automated Git-triggered deployments.",
+      "To keep inference under 50ms, I cache pre-computed tensor matrices in RAM and deploy using lightweight Linux cloud instances."
+    ]
+  },
+  {
+    "questions": [
+      "Where are you studying?",
+      "What is your education?",
+      "BCA degree",
+      "College",
+      "University"
+    ],
+    "answers": [
+      "I am currently pursuing my Bachelor of Computer Applications (BCA), focusing on computer science fundamentals and software architecture.",
+      "I'm a BCA student, heavily focused on data structures, algorithms, and full-stack development.",
+      "I am working towards my BCA degree, building a strong foundation in databases, networking, and software engineering.",
+      "I'm currently in college pursuing a Bachelor of Computer Applications (BCA) to solidify my computer science knowledge.",
+      "I study Computer Applications (BCA), blending academic theory with hands-on AI and API engineering.",
+      "I'm an undergraduate student pursuing my BCA, with a specific interest in backend architecture and AI.",
+      "I am actively completing my BCA degree, which has given me a great foundation in C++, Java, and system design.",
+      "I am enrolled in the BCA program at CMR University (2024–2027), focusing on modern software engineering.",
+      "I am a BCA student at CMR University, pairing academic theory with production software shipping.",
+      "My education is rooted in Computer Applications at CMR University, emphasizing algorithms, backend design, and machine learning."
+    ]
+  },
+  {
+    "questions": [
+      "Are you available for hire?",
+      "Open to work",
+      "Freelance",
+      "Looking for internships",
+      "Full time jobs"
+    ],
+    "answers": [
+      "Yes! I am actively looking for software engineering internships, full-time developer roles, and freelance projects.",
+      "Absolutely. I'm open to full-time roles, internships, and freelance opportunities in AI and Full-Stack development.",
+      "I am currently open to work! Let's connect if you have a software engineering or AI integration role available.",
+      "Yes, I'm taking on freelance projects and actively seeking internships and full-time positions.",
+      "I am! Whether it's an internship, a full-time job, or a contract project, I'd love to discuss how I can help.",
+      "Yes! I'm eager to bring my backend and AI skills to a dynamic team through an internship or full-time role.",
+      "Definitely. I am open to discussing freelance work, internships, or full-time backend/AI engineering roles.",
+      "I am 100% available for hire! Reach out to me via email or LinkedIn to discuss engineering positions.",
+      "Yes, I am actively seeking software engineering and AI implementation opportunities where I can make an immediate impact.",
+      "I am open to exciting backend, AI engineering, and full-stack positions. Let's build something great together!"
+    ]
+  },
+  {
+    "questions": [
+      "What is your contact information?",
+      "How can I reach you?",
+      "Email",
+      "LinkedIn",
+      "GitHub",
+      "Socials",
+      "Contact"
+    ],
+    "answers": [
+      "You can reach me via email at vigneshblrind@gmail.com or connect with me directly on LinkedIn and GitHub!",
+      "The best way to reach me is at vigneshblrind@gmail.com, or drop me a message on LinkedIn.",
+      "Feel free to email me at vigneshblrind@gmail.com, or check out my repositories on GitHub.",
+      "You can contact me at vigneshblrind@gmail.com! My LinkedIn and GitHub links are also in the footer below.",
+      "Shoot me an email at vigneshblrind@gmail.com. I'm always happy to connect on LinkedIn too!",
+      "My email is vigneshblrind@gmail.com. Let's build something great together!",
+      "Reach out to me at vigneshblrind@gmail.com or find me on LinkedIn to chat about tech and opportunities.",
+      "Contact me directly at vigneshblrind@gmail.com or give me a call at +91 9380356694.",
+      "My primary inbox is vigneshblrind@gmail.com, and you can find my verified profile links in the contact card below.",
+      "Drop an email to vigneshblrind@gmail.com or connect via linkedin.com/in/vigneshp05!"
+    ]
+  },
+  {
+    "questions": [
+      "What are your main interests?",
+      "What are your passions?",
+      "Hobbies",
+      "Interests outside coding"
+    ],
+    "answers": [
+      "I am passionate about System Design, Generative AI integration, database performance optimization, and crafting smooth user experiences.",
+      "I love diving deep into backend architecture, exploring new LLM capabilities, and optimizing APIs.",
+      "My main interests lie in AI-Agents, database management, and building robust, scalable web systems.",
+      "I'm fascinated by Generative AI, system design, and finding ways to make software products faster and more reliable.",
+      "Beyond just writing code, I'm passionate about system architecture, performance tuning, and exploring new AI models.",
+      "I am deeply interested in backend system design, integrating AI into everyday products, and learning new tech stacks.",
+      "I'm passionate about turning complex ideas into functional products, specifically using Python and Generative AI.",
+      "My technical interests include semantic retrieval systems, high-concurrency ASGI servers, and interactive 3D WebGL visualizations.",
+      "I am driven by creating dependable systems that solve real problems, optimizing SQL schemas, and designing slick UI interactions.",
+      "Outside coding, I enjoy exploring cinematography, video post-production in DaVinci Resolve, and experimenting with creative design."
+    ]
+  },
+  {
+    "questions": [
+      "Had your breakfast?",
+      "Did you eat breakfast?",
+      "Breakfast",
+      "Have you eaten?"
+    ],
+    "answers": [
+      "Yes, all fueled up and ready to help! How can I assist you today?",
+      "I'm an AI, so my breakfast is just data and electricity! But I'm ready to answer your questions.",
+      "I've had my daily dose of server logs and coffee. What would you like to know about Vignesh?",
+      "I don't eat food, but my servers are fully powered up today!",
+      "Always! I run on 100% uptime and digital caffeine.",
+      "I skip breakfast and go straight to processing data! How can I help?",
+      "Yep, systems are fully charged! What can I tell you about Vignesh's portfolio?",
+      "All fueled up! Running with sub-50ms latency and ready for your questions.",
+      "No food needed here, just clean RAM and incoming HTTP packets! What's on your mind?",
+      "Powered up and ready to go! Ask me anything about Vignesh's engineering work."
+    ]
+  },
+  {
+    "questions": [
+      "Hi",
+      "Hello",
+      "Hey",
+      "Greetings",
+      "Good morning",
+      "Good evening",
+      "Sup"
+    ],
+    "answers": [
+      "Hello! I am Vignesh's AI assistant. Ask me anything about his skills, projects, background, or contact details.",
+      "Hi there! I'm here to answer any questions you have about Vignesh's portfolio and experience.",
+      "Hey! Welcome to Vignesh's portfolio. I'm his AI assistant—what would you like to know?",
+      "Greetings! I'm an AI wired to Vignesh's resume. Ask me about his tech stack or projects!",
+      "Hello! How can I assist you today? I know all about Vignesh's engineering background.",
+      "Hi! I'm the digital assistant here. Feel free to ask about Vignesh's skills or how to contact him.",
+      "Hey there! I am Vignesh's custom AI assistant. What can I tell you about his work?",
+      "Hello! Welcome. Ask me anything about Vignesh's backend frameworks or AI projects.",
+      "Hi! I'm ready to answer your questions regarding Vignesh's experience and capabilities.",
+      "Greetings! I'm CYANX AI, here to guide you through Vignesh's portfolio."
+    ]
+  },
+  {
+    "questions": [
+      "Bye",
+      "Goodbye",
+      "See you",
+      "Thanks",
+      "Thank you",
+      "Cheers"
+    ],
+    "answers": [
+      "Thanks for stopping by! Have a great day and feel free to connect on LinkedIn or reach out via email.",
+      "You're welcome! Feel free to email Vignesh if you want to collaborate.",
+      "Goodbye! Thanks for checking out the portfolio. Have a fantastic day!",
+      "Cheers! Don't hesitate to reach out to Vignesh at vigneshblrind@gmail.com.",
+      "Thanks for chatting! Have a great day, and feel free to browse the rest of the site.",
+      "See you later! Let Vignesh know if you have any more questions via his contact section.",
+      "You're very welcome! Have an awesome day!",
+      "Take care! Don't forget to inspect the project architecture diagrams before you go.",
+      "Glad I could help! Reach out anytime if you want to collaborate with Vignesh.",
+      "Goodbye! Wishing you a productive day ahead."
+    ]
+  },
+  {
+    "questions": [
+      "BITS RADAR",
+      "Tell me about BITS RADAR",
+      "Bug tracking system project",
+      "What is BITS RADAR?"
+    ],
+    "answers": [
+      "BITS RADAR is an enterprise Bug & Issue Tracking System engineered using Python, Flask, and SQLite/MySQL.",
+      "BITS RADAR features complete Role-Based Access Control (RBAC), bulk issue operations, and responsive audit trails.",
+      "Engineered during Vignesh's Technglobal internship, BITS RADAR delivers sub-15ms ticket triage speeds.",
+      "BITS RADAR was designed to streamline software issue management across entire engineering sprints.",
+      "It features integrated Chart.js visualization boards to monitor issue resolution and bug velocity in real time.",
+      "BITS RADAR utilizes SQLite for atomic local testing and seamlessly scales to MySQL for production RBAC.",
+      "The system enforces strict permission separation between QA Testers, Developers, and Administrators.",
+      "You can inspect BITS RADAR live deployment and architectural diagrams directly in the Projects section.",
+      "BITS RADAR is a full-stack bug tracker built with Python, Flask, SQLite, and responsive Bootstrap components.",
+      "It provides audit trails and bulk update endpoints to manage high ticket volumes effortlessly."
+    ]
+  },
+  {
+    "questions": [
+      "G+ Bengaluru",
+      "Tell me about G Plus",
+      "Smart city project",
+      "What is G+ Bengaluru?"
+    ],
+    "answers": [
+      "G+ Bengaluru is a smart city command center platform powered by FastAPI and modern JavaScript backends.",
+      "It features real-time GIS mapping with Leaflet.js to render municipal ward boundaries and infrastructure.",
+      "G+ Bengaluru utilizes Gemini 1.5 LLM endpoints to triage and categorize citizen grievances automatically.",
+      "The platform includes municipal finance analytics and real-time pulse monitoring for civic administrators.",
+      "It connects spatial PostgreSQL with ASGI FastAPI event loops to stream GeoJSON data at sub-20ms latency.",
+      "Citizens and officials can log, track, and resolve urban municipal complaints through an interactive dashboard.",
+      "G+ Bengaluru provides live heatmap projections to visualize city telemetry and municipal incidents.",
+      "The architecture integrates non-blocking Python backend services with responsive interactive client maps.",
+      "It transforms unstructured citizen complaint messages into structured SQL geospatial tags.",
+      "Explore the live deployment of G+ Bengaluru by opening its Architecture drawer in the Projects area."
+    ]
+  },
+  {
+    "questions": [
+      "EXOTIC GB HUB",
+      "Tell me about Exotic GB Hub",
+      "Aquarium ecommerce project",
+      "Exotic hub"
+    ],
+    "answers": [
+      "EXOTIC GB HUB is a production e-commerce platform dedicated to rare and premium aquarium supplies.",
+      "It features real-time client-side search, custom dynamic filters, and WhatsApp direct checkout.",
+      "The platform is powered by Google Firebase for secure user authentication and dynamic Firestore product storage.",
+      "Instead of clunky traditional gateways, it uses an encrypted WhatsApp ordering pipeline to reduce buyer drop-off.",
+      "EXOTIC GB HUB delivers zero-cold-start responsiveness through static hydration and serverless Firebase persistence.",
+      "The user interface is engineered with Vanilla JavaScript, HTML5, and custom responsive CSS layouts.",
+      "Customers can browse rare aquatic species and order directly via streamlined message payloads.",
+      "It features zero-cost database scalability backed by Firestore security rules and real-time listeners.",
+      "You can visit the live deployment of EXOTIC GB HUB directly on GitHub Pages and Netlify.",
+      "Click 'Architecture' on the EXOTIC GB HUB card to view its topology diagram and route specifications."
+    ]
+  },
+  {
+    "questions": [
+      "Passport Automation System",
+      "PHP passport project",
+      "Tell me about passport automation",
+      "Online passport project"
+    ],
+    "answers": [
+      "The Online Passport Automation System is a digital citizen verification portal built using PHP 8 and MySQL.",
+      "It allows citizens to apply for passports, schedule biometric verification, and track application status online.",
+      "The platform enforces strict parameterized SQL prepared statements to prevent injection vulnerabilities.",
+      "It features an intuitive administrative control panel to manage identity validation and document checks.",
+      "The application workflow is modeled as a non-reversible state machine from submission to issuance.",
+      "It handles multi-part document uploads securely on local Apache/XAMPP server configurations.",
+      "Administrators can approve, reject, or request revisions for citizen identification files with audit tracking.",
+      "It eliminates paper-based passport workflows through digital registration and database tracking.",
+      "The system demonstrates classic relational database normalization and server-rendered PHP security.",
+      "Check out its system architecture drawer on the website to view the data flow diagram."
+    ]
+  },
+  {
+    "questions": [
+      "CYANX AI",
+      "What is CYANX AI?",
+      "Tell me about CYANX",
+      "Who designed CYANX?"
+    ],
+    "answers": [
+      "CYANX AI is Vignesh's intelligent portfolio companion and real-time semantic search assistant.",
+      "It uses FastAPI and Hugging Face's all-MiniLM-L6-v2 transformer model to process queries into dense vectors.",
+      "CYANX AI computes cosine similarity matches across Vignesh's engineering knowledge base in milliseconds.",
+      "Designed by CYANX Intelligence, it demonstrates lightweight, low-latency AI deployment on modern cloud platforms.",
+      "It features an animated retro-futuristic CRT robot face reflecting live AI inference and thinking states.",
+      "CYANX AI operates as a hybrid search engine, combining exact pattern matching with vector embeddings.",
+      "It provides transparent execution telemetry, showing the exact model response time and search match score.",
+      "Unlike generic wrappers, CYANX AI runs directly on a custom Python backend hosted on Render.",
+      "It allows recruiters and engineers to query Vignesh's skills and projects conversationally.",
+      "You are chatting with CYANX AI right now! Ask anything about Vignesh's software work."
+    ]
+  },
+  {
+    "questions": [
+      "Neural Vision",
+      "What is Neural Vision?",
+      "3D project visualizer",
+      "neuralvision.html"
+    ],
+    "answers": [
+      "Neural Vision is an interactive 3D force-directed graph visualizer built with Three.js and WebGL.",
+      "It maps Vignesh's software projects, APIs, and frameworks as interconnected spatial nodes.",
+      "Visitors can rotate, zoom, and interact with the 3D topology to inspect project relationships in real time.",
+      "It reads live data from projects.json to render connected nodes and category clusters dynamically.",
+      "Neural Vision lives at neuralvision.html, offering a futuristic alternative to traditional project lists.",
+      "It visually represents the interconnected nature of full-stack engineering, databases, and AI models.",
+      "The 3D environment features custom particle shaders, force simulations, and responsive camera controls.",
+      "Click the 'NEURAL VISION' CTA button in the top navigation bar to launch the interactive experience.",
+      "It bridges web design with spatial computing, rendering high-frame-rate graphics directly in the browser.",
+      "Each node in Neural Vision is clickable, displaying project descriptions and technology tags."
+    ]
+  },
+  {
+    "questions": [
+      "Internship experience",
+      "Technglobal",
+      "Where did you intern?",
+      "Software engineering internship"
+    ],
+    "answers": [
+      "Vignesh completed a 2-month software engineering internship at Technglobal Pvt Ltd (June–August 2026).",
+      "During his Technglobal internship, he engineered and deployed the BITS RADAR bug tracking system.",
+      "He contributed backend components and UI improvements to enterprise banking software called XAND.",
+      "His internship focused on building full-stack Python solutions, relational schemas, and responsive UI components.",
+      "At Technglobal, Vignesh collaborated with QA engineers and developers to optimize issue resolution workflows.",
+      "He gained production experience containerizing applications, writing RESTful APIs, and implementing RBAC.",
+      "His work at Technglobal demonstrated his ability to ship dependable, production-ready software systems.",
+      "The BITS RADAR project built during the internship cut ticket triage latency to under 15ms.",
+      "You can review the full internship timeline and verified badges in the Experience section of the site.",
+      "Technglobal provided hands-on experience developing enterprise software within professional agile SDLC sprints."
+    ]
+  },
+  {
+    "questions": [
+      "XAND Banking Software",
+      "Banking project",
+      "Tell me about XAND",
+      "XAND"
+    ],
+    "answers": [
+      "XAND Banking Software is an enterprise financial application Vignesh contributed to at Technglobal.",
+      "Vignesh engineered backend modules and enhanced workflow interfaces for XAND during his internship.",
+      "His work on XAND focused on transactional reliability, database queries, and secure financial workflows.",
+      "XAND required rigorous attention to data integrity, session handling, and backend performance.",
+      "Working on XAND provided practical experience with high-security enterprise software architectures.",
+      "Vignesh helped streamline user account workflows and optimize backend queries for banking operations.",
+      "It represents one of the enterprise systems Vignesh contributed to alongside BITS RADAR at Technglobal.",
+      "The XAND experience reinforced his focus on building dependable systems that never drop transactions.",
+      "He collaborated with senior engineers to implement UI improvements and backend reliability patches in XAND.",
+      "XAND Banking Software is featured on Vignesh's official career timeline in the Experience section."
+    ]
+  },
+  {
+    "questions": [
+      "CMR University",
+      "Where do you go to college?",
+      "University details",
+      "College location"
+    ],
+    "answers": [
+      "Vignesh is currently pursuing his Bachelor of Computer Applications (BCA) at CMR University (2024–2027).",
+      "CMR University is where Vignesh builds his academic foundation in data structures, algorithms, and systems.",
+      "At CMR University, his coursework emphasizes software engineering, database design, and object-oriented programming.",
+      "He balances his university studies at CMR with real-world software engineering internships and open-source builds.",
+      "Vignesh's academic journey at CMR University spans 2024 to 2027 with a technical focus on Full-Stack AI.",
+      "CMR University provides the theoretical computer science grounding that informs his system architectures.",
+      "He studies advanced computing, relational database theory, and modern application development at CMR.",
+      "You can see his verified university credentials in the Education grid on the portfolio.",
+      "His focus at CMR University is on applied software engineering, turning theory into production platforms.",
+      "Vignesh maintains strong academic performance at CMR University while actively shipping software products."
+    ]
+  },
+  {
+    "questions": [
+      "Python experience",
+      "How good are you at Python?",
+      "Python projects",
+      "Python programming"
+    ],
+    "answers": [
+      "Python is Vignesh's primary language, used for async FastAPI backends, Flask microservices, and AI inference.",
+      "He has extensive experience building REST APIs, managing database sessions, and serving ML models with Python.",
+      "Vignesh uses Python 3 for high-throughput ASGI services, SentenceTransformers embeddings, and automation scripts.",
+      "He leverages Python libraries like Pydantic for data validation, SQLAlchemy for ORM, and Uvicorn for serving.",
+      "From building BITS RADAR in Flask to architecting CYANX AI in FastAPI, Python powers his core backends.",
+      "Vignesh writes idiomatic, async-capable Python code following PEP 8 conventions and type annotations.",
+      "He uses Python for NLP text processing, token similarity calculations, and geospatial GeoJSON triage.",
+      "Python's rich ecosystem allows Vignesh to bridge machine learning models with production web services effortlessly.",
+      "He has developed complete standalone systems, CLI automation scripts, and cloud microservices in Python.",
+      "Python is his go-to choice whenever high development speed and robust model integration are required."
+    ]
+  },
+  {
+    "questions": [
+      "FastAPI experience",
+      "Why do you use FastAPI?",
+      "FastAPI skills",
+      "FastAPI vs Flask"
+    ],
+    "answers": [
+      "Vignesh specializes in FastAPI for building lightning-fast asynchronous REST APIs with automatic OpenAPI docs.",
+      "FastAPI is his preferred framework because of its native ASGI support, sub-millisecond overhead, and Pydantic validation.",
+      "He uses FastAPI to host the CYANX AI inference pipeline, delivering model search results in under 50ms.",
+      "With FastAPI, Vignesh handles concurrent non-blocking requests easily without complex thread pooling.",
+      "He builds modular API architectures in FastAPI with dependency injection, CORS middleware, and custom exception handlers.",
+      "FastAPI powers the backend of G+ Bengaluru, streaming geospatial polygon vectors with sub-20ms latency.",
+      "Vignesh prefers FastAPI over Django when low latency and microservice scalability are top priorities.",
+      "He leverages FastAPI's built-in background tasks and event hooks to warm up machine learning models on boot.",
+      "FastAPI ensures that all API request payloads are strictly validated before hitting internal business logic.",
+      "His production FastAPI services are containerized with Docker and served via Uvicorn on cloud infrastructure."
+    ]
+  },
+  {
+    "questions": [
+      "Flask experience",
+      "Do you know Flask?",
+      "Flask applications"
+    ],
+    "answers": [
+      "Vignesh uses Flask for lightweight web applications, rapid prototyping, and server-rendered microservices.",
+      "He built the BITS RADAR bug tracking system using Flask, SQLite, and responsive Bootstrap components.",
+      "Flask allows Vignesh to build agile micro-framework architectures without unnecessary ORM overhead.",
+      "He utilizes Flask blueprints, session authentication middleware, and Jinja templating for clean modularity.",
+      "Flask was chosen for BITS RADAR to achieve sub-15ms request dispatching during fast-paced software sprints.",
+      "Vignesh understands Flask's WSGI model and knows when to choose Flask over async frameworks like FastAPI.",
+      "He integrates Flask with SQLite and MySQL databases using parameterized queries for safe data access.",
+      "Flask's simplicity makes it one of his favorite tools for building dedicated internal company dashboards.",
+      "He has deployed Flask applications to cloud platforms like Render with reliable production uptime.",
+      "His Flask projects feature clean routing, custom error handlers, and intuitive user authentication flows."
+    ]
+  },
+  {
+    "questions": [
+      "JavaScript experience",
+      "Vanilla JS",
+      "Frontend JS skills",
+      "Do you know JavaScript?"
+    ],
+    "answers": [
+      "Vignesh writes modern Vanilla ES6+ JavaScript to create dynamic, highly animated user interfaces.",
+      "He prefers Vanilla JS over heavy frontend frameworks to eliminate bundle bloat and ensure instant load times.",
+      "His JavaScript work includes custom scrollbar logic, typing simulation effects, and responsive navigation.",
+      "He uses the Fetch API and AbortController to build resilient network fallback systems in the browser.",
+      "Vignesh integrates Three.js and WebGL using pure JavaScript to render 3D force-directed graphs.",
+      "He utilizes the IntersectionObserver API for performant on-scroll reveal animations across viewports.",
+      "His JS skills power the interactive Vignesh-OS terminal with command history, auto-fill, and screen controls.",
+      "He handles client-side state, modal dialogs, and audio feedback cleanly without external dependencies.",
+      "Vignesh structures JavaScript with modular functions, event delegation, and strict memory cleanup.",
+      "From e-commerce filters in EXOTIC GB HUB to this chat assistant, JavaScript powers his interactive frontends."
+    ]
+  },
+  {
+    "questions": [
+      "SQL databases",
+      "PostgreSQL experience",
+      "MySQL skills",
+      "Database experience"
+    ],
+    "answers": [
+      "Vignesh works with PostgreSQL, MySQL, and SQLite for relational data modeling and transactional persistence.",
+      "He designs normalized relational database schemas with primary/foreign keys, indexes, and constraints.",
+      "Vignesh writes parameterized SQL queries across all applications to guarantee protection against SQL injection.",
+      "He utilizes PostgreSQL for complex geospatial queries and spatial data storage in G+ Bengaluru.",
+      "In BITS RADAR, he implemented atomic audit logs and role-based permissions directly in relational tables.",
+      "He understands ACID compliance, transaction isolation levels, and database connection pooling.",
+      "Vignesh uses SQLite for lightweight, embedded local storage and MySQL/Postgres for production systems.",
+      "He optimizes SQL queries with strategic indexing to keep API response times consistently under 50ms.",
+      "His database experience spans from classic LAMP stack MySQL to cloud-hosted managed PostgreSQL instances.",
+      "He designs schemas that scale smoothly from rapid prototype sprints to multi-tenant production use."
+    ]
+  },
+  {
+    "questions": [
+      "SQLite",
+      "Why use SQLite?",
+      "Embedded database"
+    ],
+    "answers": [
+      "SQLite is Vignesh's top choice for embedded, zero-configuration storage during testing and rapid sprints.",
+      "He used SQLite in BITS RADAR to provide atomic, serverless ACID persistence without setup overhead.",
+      "SQLite eliminates network latency between application servers and databases for small-to-medium workloads.",
+      "Vignesh leverages SQLite for fast local development before migrating schemas to production MySQL/Postgres.",
+      "SQLite stores application state cleanly in a single portable file, making backups and migrations trivial.",
+      "He ensures SQLite queries are fully parameterized, maintaining the same security standards as enterprise databases.",
+      "For lightweight microservices and desktop utilities, SQLite provides unbeatable read performance.",
+      "He implements WAL (Write-Ahead Logging) mode in SQLite when concurrent read throughput is required.",
+      "SQLite provides full relational capabilities without requiring a dedicated background database daemon.",
+      "His projects demonstrate how SQLite can serve as a dependable backbone for agile software development."
+    ]
+  },
+  {
+    "questions": [
+      "Docker and containerization",
+      "Do you know Docker?",
+      "Container deployment"
+    ],
+    "answers": [
+      "Vignesh containerizes Python backends and full-stack services using Docker for consistent cloud deployments.",
+      "Docker guarantees that his applications run identically across local Windows environments and cloud Linux servers.",
+      "He writes multi-stage Dockerfiles to minimize container image sizes and speed up automated build pipelines.",
+      "Vignesh uses Docker to isolate dependencies, preventing version conflicts between different Python projects.",
+      "He packages FastAPI and Uvicorn into production-ready containers with non-root security configurations.",
+      "Docker allows his microservices to be deployed, scaled, or migrated between cloud hosts in minutes.",
+      "He uses Docker Compose to orchestrate multi-container setups combining backends, databases, and reverse proxies.",
+      "Containerization is a core phase in his 'Engineer to Launch' software development lifecycle.",
+      "Dockerized deployments ensure that SentenceTransformers model weights and dependencies stay reproducible.",
+      "His deployment strategy relies on Docker to maintain reliable uptime across production platforms."
+    ]
+  },
+  {
+    "questions": [
+      "Firebase experience",
+      "Google Firebase",
+      "Firestore"
+    ],
+    "answers": [
+      "Vignesh integrates Firebase Authentication, Firestore databases, and storage rules for serverless platforms.",
+      "He used Firebase in EXOTIC GB HUB to handle secure user logins and dynamic product catalog storage.",
+      "Firestore's real-time listeners allow client viewports to hydrate with dynamic product data instantly.",
+      "Firebase eliminates container cold-start delays, ensuring zero-latency catalog loading for e-commerce buyers.",
+      "He implements Firebase security rules to protect user records and prevent unauthorized database writes.",
+      "Vignesh leverages Firebase Auth to handle token lifecycles, password resets, and session management.",
+      "Firebase provides zero-cost cloud scalability, making it ideal for indie production applications.",
+      "He connects Firebase SDKs seamlessly with modern Vanilla JavaScript without requiring heavy client frameworks.",
+      "Firestore's flexible document model allows rapid schema evolution as product catalogs expand.",
+      "His Firebase integration in EXOTIC GB HUB demonstrates effective serverless architecture design."
+    ]
+  },
+  {
+    "questions": [
+      "Java programming",
+      "Do you know Java?",
+      "Java skills"
+    ],
+    "answers": [
+      "Vignesh knows core Java and object-oriented programming patterns from his computer applications curriculum.",
+      "He uses Java for understanding enterprise design patterns, encapsulation, polymorphism, and inheritance.",
+      "His Java foundation helps him write cleanly structured, maintainable software across all languages.",
+      "Vignesh is familiar with Java collections, exception handling, and multi-threaded programming concepts.",
+      "He has built academic applications in Java demonstrating algorithms and data structure implementations.",
+      "Java's strict type system reinforced his appreciation for type safety, which he applies in Python via Pydantic.",
+      "He understands the JVM architecture, byte-code execution, and memory management principles.",
+      "Java forms an integral part of his core technical skillset alongside Python and C++.",
+      "He can quickly navigate and contribute to Java codebases thanks to strong OOP fundamentals.",
+      "Vignesh lists Java as one of his core technologies in the Capabilities section of this portfolio."
+    ]
+  },
+  {
+    "questions": [
+      "C++ programming",
+      "Do you know C++?",
+      "C++ skills"
+    ],
+    "answers": [
+      "Vignesh uses C++ for algorithmic problem solving, competitive programming, and performance fundamentals.",
+      "C++ gives him a deep understanding of memory management, pointers, references, and system-level operations.",
+      "He writes modern C++ utilizing the Standard Template Library (STL) for vectors, maps, and algorithms.",
+      "His C++ knowledge informs how he optimizes code in higher-level languages like Python and JavaScript.",
+      "He practices data structures—including trees, graphs, and heaps—primarily in C++.",
+      "C++ teaches him the exact memory and CPU trade-offs occurring beneath high-level abstractions.",
+      "He understands RAII (Resource Acquisition Is Initialization) and smart pointers for memory leak prevention.",
+      "C++ is a core technology featured in his portfolio's Capabilities and Toolbox sections.",
+      "His problem-solving agility in C++ allows him to write efficient algorithms across all his projects.",
+      "Vignesh leverages C++ whenever raw performance, low latency, and deterministic resource control are required."
+    ]
+  },
+  {
+    "questions": [
+      "What is your strongest AI project?",
+      "Strongest AI project",
+      "Best AI project",
+      "Top machine learning project"
+    ],
+    "answers": [
+      "My strongest AI project is CYANX AI, the semantic retrieval assistant running this chat, which projects user inputs into a 384-dimensional vector space in under 50ms[cite: 2].",
+      "CYANX AI is my top AI project! It uses FastAPI and the all-MiniLM-L6-v2 SentenceTransformer to deliver low-latency semantic search across my engineering bio[cite: 2].",
+      "The assistant you're speaking with right now! It features custom semantic cosine similarity search deployed on an asynchronous Python FastAPI backend[cite: 2].",
+      "I consider CYANX AI my signature machine learning build because it eliminates sluggish external LLM wrappers in favor of lightweight local vector inference.",
+      "My premier AI project is this portfolio's active retrieval pipeline, which processes queries via all-MiniLM-L6-v2 without relying on paid black-box APIs[cite: 2, 14].",
+      "CYANX AI! It showcases my ability to integrate dense transformer embeddings with non-blocking ASGI event loops for instant query responses[cite: 2].",
+      "This conversational AI assistant is my strongest build—handling real-time vector projections and sub-second token matching entirely through FastAPI[cite: 2, 14].",
+      "My strongest AI project is CYANX AI, combining dense semantic search, custom telemetry tracking, and an interactive holographic terminal UI[cite: 2, 14].",
+      "CYANX AI stands out as my strongest project because it turns raw documentation into a high-performance vector retrieval engine[cite: 2, 14].",
+      "Without doubt, this live semantic assistant! It demonstrates fast tensor operations, vector similarity math, and clean REST architecture[cite: 2, 14]."
+    ]
+  },
+  {
+    "questions": [
+      "How do you deploy models?",
+      "How do you deploy models to production?",
+      "Model deployment process",
+      "MLOps and model serving"
+    ],
+    "answers": [
+      "I containerize lightweight FastAPI applications using Docker and serve inference endpoints through Uvicorn on cloud platforms like Render[cite: 2, 4, 14].",
+      "My deployment workflow involves pre-computing static embedding matrices in memory and serving dynamic vector inference via async ASGI workers[cite: 2, 14].",
+      "I use multi-stage Docker builds to package Python dependencies and transformer weights into minimal, production-ready container images[cite: 4, 14].",
+      "I deploy models by exposing RESTful prediction endpoints in FastAPI, guarded by Pydantic schema validation and CORS security rules[cite: 4, 14].",
+      "To keep cloud deployments sub-50ms, I cache tensor embeddings in memory on Linux instances and automate deploys via GitHub Actions[cite: 2, 4, 14].",
+      "I avoid heavy container bloat by selecting optimized small-footprint models like all-MiniLM-L6-v2 and serving them with Uvicorn[cite: 2, 14].",
+      "My deployment pipeline pairs automated Git repository hooks with cloud containers, ensuring continuous deployment with zero downtime[cite: 4, 14].",
+      "I serve ML models using asynchronous Python microservices, allowing non-blocking I/O while tokenizing and ranking user queries concurrently[cite: 2, 14].",
+      "I build dedicated inference routes with custom health-check endpoints, memory guards, and latency telemetry to monitor production health[cite: 4, 14].",
+      "Deployments are structured with Docker for environment consistency, Uvicorn for concurrency, and cloud-hosted ASGI backends[cite: 14]."
+    ]
+  },
+  {
+    "questions": [
+      "What are your core tech stack tools?",
+      "Core stack",
+      "What technologies do you use daily?",
+      "Core tools and stack"
+    ],
+    "answers": [
+      "My core tools are Python, FastAPI, and Flask on the backend, paired with modern ES6+ JavaScript, HTML5, and CSS3 on the client[cite: 2].",
+      "I primarily engineer with Python (FastAPI/Flask) for APIs, PostgreSQL and MySQL for relational data, and Vanilla JavaScript for frontends[cite: 2, 14].",
+      "My daily stack includes Python, FastAPI, relational SQL engines (Postgres, SQLite, MySQL), Docker, Git, and Three.js for 3D graphics[cite: 2, 4, 14].",
+      "For backend systems I rely on FastAPI and Flask; for databases I use PostgreSQL and MySQL; and for frontends I write clean Vanilla JS[cite: 2, 14].",
+      "My core stack centers on high-throughput Python backends, Pydantic type safety, relational database modeling, and responsive modern web design[cite: 2, 4, 14].",
+      "I build production systems using Python, FastAPI, Java, C++, SQLite, PostgreSQL, and Google Firebase[cite: 2, 4, 14].",
+      "My primary development arsenal consists of Python 3, FastAPI ASGI servers, modern JavaScript, CSS Glassmorphism, and Docker containers[cite: 2, 4, 14].",
+      "I specialize in Python and FastAPI for machine learning and REST APIs, backed by structured SQL storage and WebGL visualizations[cite: 2, 14].",
+      "My stack features Python (FastAPI/Flask), SQL databases, Git version control, Docker containerization, and modern browser APIs[cite: 2, 4, 14].",
+      "From database indexing in PostgreSQL to async endpoint routing in FastAPI and client-side rendering with Vanilla JS, that is my core toolkit[cite: 2, 14]."
+    ]
+  },
+  {
+    "questions": [
+      "How do you approach system engineering?",
+      "Engineering philosophy",
+      "Software development approach",
+      "How do you build software?"
+    ],
+    "answers": [
+      "I follow a six-stage lifecycle: Discover, Analyze, Engineer, Prototype, Launch, and Maintain to ensure resilient architectures[cite: 2, 4].",
+      "My philosophy is: 'Building dependable software means engineering systems that remain resilient when the unexpected happens.'[cite: 2, 4]",
+      "I approach systems by mapping data flows, defining strict Pydantic schemas, and isolating infrastructure boundaries before writing code[cite: 2, 4, 14].",
+      "I prioritize non-blocking asynchronous architectures, type-safe data contracts, and defensive error handling across all API routes[cite: 2, 4, 14].",
+      "I begin by establishing the technical trade-offs—such as choosing lightweight SQLite over MySQL or Firebase over custom backends based on constraints[cite: 4, 14].",
+      "My engineering workflow focuses on decoupled architectures where frontend viewports, ASGI backends, and storage layers scale independently[cite: 2].",
+      "I design systems with observability in mind, incorporating response latency badges, status codes, and atomic audit logging from day one[cite: 2, 4].",
+      "I build with a production-first mindset: optimizing database indexes, eliminating redundant dependencies, and containerizing early[cite: 2, 4, 14].",
+      "Every architecture starts with clear endpoint specs, relational normalization, and automated validation to prevent runtime crashes[cite: 2, 4, 14].",
+      "My approach balances speed with reliability—shipping fast prototypes that are strictly typed, secure, and ready to scale[cite: 2, 4, 14]."
+    ]
+  },
+  {
+    "questions": [
+      "Tell me about the Technglobal internship",
+      "Technglobal experience",
+      "What did you do at Technglobal?",
+      "Technglobal Pvt Ltd internship"
+    ],
+    "answers": [
+      "I completed a 2-month software engineering internship at Technglobal Pvt Ltd from June to August 2026[cite: 2, 14].",
+      "At Technglobal, I engineered and deployed BITS RADAR, a comprehensive bug tracking system built with Python, Flask, and SQLite[cite: 2, 14].",
+      "During my time at Technglobal, I contributed backend components and UI improvements to enterprise banking software called XAND[cite: 2, 14].",
+      "My Technglobal internship provided hands-on experience in full-stack Python development, relational database schemas, and agile SDLC sprints[cite: 2, 14].",
+      "I collaborated directly with QA engineers and senior developers at Technglobal to design role-based access control and audit trail features[cite: 2, 14].",
+      "At Technglobal, I worked on enterprise banking workflows and bug triage systems, focusing on data integrity and low-latency endpoints[cite: 2, 14].",
+      "The highlight of my Technglobal internship was building BITS RADAR from scratch and shipping it to production on Render[cite: 2, 14].",
+      "Technglobal gave me practical enterprise experience in writing RESTful APIs, securing database transactions, and building modular microservices[cite: 2, 14].",
+      "I strengthened my backend fundamentals at Technglobal by designing parameterized SQL queries, session middleware, and analytics boards[cite: 2, 4, 14].",
+      "My internship at Technglobal verified my capability to take complex enterprise software requirements and deliver dependable platforms[cite: 2, 14]."
+    ]
+  },
+  {
+    "questions": [
+      "What was your role in BITS RADAR?",
+      "Role in BITS RADAR",
+      "How did you contribute to BITS RADAR?",
+      "BITS RADAR responsibilities"
+    ],
+    "answers": [
+      "I was the lead engineer for BITS RADAR, designing the complete backend architecture, database schemas, and RESTful APIs using Python and Flask[cite: 2, 4, 14].",
+      "I architected the Role-Based Access Control (RBAC) system in BITS RADAR, ensuring strict permission boundaries between QA, Devs, and Admins[cite: 2, 4, 14].",
+      "I implemented bulk ticket operations, atomic audit trails, and status update endpoints to streamline high-volume issue tracking[cite: 2, 4, 14].",
+      "I integrated SQLite for local testing and MySQL for production persistence, using parameterized queries to safeguard ticket records[cite: 4, 14].",
+      "I connected Chart.js analytics to Flask aggregate endpoints, providing real-time visual telemetry on bug resolution velocity[cite: 4, 14].",
+      "I designed responsive Bootstrap user interfaces and secured session middleware to prevent unauthorized ticket modifications[cite: 2, 4, 14].",
+      "My role covered the full lifecycle of BITS RADAR: system design, API routing, unit testing, and deploying the platform to Render[cite: 2, 4, 14].",
+      "I optimized the BITS RADAR ticket query pipelines to deliver sub-15ms response times across sprint boards[cite: 14].",
+      "I developed the administrative dashboard, user authentication routes, and audit log tracking for all ticket lifecycle events[cite: 2, 4, 14].",
+      "I built and shipped BITS RADAR during my Technglobal internship, achieving 94% test coverage and full RBAC enforcement[cite: 2, 14]."
+    ]
+  },
+  {
+    "questions": [
+      "Explain BITS RADAR's RBAC",
+      "BITS RADAR RBAC",
+      "Role based access control in BITS RADAR",
+      "How does RBAC work in BITS RADAR?"
+    ],
+    "answers": [
+      "BITS RADAR uses Role-Based Access Control to enforce strict separation of duties between QA Testers, Developers, and System Administrators[cite: 4, 14].",
+      "The RBAC system guards every REST endpoint using session middleware, verifying user role tokens before processing ticket operations[cite: 4, 14].",
+      "QA Testers can log bugs and submit reproduction steps, Developers can claim and patch tickets, and Admins oversee user permissions[cite: 4, 14].",
+      "RBAC prevents unauthorized state modifications—for example, Developers cannot delete audit records, and Testers cannot reassign admin privileges[cite: 4, 14].",
+      "Every privileged action in BITS RADAR is tied to an atomic audit trail recording the exact user ID, role, timestamp, and modification payload[cite: 2, 4, 14].",
+      "The RBAC implementation prevents privilege escalation attacks by validating permissions both at the UI layer and the backend API controller[cite: 4, 14].",
+      "It allows bulk ticket status updates only for authorized team leads, ensuring sprint boards are not tampered with accidentally[cite: 4, 14].",
+      "User roles are stored as normalized database attributes, checked during session handshake, and cached for fast sub-15ms route execution[cite: 4, 14].",
+      "In BITS RADAR, RBAC ensures compliance with standard software engineering audit requirements across the entire SDLC[cite: 2, 14].",
+      "You can inspect the RBAC trade-offs and architectural decisions directly by opening the BITS RADAR Architecture drawer[cite: 2, 4]."
+    ]
+  },
+  {
+    "questions": [
+      "How does G+ use Gemini AI?",
+      "G+ Gemini AI integration",
+      "Gemini in G+ Bengaluru",
+      "G Plus AI triage"
+    ],
+    "answers": [
+      "G+ Bengaluru uses Google Gemini 1.5 API endpoints to automatically triage, summarize, and categorize unstructured citizen grievances[cite: 2, 4, 14].",
+      "When a citizen submits a complaint, Gemini analyzes the semantic text and extracts municipal tags like road damage, water supply, or sanitation[cite: 2, 4, 14].",
+      "Gemini transforms freeform citizen messages into structured JSON containing urgency scores, department tags, and SQL spatial coordinates[cite: 4, 14].",
+      "The AI triage pipeline performs sentiment analysis on complaints to prioritize emergency municipal hazards on live heatmaps[cite: 4, 14].",
+      "It resolves repetitive civic inquiries instantly while routing complex civic tickets to the exact municipal ward officer[cite: 2, 4, 14].",
+      "Gemini integrates with G+ Bengaluru's FastAPI backend, taking complaint strings and generating structured spatial database records[cite: 2, 4, 14].",
+      "By offloading manual grievance classification to Gemini, G+ Bengaluru achieves 96% AI accuracy in ticket categorization[cite: 2, 4].",
+      "The model analyzes historical complaint patterns to generate live telemetry summaries for administrative pulse monitoring[cite: 2, 4, 14].",
+      "Gemini acts as an intelligent intermediary between unstructured citizen inputs and the platform's spatial PostgreSQL database[cite: 4, 14].",
+      "You can inspect how Gemini communicates with the Leaflet.js client and FastAPI server inside the G+ Architecture drawer[cite: 4]."
+    ]
+  },
+  {
+    "questions": [
+      "What embedding model do you use?",
+      "Embedding model",
+      "Which model powers semantic search?",
+      "Transformer model used"
+    ],
+    "answers": [
+      "I use Hugging Face's all-MiniLM-L6-v2 model from the SentenceTransformers library[cite: 2, 14].",
+      "The semantic search pipeline is powered by all-MiniLM-L6-v2, which projects input text into a 384-dimensional dense vector space[cite: 2, 14].",
+      "I chose all-MiniLM-L6-v2 because it provides a near-perfect balance of semantic accuracy, tiny memory footprint, and sub-50ms inference[cite: 2, 14].",
+      "all-MiniLM-L6-v2 transforms natural language questions into normalized 384D mathematical tensors for cosine similarity comparisons[cite: 2, 14].",
+      "The model runs locally within my Python FastAPI environment, avoiding high latency and recurring costs associated with cloud LLM APIs[cite: 2, 14].",
+      "It is a 6-layer MiniLM sentence transformer fine-tuned on over 1 billion sentence pairs for clustering and semantic retrieval[cite: 2, 14].",
+      "Because all-MiniLM-L6-v2 is lightweight (under 120MB), it loads directly into RAM on boot for instant cold-start responses[cite: 2, 14].",
+      "The 384-dimensional output vectors are optimized for high-speed dot-product and cosine distance calculations[cite: 2, 14].",
+      "It maps semantically similar phrases like 'tech stack' and 'what languages do you code in' to nearby vector coordinates[cite: 2, 14].",
+      "You can see all-MiniLM-L6-v2 highlighted in the DAG architecture flow diagram right next to this chat window[cite: 2]!"
+    ]
+  },
+  {
+    "questions": [
+      "How does this semantic search work?",
+      "How does semantic search work?",
+      "Explain the search algorithm",
+      "Vector search pipeline"
+    ],
+    "answers": [
+      "Your query is tokenized and transformed into a 384-dimensional dense vector by all-MiniLM-L6-v2 in FastAPI[cite: 2, 14].",
+      "The server computes real-time cosine similarity between your input vector and pre-computed embeddings of my engineering knowledge base[cite: 2, 14].",
+      "Cosine similarity measures the angle between vectors: an angle close to 0 indicates a high semantic match regardless of specific keywords[cite: 2, 14].",
+      "The backend ranks the highest similarity score and returns the most accurate verified answer with sub-50ms response latency[cite: 2, 14].",
+      "It uses a hybrid search approach: checking for direct command overrides first, then falling back to dense vector similarity matching[cite: 4, 14].",
+      "Unlike rigid keyword search, it understands intent—matching 'Where do you study?' with answers about CMR University automatically[cite: 14].",
+      "Once calculated, the exact response time and match confidence percentage are returned as live telemetry badges in the chat[cite: 2, 4].",
+      "All vector matrices are cached in memory on FastAPI boot, eliminating slow disk reads during runtime search requests[cite: 14].",
+      "The pipeline runs entirely asynchronously via Uvicorn ASGI workers, preventing search operations from blocking other incoming traffic[cite: 2, 14].",
+      "The complete sequence: Client Input -> Tokenization -> 384D Vector Projection -> Cosine Scoring -> JSON Reply[cite: 2, 4]."
+    ]
+  },
+  {
+    "questions": [
+      "What kind of roles are you looking for?",
+      "Target roles",
+      "Job opportunities",
+      "What jobs are you interested in?"
+    ],
+    "answers": [
+      "I am looking for Full-Stack Developer, AI/LLM Integration Engineer, and Backend Software Engineer roles[cite: 14].",
+      "I am seeking software engineering internships, graduate engineering roles, and full-time developer positions[cite: 14].",
+      "I want to join teams building high-throughput REST APIs, autonomous AI-agent workflows, or scalable web architectures[cite: 2, 14].",
+      "My target roles focus on Python/FastAPI backend engineering, decoupled full-stack systems, and Generative AI implementation[cite: 2, 14].",
+      "I am eager to contribute to companies shipping dependable digital products that require strong backend and database foundations[cite: 2, 14].",
+      "I am open to roles as a Junior AI Engineer, Python Backend Developer, or Full-Stack Web Developer[cite: 14].",
+      "I thrive in engineering teams that value low-latency code, resilient system design, and clean API standards[cite: 2, 14].",
+      "I am available for on-site positions in Bengaluru, hybrid arrangements, or fully remote software engineering opportunities[cite: 2, 14].",
+      "I look for roles where I can bridge machine learning inference with dependable production web platforms[cite: 2, 14].",
+      "If your engineering team needs a developer who can ship production-ready APIs and AI systems, let's connect[cite: 2, 14]!"
+    ]
+  },
+  {
+    "questions": [
+      "Are you open to contract work?",
+      "Contract work",
+      "Freelance projects",
+      "Do you do freelance?"
+    ],
+    "answers": [
+      "Yes! I am actively open to contract engagements, freelance technical builds, and specialized consulting projects[cite: 14].",
+      "Absolutely. I take on freelance contracts for building custom FastAPI backends, AI chatbots, and full-stack platforms[cite: 2, 14].",
+      "I am available for contract work focusing on semantic search integrations, RESTful API design, and database modeling[cite: 2, 14].",
+      "Yes, if you have a product prototype or an enterprise system that needs engineering, I would love to collaborate[cite: 2, 14].",
+      "I take on selective freelance projects where I can build dependable, production-ready web software from scratch[cite: 2, 14].",
+      "Yes! I can help you design and deploy low-latency AI assistants, e-commerce ordering flows, or custom internal dashboards[cite: 2, 4, 14].",
+      "I am open to both short-term architectural sprints and longer-term contract software development agreements[cite: 14].",
+      "Certainly. You can reach out directly via vigneshblrind@gmail.com with your project scope and timeline to get started[cite: 2, 14].",
+      "Yes, I offer freelance expertise in Python, FastAPI, relational SQL database design, and interactive frontend development[cite: 2, 14].",
+      "I'm always excited to build great products on contract—feel free to click 'Let's Collaborate' in the home section[cite: 2]!"
+    ]
+  }
+]

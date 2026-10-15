@@ -2,59 +2,96 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Neural Runner</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Neural Runner 3D</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="icon" type="image/png" href="Gemini_Generated_Image_ko64ocko64ocko64-removebg-preview.png">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
-    body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #ffffff; overflow: hidden; font-family: 'Space Grotesk', sans-serif; user-select: none; touch-action: none; }
+    :root {
+        --bg-pure: #ffffff;
+        --text-main: #000000;
+        --text-sub: #64748b;
+        --border-color: #cbd5e1;
+    }
+    body.dark-mode {
+        --bg-pure: #000000;
+        --text-main: #ffffff;
+        --text-sub: #94a3b8;
+        --border-color: #262626;
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--bg-pure); color: var(--text-main); overflow: hidden; font-family: 'Space Grotesk', sans-serif; user-select: none; touch-action: none; }
     canvas { display: block; width: 100vw; height: 100vh; }
     
-    .hud { position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; color: #0f172a; z-index: 10; pointer-events: none; }
-    .hud-box { background: rgba(255, 255, 255, 0.9); border: 1px solid #cbd5e1; padding: 10px 20px; border-radius: 10px; backdrop-filter: blur(8px); box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-    h2 { margin: 0; font-size: 0.95rem; color: #4f46e5; text-transform: uppercase; letter-spacing: 2px; }
-    span.val { color: #0f172a; font-size: 1.5rem; font-weight: bold; }
+    .hud { position: absolute; top: 16px; left: 16px; right: 16px; display: flex; justify-content: space-between; gap: 10px; color: var(--text-main); z-index: 10; pointer-events: none; }
+    .hud-box { background: var(--bg-pure); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 12px; box-shadow: 0 8px 25px rgba(79,70,229,0.1); }
+    h2 { margin: 0; font-size: clamp(0.68rem, 2vw, 0.85rem); color: #4f46e5; text-transform: uppercase; letter-spacing: 1.5px; }
+    span.val { color: var(--text-main); font-size: clamp(1.15rem, 3.5vw, 1.5rem); font-weight: bold; }
     
-    #pulse-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(34, 197, 94, 0); z-index: 5; pointer-events: none; transition: background 0.2s; }
-    .pulse-active { animation: pulseAnim 0.3s ease-out; }
-    @keyframes pulseAnim { 0% { background: rgba(34, 197, 94, 0.25); } 100% { background: rgba(34, 197, 94, 0); } }
+    #pulse-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(56, 189, 248, 0); z-index: 5; pointer-events: none; }
+    .pulse-active { animation: pulseAnim 0.35s ease-out; }
+    @keyframes pulseAnim { 0% { background: rgba(56, 189, 248, 0.22); } 100% { background: rgba(56, 189, 248, 0); } }
+
+    /* ON-SCREEN MOBILE CONTROLS */
+    .mobile-controls { position: fixed; bottom: 20px; left: 16px; right: 16px; display: none; justify-content: space-between; align-items: center; z-index: 15; pointer-events: none; }
+    @media (max-width: 900px), (pointer: coarse) {
+        .mobile-controls.active-hud { display: flex; }
+    }
+    .lane-btns { display: flex; gap: 12px; pointer-events: auto; }
+    .ctrl-btn { width: 62px; height: 62px; border-radius: 18px; background: var(--bg-pure); border: 2px solid var(--border-color); color: var(--text-main); font-size: 1.4rem; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 8px 20px rgba(79,70,229,0.18); active: scale(0.92); pointer-events: auto; font-weight: bold; }
+    .ctrl-btn:active { border-color: #4f46e5; color: #4f46e5; transform: scale(0.93); }
+    .jump-btn { width: auto; padding: 0 26px; border-radius: 30px; font-size: 1rem; letter-spacing: 1px; background: #4f46e5; color: #ffffff; border: none; }
+    .jump-btn:active { background: #4338ca; color: #ffffff; }
 
     /* MODALS & POPUPS */
-    .modal-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.94); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 25; backdrop-filter: blur(8px); }
-    .modal-card { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 20px; padding: 35px; width: 90%; max-width: 500px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.08); }
-    h1 { font-size: 3rem; margin-bottom: 10px; color: #0f172a; }
+    .modal-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-pure); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 25; padding: 16px; }
+    .modal-card { background: var(--bg-pure); border: 1px solid var(--border-color); border-radius: 22px; padding: clamp(22px, 5vw, 38px); width: 100%; max-width: 500px; text-align: center; box-shadow: 0 20px 50px rgba(79,70,229,0.15); }
+    h1 { font-size: clamp(1.9rem, 6vw, 2.8rem); margin: 0 0 10px 0; color: var(--text-main); }
     
-    .diff-group { display: flex; justify-content: center; gap: 8px; margin: 20px 0; }
-    .diff-btn { padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: 0.2s; font-family: inherit; }
-    .diff-btn.active { transform: scale(1.08); box-shadow: 0 4px 12px rgba(0,0,0,0.15); outline: 2px solid #0f172a; }
+    .diff-group { display: flex; justify-content: center; gap: 6px; margin: 18px 0; flex-wrap: wrap; }
+    .diff-btn { padding: 7px 14px; border-radius: 20px; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: 0.2s; font-family: inherit; }
+    .diff-btn.active { transform: scale(1.06); box-shadow: 0 4px 12px rgba(79,70,229,0.25); outline: 2px solid var(--text-main); }
     
     .btn-easy { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
     .btn-med { background: #fef08a; color: #713f12; border: 1px solid #fde047; }
     .btn-hard { background: #fce7f3; color: #991b1b; border: 1px solid #fbcfe8; }
     .btn-cyanx { background: #ede9fe; color: #581c87; border: 1px solid #ddd6fe; }
 
-    .btn { padding: 14px 35px; background: #4f46e5; border: none; color: white; font-size: 1.1rem; cursor: pointer; border-radius: 30px; font-family: 'Space Grotesk', sans-serif; transition: 0.3s; margin: 8px; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25); font-weight: bold; }
-    .btn:hover { background: #4338ca; transform: translateY(-2px); }
-    .btn-outline { background: transparent; border: 2px solid #cbd5e1; color: #334155; box-shadow: none; }
+    .btn { padding: 12px 28px; background: #4f46e5; border: none; color: white; font-size: 1rem; cursor: pointer; border-radius: 30px; font-family: 'Space Grotesk', sans-serif; transition: 0.3s; margin: 6px; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3); font-weight: bold; }
+    .btn:hover { background: #4338ca; }
+    .btn-outline { background: var(--bg-pure); border: 2px solid var(--border-color); color: var(--text-main); box-shadow: none; }
 
-    .score-banner { font-size: 3.2rem; font-weight: 800; color: #4f46e5; margin: 15px 0; }
-    .mode-indicator { display: inline-block; padding: 6px 14px; border-radius: 12px; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; font-size: 0.85rem; }
+    .score-banner { font-size: clamp(2.3rem, 7vw, 3.2rem); font-weight: 800; color: #4f46e5; margin: 12px 0; }
+    .mode-indicator { display: inline-block; padding: 6px 14px; border-radius: 12px; font-weight: 700; margin-bottom: 16px; text-transform: uppercase; font-size: 0.8rem; }
 </style>
 </head>
 <body>
     <div class="hud">
-        <div class="hud-box"><h2>Score</h2><span class="val" id="scoreDisplay">0</span></div>
-        <div class="hud-box"><h2>High Score</h2><span class="val" id="highScoreDisplay">0</span></div>
+        <div class="hud-box"><h2>Distance Score</h2><span class="val" id="scoreDisplay">0</span></div>
+        <div class="hud-box"><h2>High Record</h2><span class="val" id="highScoreDisplay">0</span></div>
     </div>
     <div id="pulse-overlay"></div>
-    <canvas id="gameCanvas"></canvas>
+
+    <!-- ON-SCREEN TOUCH BUTTONS FOR MOBILE -->
+    <div class="mobile-controls" id="mobileControls">
+        <div class="lane-btns">
+            <button type="button" class="ctrl-btn" id="btnLeft" aria-label="Move Left"><i class="fa-solid fa-chevron-left"></i></button>
+            <button type="button" class="ctrl-btn" id="btnRight" aria-label="Move Right"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+        <button type="button" class="ctrl-btn jump-btn" id="btnJump"><i class="fa-solid fa-angles-up"></i>&nbsp; JUMP</button>
+    </div>
     
     <!-- START MODAL -->
     <div class="modal-backdrop" id="startOverlay">
         <div class="modal-card">
-            <h1>NEURAL RUNNER</h1>
-            <p style="color:#64748b;">Press SPACE, Click or TAP to leap across firewall obstacles & harvest energy orbs.</p>
+            <h1>NEURAL RUNNER 3D</h1>
+            <p style="color:var(--text-sub); font-size:0.9rem; line-height: 1.5;">
+                <strong>Desktop:</strong> A/D or Arrow Keys to switch lanes, SPACE to Jump.<br>
+                <strong>Mobile:</strong> Swipe or use on-screen buttons to dodge monoliths & jump hurdles.
+            </p>
             
             <div class="diff-group">
                 <button class="diff-btn btn-easy active" onclick="setDifficulty('Easy')">Easy</button>
@@ -73,11 +110,11 @@
     <!-- SCORE POPUP MODAL -->
     <div class="modal-backdrop" id="scoreModal" style="display: none;">
         <div class="modal-card">
-            <h2 style="font-size:1.8rem; color:#dc2626; margin-bottom: 5px;">CONNECTION COLLAPSED</h2>
+            <h2 style="font-size:1.6rem; color:#dc2626; margin-bottom: 5px;">CONNECTION COLLAPSED</h2>
             <div id="resultBadge" class="mode-indicator"></div>
-            <div style="color:#64748b; font-size:0.95rem;">INDIVIDUAL RUN SCORE</div>
+            <div style="color:var(--text-sub); font-size:0.9rem;">INDIVIDUAL RUN SCORE</div>
             <div class="score-banner" id="popupScore">0</div>
-            <p id="highScoreNote" style="font-size:0.9rem; color:#15803d; font-weight:600; margin-bottom:20px;"></p>
+            <p id="highScoreNote" style="font-size:0.88rem; color:#15803d; font-weight:600; margin-bottom:18px;"></p>
             
             <div>
                 <button class="btn" onclick="retryRunner()">RUN AGAIN</button>
@@ -87,19 +124,110 @@
     </div>
 
 <script>
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
     const pulseOverlay = document.getElementById('pulse-overlay');
-    
-    let w = canvas.width = window.innerWidth;
-    let h = canvas.height = window.innerHeight;
+    const mobileControls = document.getElementById('mobileControls');
 
+    // --- PURE BLACK / WHITE THEME SYNC ---
+    let isDarkTheme = false;
+    function checkTheme() {
+        const saved = localStorage.getItem('theme') || localStorage.getItem('cyanx_theme') || 'light';
+        isDarkTheme = (saved === 'dark');
+        document.body.classList.toggle('dark-mode', isDarkTheme);
+        if (scene) {
+            scene.background = new THREE.Color(isDarkTheme ? 0x000000 : 0xffffff);
+        }
+    }
+    window.addEventListener('storage', checkTheme);
+
+    // --- THREE.JS 3D CHASE-CAM HIGHWAY SETUP ---
+    const scene = new THREE.Scene();
+    checkTheme();
+
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 220);
+
+    function adjustCameraForViewport() {
+        const aspect = window.innerWidth / window.innerHeight;
+        camera.aspect = aspect;
+        if (aspect < 0.75) {
+            // Mobile portrait: pull camera back and slightly higher so all 3 lanes fit comfortably
+            camera.fov = 68;
+            camera.position.set(0, 5.2, 13.5);
+        } else {
+            camera.fov = 58;
+            camera.position.set(0, 4.2, 10.5);
+        }
+        camera.lookAt(0, 1.2, -15);
+        camera.updateProjectionMatrix();
+    }
+    adjustCameraForViewport();
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    document.body.appendChild(renderer.domElement);
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.75));
+    const dirLight = new THREE.DirectionalLight(0x6366f1, 1.8);
+    dirLight.position.set(10, 20, 15);
+    scene.add(dirLight);
+
+    // 3-Lane Cyber Highway Grid
+    const LANES = [-3.0, 0, 3.0];
+    const gridHelper = new THREE.GridHelper(160, 80, 0x4f46e5, 0x6366f1);
+    gridHelper.position.set(0, 0, -50);
+    gridHelper.material.transparent = true;
+    gridHelper.material.opacity = 0.3;
+    scene.add(gridHelper);
+
+    // Highway Neon Side Rails
+    const railGeo = new THREE.BoxGeometry(0.15, 0.15, 160);
+    const railMat = new THREE.MeshStandardMaterial({ color: 0x4f46e5, emissive: 0x38bdf8, emissiveIntensity: 0.8 });
+    const leftRail = new THREE.Mesh(railGeo, railMat);
+    leftRail.position.set(-4.8, 0.1, -50);
+    const rightRail = new THREE.Mesh(railGeo, railMat);
+    rightRail.position.set(4.8, 0.1, -50);
+    scene.add(leftRail, rightRail);
+
+    // Passing 3D Speed Portal Gates
+    const portalArches = [];
+    const archGeo = new THREE.TorusGeometry(6.2, 0.08, 12, 32, Math.PI);
+    const archMat = new THREE.MeshBasicMaterial({ color: 0x6366f1, transparent: true, opacity: 0.28 });
+    for (let i = 0; i < 7; i++) {
+        const arch = new THREE.Mesh(archGeo, archMat);
+        arch.position.set(0, 0, -i * 22);
+        scene.add(arch);
+        portalArches.push(arch);
+    }
+
+    // 3D Cyber-Interceptor Player Craft
+    const playerGroup = new THREE.Group();
+    const hullGeo = new THREE.ConeGeometry(0.8, 2.1, 4);
+    hullGeo.rotateX(-Math.PI / 2);
+    const hullMat = new THREE.MeshStandardMaterial({ color: 0x4f46e5, emissive: 0x1e1b4b, roughness: 0.2, metalness: 0.9 });
+    const hullMesh = new THREE.Mesh(hullGeo, hullMat);
+
+    const wingGeo = new THREE.BoxGeometry(1.9, 0.12, 0.85);
+    const wingMat = new THREE.MeshStandardMaterial({ color: 0x38bdf8, emissive: 0x0284c7, emissiveIntensity: 0.6, metalness: 0.8 });
+    const wingMesh = new THREE.Mesh(wingGeo, wingMat);
+    wingMesh.position.set(0, 0, 0.3);
+
+    const gyroCore = new THREE.Mesh(
+        new THREE.OctahedronGeometry(0.42, 0),
+        new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true })
+    );
+    gyroCore.position.set(0, 0.35, 0.2);
+
+    playerGroup.add(hullMesh, wingMesh, gyroCore);
+    playerGroup.position.set(0, 0.65, 4);
+    scene.add(playerGroup);
+
+    // --- GAME CONFIGS & STATE ---
     let currentDifficulty = 'Easy';
     const diffConfigs = {
-        'Easy':     { baseSpeed: 5.5, accel: 0.0003, spawnMod: 140 },
-        'Medium':   { baseSpeed: 7.2, accel: 0.0005, spawnMod: 110 },
-        'Hard':     { baseSpeed: 9.5, accel: 0.0008, spawnMod: 85 },
-        'CYANX AI': { baseSpeed: 12.0, accel: 0.0012, spawnMod: 65 }
+        'Easy':     { baseSpeed: 0.52, accel: 0.00025, spawnFrames: 54 },
+        'Medium':   { baseSpeed: 0.68, accel: 0.0004,  spawnFrames: 44 },
+        'Hard':     { baseSpeed: 0.88, accel: 0.0006,  spawnFrames: 34 },
+        'CYANX AI': { baseSpeed: 1.10, accel: 0.00085, spawnFrames: 26 }
     };
 
     let gameActive = false;
@@ -107,19 +235,24 @@
     let distance = 0;
     let speedMult = 1;
     let frame = 0;
-    let floorY = h - 100;
     let bestScore = localStorage.getItem('cyanx_runner_best') || 0;
     document.getElementById('highScoreDisplay').innerText = bestScore;
 
-    const player = { x: 150, y: floorY - 20, radius: 20, vy: 0, gravity: 0.8, jumpPower: -15, isGrounded: false };
+    const player = {
+        laneIndex: 1,
+        x: 0,
+        y: 0.65,
+        baseY: 0.65,
+        vy: 0,
+        gravity: -0.022,
+        jumpPower: 0.42,
+        isGrounded: true,
+        bankAngle: 0
+    };
+
     let obstacles = [];
     let orbs = [];
     let particles = [];
-    let bgLines = [];
-
-    for(let i=0; i<30; i++) {
-        bgLines.push({ x: Math.random()*w, y: Math.random()*h, length: 50+Math.random()*150, speed: 2+Math.random()*5 });
-    }
 
     function setDifficulty(mode) {
         currentDifficulty = mode;
@@ -130,18 +263,31 @@
         if (mode === 'CYANX AI') document.querySelector('.btn-cyanx').classList.add('active');
     }
 
+    function clearEntities() {
+        obstacles.forEach(o => scene.remove(o.mesh));
+        orbs.forEach(o => scene.remove(o.mesh));
+        particles.forEach(p => scene.remove(p.mesh));
+        obstacles = []; orbs = []; particles = [];
+    }
+
     function startGame() {
         document.getElementById('startOverlay').style.display = 'none';
         document.getElementById('scoreModal').style.display = 'none';
+        mobileControls.classList.add('active-hud');
+        clearEntities();
         score = 0; distance = 0; speedMult = 1; frame = 0;
-        player.y = floorY - player.radius; player.vy = 0;
-        obstacles = []; orbs = []; particles = [];
+        player.laneIndex = 1;
+        player.x = 0;
+        player.y = player.baseY;
+        player.vy = 0;
+        player.isGrounded = true;
+        playerGroup.position.set(0, player.baseY, 4);
         gameActive = true;
-        requestAnimationFrame(update);
     }
 
     function endGame() {
         gameActive = false;
+        mobileControls.classList.remove('active-hud');
         const finalScore = Math.floor(score);
         const prevBest = parseInt(localStorage.getItem('cyanx_runner_best') || 0);
         let isNewHigh = false;
@@ -172,165 +318,227 @@
         document.getElementById('startOverlay').style.display = 'flex';
     }
 
-    function jump() {
-        if(player.isGrounded && gameActive) {
-            player.vy = player.jumpPower;
-            player.isGrounded = false;
-            createParticles(player.x, player.y + player.radius, '#4f46e5', 10);
+    function changeLane(dir) {
+        if (!gameActive) return;
+        const next = player.laneIndex + dir;
+        if (next >= 0 && next <= 2) {
+            player.laneIndex = next;
+            player.bankAngle = -dir * 0.45;
         }
     }
 
-    window.addEventListener('keydown', e => { if(e.code === 'Space' || e.code === 'ArrowUp') jump(); });
-    window.addEventListener('touchstart', jump);
-    window.addEventListener('mousedown', jump);
+    function jump() {
+        if (player.isGrounded && gameActive) {
+            player.vy = player.jumpPower;
+            player.isGrounded = false;
+            createParticles(player.x, player.y, 4, 0x38bdf8, 12);
+        }
+    }
 
-    function createParticles(x, y, color, count) {
-        for(let i=0; i<count; i++) {
+    // Mobile On-Screen Touch Buttons
+    document.getElementById('btnLeft').addEventListener('pointerdown', (e) => { e.stopPropagation(); changeLane(-1); });
+    document.getElementById('btnRight').addEventListener('pointerdown', (e) => { e.stopPropagation(); changeLane(1); });
+    document.getElementById('btnJump').addEventListener('pointerdown', (e) => { e.stopPropagation(); jump(); });
+
+    // Keyboard Controls
+    window.addEventListener('keydown', e => {
+        if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') jump();
+        if (e.code === 'ArrowLeft' || e.code === 'KeyA') changeLane(-1);
+        if (e.code === 'ArrowRight' || e.code === 'KeyD') changeLane(1);
+    });
+
+    // Swipe Gestures on Canvas
+    let touchStartX = 0;
+    let touchStartY = 0;
+    renderer.domElement.addEventListener('touchstart', e => {
+        if (!gameActive) return;
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    renderer.domElement.addEventListener('touchend', e => {
+        if (!gameActive || e.changedTouches.length === 0) return;
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        const dy = e.changedTouches[0].clientY - touchStartY;
+        if (Math.abs(dx) > 30 && Math.abs(dx) > Math.abs(dy)) {
+            changeLane(dx > 0 ? 1 : -1);
+        } else if (dy < -25) {
+            jump();
+        }
+    }, { passive: true });
+
+    function createParticles(x, y, z, colorHex, count) {
+        const geo = new THREE.BoxGeometry(0.2, 0.2, 0.2);
+        for (let i = 0; i < count; i++) {
+            const mat = new THREE.MeshBasicMaterial({ color: colorHex, transparent: true, opacity: 1 });
+            const mesh = new THREE.Mesh(geo, mat);
+            mesh.position.set(x, y, z);
+            scene.add(mesh);
             particles.push({
-                x: x, y: y,
-                vx: (Math.random()-0.5)*10 - 2, vy: (Math.random()-0.5)*10,
-                life: 1, color: color
+                mesh,
+                vx: (Math.random() - 0.5) * 0.3,
+                vy: (Math.random() - 0.5) * 0.3,
+                vz: (Math.random() - 0.5) * 0.3 + 0.15,
+                life: 1.0
             });
         }
     }
 
-    function spawnEntity() {
-        if(Math.random() > 0.3) {
-            let height = 30 + Math.random() * 40;
-            obstacles.push({ x: w + 50, y: floorY - height, w: 30, h: height });
+    function spawnHighwayWave() {
+        const laneIdx = Math.floor(Math.random() * 3);
+        const laneX = LANES[laneIdx];
+
+        if (Math.random() > 0.28) {
+            const isTallPillar = Math.random() > 0.45;
+            const h = isTallPillar ? 3.4 : 1.1;
+            const w = isTallPillar ? 1.55 : 2.1;
+            const geo = new THREE.BoxGeometry(w, h, 1.2);
+            const mat = new THREE.MeshStandardMaterial({
+                color: 0xdc2626,
+                emissive: 0x991b1b,
+                emissiveIntensity: 0.65,
+                roughness: 0.2,
+                metalness: 0.8
+            });
+            const mesh = new THREE.Mesh(geo, mat);
+            mesh.position.set(laneX, h / 2, -110);
+            scene.add(mesh);
+            obstacles.push({ mesh, w, h });
         } else {
-            let yPos = floorY - 60 - Math.random() * 100;
-            orbs.push({ x: w + 50, y: yPos, radius: 15 });
+            const yPos = 1.2 + (Math.random() > 0.5 ? 1.4 : 0);
+            const geo = new THREE.OctahedronGeometry(0.72, 0);
+            const mat = new THREE.MeshStandardMaterial({
+                color: 0x0284c7,
+                emissive: 0x38bdf8,
+                emissiveIntensity: 0.9,
+                roughness: 0.1,
+                metalness: 0.9
+            });
+            const mesh = new THREE.Mesh(geo, mat);
+            mesh.position.set(laneX, yPos, -110);
+            scene.add(mesh);
+            orbs.push({ mesh, radius: 0.85 });
         }
     }
 
-    function update() {
-        if(!gameActive) return;
-        const cfg = diffConfigs[currentDifficulty];
+    function animate() {
+        requestAnimationFrame(animate);
 
-        speedMult += cfg.accel; 
-        let currentSpeed = cfg.baseSpeed * speedMult;
-        distance += currentSpeed / 50;
-        score = distance;
-        document.getElementById('scoreDisplay').innerText = Math.floor(score);
+        gyroCore.rotation.y += 0.08;
+        gyroCore.rotation.x += 0.05;
 
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-        ctx.fillRect(0, 0, w, h);
+        if (gameActive) {
+            const cfg = diffConfigs[currentDifficulty];
+            speedMult += cfg.accel;
+            let currentSpeed = cfg.baseSpeed * speedMult;
+            distance += currentSpeed * 0.45;
+            score = distance;
+            document.getElementById('scoreDisplay').innerText = Math.floor(score);
 
-        ctx.beginPath();
-        ctx.moveTo(0, floorY);
-        ctx.lineTo(w, floorY);
-        ctx.strokeStyle = 'rgba(79, 70, 229, 0.3)';
-        ctx.lineWidth = 2;
-        ctx.stroke();
+            gridHelper.position.z = -50 + ((distance * 4) % 4);
+            portalArches.forEach(arch => {
+                arch.position.z += currentSpeed;
+                if (arch.position.z > 14) arch.position.z -= 154;
+            });
 
-        ctx.strokeStyle = 'rgba(79, 70, 229, 0.12)';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        bgLines.forEach(l => {
-            l.x -= l.speed * speedMult;
-            if(l.x < -l.length) { l.x = w; l.y = Math.random()*floorY; }
-            ctx.moveTo(l.x, l.y);
-            ctx.lineTo(l.x + l.length, l.y);
-        });
-        ctx.stroke();
+            const targetX = LANES[player.laneIndex];
+            player.x += (targetX - player.x) * 0.18;
+            player.bankAngle *= 0.86;
+            playerGroup.position.x = player.x;
+            playerGroup.rotation.z = player.bankAngle;
 
-        player.vy += player.gravity;
-        player.y += player.vy;
-        if(player.y + player.radius >= floorY) {
-            player.y = floorY - player.radius;
-            player.vy = 0;
-            player.isGrounded = true;
-        }
-
-        if(frame % 3 === 0) {
-            particles.push({ x: player.x, y: player.y, vx: -currentSpeed/2, vy: 0, life: 1, color: '#4f46e5' });
-        }
-
-        // Obstacles
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = 'rgba(220, 38, 38, 0.4)';
-        ctx.fillStyle = '#dc2626';
-        for(let i = obstacles.length - 1; i >= 0; i--) {
-            let obs = obstacles[i];
-            obs.x -= currentSpeed;
-            ctx.fillRect(obs.x, obs.y, obs.w, obs.h);
-
-            let testX = player.x; let testY = player.y;
-            if (player.x < obs.x) testX = obs.x; else if (player.x > obs.x + obs.w) testX = obs.x + obs.w;
-            if (player.y < obs.y) testY = obs.y; else if (player.y > obs.y + obs.h) testY = obs.y + obs.h;
-            
-            let distX = player.x - testX; let distY = player.y - testY;
-            if ((distX*distX + distY*distY) <= (player.radius*player.radius)) {
-                createParticles(player.x, player.y, '#dc2626', 30);
-                endGame(); return;
+            player.vy += player.gravity;
+            player.y += player.vy;
+            if (player.y <= player.baseY) {
+                player.y = player.baseY;
+                player.vy = 0;
+                player.isGrounded = true;
             }
-            if (obs.x < -100) obstacles.splice(i, 1);
-        }
+            playerGroup.position.y = player.y;
 
-        // Orbs
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = 'rgba(2, 132, 199, 0.5)';
-        ctx.fillStyle = '#0284c7';
-        for(let i = orbs.length - 1; i >= 0; i--) {
-            let o = orbs[i];
-            o.x -= currentSpeed;
-            
-            ctx.beginPath();
-            ctx.arc(o.x, o.y + Math.sin(frame/10)*5, o.radius, 0, Math.PI*2);
-            ctx.fill();
+            camera.position.x += (player.x * 0.3 - camera.position.x) * 0.1;
 
-            let dx = player.x - o.x; let dy = player.y - o.y;
-            if (Math.hypot(dx, dy) < player.radius + o.radius) {
-                distance += 50;
-                createParticles(o.x, o.y, '#0284c7', 15);
-                orbs.splice(i, 1);
-                
-                pulseOverlay.classList.remove('pulse-active');
-                void pulseOverlay.offsetWidth;
-                pulseOverlay.classList.add('pulse-active');
-                continue;
+            if (frame % 2 === 0) {
+                createParticles(player.x, player.y - 0.1, 5.1, 0x4f46e5, 1);
             }
-            if (o.x < -100) orbs.splice(i, 1);
-        }
-        ctx.shadowBlur = 0;
 
-        for(let i = particles.length - 1; i >= 0; i--) {
+            // Obstacles
+            for (let i = obstacles.length - 1; i >= 0; i--) {
+                let obs = obstacles[i];
+                obs.mesh.position.z += currentSpeed;
+
+                let dz = Math.abs(obs.mesh.position.z - 4);
+                let dx = Math.abs(obs.mesh.position.x - player.x);
+                let dy = player.y - obs.mesh.position.y;
+
+                if (dz < 1.05 && dx < (obs.w / 2 + 0.5) && Math.abs(dy) < (obs.h / 2 + 0.38)) {
+                    createParticles(player.x, player.y, 4, 0xdc2626, 35);
+                    endGame();
+                    return;
+                }
+                if (obs.mesh.position.z > 16) {
+                    scene.remove(obs.mesh);
+                    obstacles.splice(i, 1);
+                }
+            }
+
+            // Energy Orbs
+            for (let i = orbs.length - 1; i >= 0; i--) {
+                let o = orbs[i];
+                o.mesh.position.z += currentSpeed;
+                o.mesh.rotation.y += 0.07;
+
+                let dist = Math.hypot(
+                    player.x - o.mesh.position.x,
+                    player.y - o.mesh.position.y,
+                    4 - o.mesh.position.z
+                );
+                if (dist < o.radius + 0.85) {
+                    distance += 50;
+                    createParticles(o.mesh.position.x, o.mesh.position.y, o.mesh.position.z, 0x38bdf8, 18);
+                    scene.remove(o.mesh);
+                    orbs.splice(i, 1);
+
+                    pulseOverlay.classList.remove('pulse-active');
+                    void pulseOverlay.offsetWidth;
+                    pulseOverlay.classList.add('pulse-active');
+                    continue;
+                }
+                if (o.mesh.position.z > 16) {
+                    scene.remove(o.mesh);
+                    orbs.splice(i, 1);
+                }
+            }
+
+            const spawnInterval = Math.max(16, Math.floor(cfg.spawnFrames / speedMult));
+            if (frame % spawnInterval === 0) {
+                spawnHighwayWave();
+            }
+            frame++;
+        }
+
+        // Particles
+        for (let i = particles.length - 1; i >= 0; i--) {
             let p = particles[i];
-            p.x += p.vx; p.y += p.vy; p.life -= 0.03;
-            ctx.globalAlpha = Math.max(0, p.life);
-            ctx.fillStyle = p.color;
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, 3, 0, Math.PI*2);
-            ctx.fill();
-            if(p.life <= 0) particles.splice(i, 1);
+            p.mesh.position.x += p.vx;
+            p.mesh.position.y += p.vy;
+            p.mesh.position.z += p.vz;
+            p.life -= 0.045;
+            p.mesh.material.opacity = Math.max(0, p.life);
+            if (p.life <= 0) {
+                scene.remove(p.mesh);
+                particles.splice(i, 1);
+            }
         }
-        ctx.globalAlpha = 1;
 
-        ctx.beginPath();
-        ctx.arc(player.x, player.y, player.radius, 0, Math.PI*2);
-        ctx.fillStyle = '#4f46e5';
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = 'rgba(79, 70, 229, 0.5)';
-        ctx.fill();
-        
-        ctx.beginPath();
-        ctx.arc(player.x, player.y, player.radius * 0.5, 0, Math.PI*2);
-        ctx.fillStyle = '#ffffff';
-        ctx.fill();
-        ctx.shadowBlur = 0;
-
-        if(frame % Math.floor(Math.max(45, cfg.spawnMod - speedMult * 8)) === 0) spawnEntity();
-
-        frame++;
-        requestAnimationFrame(update);
+        renderer.render(scene, camera);
     }
-    
+
+    requestAnimationFrame(animate);
+
     window.addEventListener('resize', () => {
-        w = canvas.width = window.innerWidth;
-        h = canvas.height = window.innerHeight;
-        floorY = h - 100;
-        player.y = floorY - player.radius;
+        adjustCameraForViewport();
+        renderer.setSize(window.innerWidth, window.innerHeight);
     });
 </script>
 </body>

@@ -19,47 +19,55 @@
     }
 
     body {
-      font-family:'Poppins', sans-serif;
+      font-family: 'Poppins', sans-serif;
       background: #dde3eb;
-      display: flex;
-      justify-content: center;
-      padding: 60px 16px 40px;
       min-height: 100vh;
       color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 65px 0 40px;
       overflow-x: hidden;
     }
 
-    .back {
-      width: 100%;
-      max-width: 920px;
+    /* Scaling outer wrapper that fits the scaled dimensions cleanly */
+    #scaleContainer {
+      position: relative;
       display: flex;
       justify-content: center;
+      margin: 0 auto;
+    }
+
+    .back {
+      width: 920px;
+      transform-origin: top center;
       transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.45s ease;
     }
 
     .slide-out-left {
-      transform: translateX(-100vw);
+      transform: translateX(-100vw) !important;
       opacity: 0;
     }
 
+    /* Complete white sheet */
     .resume {
-      background: #fff;
+      background: #ffffff;
       width: 920px;
-      max-width: 100%;
       padding: 38px 44px 48px;
-      box-shadow: 0 4px 40px rgba(0,0,0,0.13);
+      box-shadow: 0 4px 40px rgba(0, 0, 0, 0.13);
+      box-sizing: border-box;
     }
 
     /* ─────────────────────────────
-       FIXED TOP-RIGHT ACTION BAR
+       FIXED FLOATING ACTION BUTTONS
     ───────────────────────────── */
     .top-actions {
       position: fixed;
-      top: 18px;
-      right: 24px;
+      top: 14px;
+      right: 16px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       z-index: 1000;
     }
 
@@ -67,17 +75,17 @@
       background: linear-gradient(135deg, #7594fa, #9d75fa);
       color: white;
       border: none;
-      padding: 10px 22px;
-      font-size: 0.95rem;
+      padding: 9px 18px;
+      font-size: 0.9rem;
       cursor: pointer;
-      border-radius: 4px;
+      border-radius: 6px;
       font-family: 'Poppins', sans-serif;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
       transition: background 0.2s ease, transform 0.15s ease;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
     }
 
     .top-actions button:hover {
@@ -118,7 +126,7 @@
 
     /* ── Contact bar ── */
     .contact-bar { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-    .contact-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 24px; font-size: 0.88rem; }
+    .contact-row { display: flex; flex-wrap: nowrap; justify-content: center; gap: 6px 24px; font-size: 0.88rem; white-space: nowrap; }
     .contact-item { display: flex; align-items: center; gap: 5px; color: var(--muted); }
     .contact-item .icon { width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .contact-item a { color: var(--blue); text-decoration: none; }
@@ -168,7 +176,7 @@
     .tools-detail .tkey { font-weight: 600; color: var(--text); min-width: 135px; flex-shrink: 0; }
 
     /* ─────────────────────────────
-       SKILLS, CERTIFICATES & EDUCATION (FULL-WIDTH)
+       SKILLS, CERTIFICATES & EDUCATION (FULL WIDTH)
     ───────────────────────────── */
     .skill-block { margin-bottom: 14px; }
     .skill-block h4 {
@@ -209,21 +217,16 @@
     .edu-info .inst   { font-size: 0.87rem; font-weight: 700; color: var(--text); }
     .edu-year { font-size: 0.82rem; color: var(--muted); white-space: nowrap; padding-top: 2px; }
 
-    /* ─────────────────────────────
-       RESPONSIVE
-    ───────────────────────────── */
-    @media (max-width: 660px) {
-      .resume { padding: 24px 18px 32px; }
-      .header h1 { font-size: 1.7rem; }
-      .project-header { flex-direction: column; gap: 2px; }
+    /* Mobile specific adjustments for buttons */
+    @media (max-width: 600px) {
       .top-actions {
         top: 10px;
-        right: 10px;
+        right: 12px;
         gap: 6px;
       }
       .top-actions button {
-        padding: 8px 14px;
-        font-size: 0.85rem;
+        padding: 7px 12px;
+        font-size: 0.8rem;
       }
     }
 
@@ -267,12 +270,12 @@
 </head>
 <body>
 
-  <!-- Fixed Top-Right Action Bar -->
+  <!-- Floating Top-Right Buttons -->
   <div class="top-actions">
     <button id="downloadPdfBtn" type="button">Download PDF</button>
     <button type="button">
       <a href="index.html">
-        <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <svg class="arrow-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <line x1="19" y1="12" x2="5" y2="12"></line>
           <polyline points="12 19 5 12 12 5"></polyline>
         </svg>
@@ -281,183 +284,213 @@
     </button>
   </div>
 
-  <div class="back" id="pageWrapper">
-    <div class="resume" id="resumeContent">
+  <div id="scaleContainer">
+    <div class="back" id="pageWrapper">
+      <div class="resume" id="resumeContent">
 
-      <!-- ══════════════ HEADER ══════════════ -->
-      <div class="header">
-        <h1>Vignesh P</h1>
+        <!-- ══════════════ HEADER ══════════════ -->
+        <div class="header">
+          <h1>Vignesh P</h1>
 
-        <div class="contact-bar">
+          <div class="contact-bar">
 
-          <!-- ROW 1: Email | LinkedIn -->
-          <div class="contact-row">
+            <!-- ROW 1: Email | LinkedIn -->
+            <div class="contact-row">
 
-            <span class="contact-item">
-              <span class="icon">
-                <svg width="15" height="15" fill="none" stroke="#1565C0" stroke-width="2" viewBox="0 0 24 24">
-                  <rect x="2" y="4" width="20" height="16" rx="2"/>
-                  <path d="m2 7 10 7 10-7"/>
-                </svg>
+              <span class="contact-item">
+                <span class="icon">
+                  <svg width="15" height="15" fill="none" stroke="#1565C0" stroke-width="2" viewBox="0 0 24 24">
+                    <rect x="2" y="4" width="20" height="16" rx="2"/>
+                    <path d="m2 7 10 7 10-7"/>
+                  </svg>
+                </span>
+                <a href="mailto:vigneshpremkumar1@gmail.com">vigneshpremkumar1@gmail.com</a>
               </span>
-              <a href="mailto:vigneshpremkumar1@gmail.com">vigneshpremkumar1@gmail.com</a>
-            </span>
 
-            <span class="contact-item">
-              <span class="icon">
-                <svg width="15" height="15" fill="#1565C0" viewBox="0 0 24 24">
-                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/>
-                  <rect x="2" y="9" width="4" height="12"/>
-                  <circle cx="4" cy="4" r="2"/>
-                </svg>
+              <span class="contact-item">
+                <span class="icon">
+                  <svg width="15" height="15" fill="#1565C0" viewBox="0 0 24 24">
+                    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/>
+                    <rect x="2" y="9" width="4" height="12"/>
+                    <circle cx="4" cy="4" r="2"/>
+                  </svg>
+                </span>
+                <a href="https://www.linkedin.com/in/vigneshp05" target="_blank">www.linkedin.com/in/vigneshp05</a>
               </span>
-              <a href="https://www.linkedin.com/in/vigneshp05" target="_blank">www.linkedin.com/in/vigneshp05</a>
-            </span>
 
-            <span class="contact-item">
-              <span class="icon">
-                <svg width="15" height="15" fill="#1565C0" viewBox="0 0 24 24">
-                  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
-                </svg>
+              <span class="contact-item">
+                <span class="icon">
+                  <svg width="15" height="15" fill="#1565C0" viewBox="0 0 24 24">
+                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                  </svg>
+                </span>
+                <a href="https://github.com/vignesh1-1" target="_blank">https://github.com/in/vignesh1-1</a>
               </span>
-              <a href="https://github.com/vignesh1-1" target="_blank">https://github.com/in/vignesh1-1</a>
-            </span>
 
-          </div><!-- end row 1 -->
+            </div><!-- end row 1 -->
 
-          <!-- ROW 2: Phone | GitHub | City -->
-          <div class="contact-row">
+            <!-- ROW 2: Phone | GitHub | City -->
+            <div class="contact-row">
 
-            <span class="contact-item">
-              <span class="icon">
-                <svg width="15" height="15" fill="none" stroke="#1565C0" stroke-width="2" viewBox="0 0 24 24">
-                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.38 2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                </svg>
+              <span class="contact-item">
+                <span class="icon">
+                  <svg width="15" height="15" fill="none" stroke="#1565C0" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.38 2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                  </svg>
+                </span>
+                +91 9380356694
               </span>
-              +91 9380356694
-            </span>
 
-            <span class="contact-item">
-              <span class="icon">
-                <svg width="15" height="15" fill="none" stroke="#1565C0" stroke-width="2" viewBox="0 0 24 24">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                  <circle cx="12" cy="10" r="3"/>
-                </svg>
+              <span class="contact-item">
+                <span class="icon">
+                  <svg width="15" height="15" fill="none" stroke="#1565C0" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                    <circle cx="12" cy="10" r="3"/>
+                  </svg>
+                </span>
+                Bangalore
               </span>
-              Bangalore
-            </span>
 
-          </div><!-- end row 2 -->
+            </div><!-- end row 2 -->
 
-        </div><!-- end contact-bar -->
-      </div><!-- end header -->
+          </div><!-- end contact-bar -->
+        </div><!-- end header -->
 
-      <hr/>
+        <hr/>
 
-      <!-- ══════════════ OBJECTIVE ══════════════ -->
-      <div class="section objective">
-        <div class="section-title">EXECUTIVE SUMMARY</div>
-        <p>"Web Technology Specialist with experience in full-stack development, Skilled in building scalable FastAPI/Flask systems driving technical execution and scalability"</p>
-      </div>
-
-      <hr/>
-
-      <!-- ══════════════ INTERNSHIP ══════════════ -->
-      <div class="section">
-        <div class="section-title">Internship</div>
-
-        <div class="project">
-          <div class="project-header">
-            <span class="project-title">Software Engineering Intern &nbsp;|&nbsp; TechnGlobal — Bengaluru, Karnataka</span>
-            <span class="project-year">2026</span>
-          </div>
-          <p>-Developed an <span style="font-weight: bold;">All-in-One SDLC Banking System</span> combining internet banking and UPI features, focusing a responsive, user friendly interface and low-latency transaction workflows with:-</p>
-          <ul class="cert-list">
-              <li>ChatBot</li>
-              <li>Smart suggessions</li>
-              <li>Story Insights</li>
-          </ul>
-          <p>-Engineered a <span style="font-weight: bold;">Bug Tracking System</span> Cross-functional bridge for Admin-Developer-Tester workflows featuring CRUD operations, optimizing performance to handle 100+ operations efficiently within 3.5 seconds.</p>
-          <div class="tools-detail">
-            <div class="row"><span class="tkey">Key Tech Stack:-</span>Python, Flask, Postman, SQL, Git/GitHub, Bootstrap, Web Technologies.</div>
-          </div>
+        <!-- ══════════════ OBJECTIVE ══════════════ -->
+        <div class="section objective">
+          <div class="section-title">EXECUTIVE SUMMARY</div>
+          <p>"Web Technology Specialist with experience in full-stack development, Skilled in building scalable FastAPI/Flask systems driving technical execution and scalability"</p>
         </div>
 
-      </div><!-- end internship -->
+        <hr/>
 
-      <hr/>
+        <!-- ══════════════ INTERNSHIP ══════════════ -->
+        <div class="section">
+          <div class="section-title">Internship</div>
 
-      <!-- ══════════════ PROJECTS ══════════════ -->
-      <div class="section">
-        <div class="section-title">Projects</div>
-
-        <div class="project">
-          <div class="project-header">
-            <span class="project-title">SDLC Banking System</span>
-            <span class="project-year">2026</span>
-          </div>
-          <p>Developed an All-in-One SDLC Banking System: Built a comprehensive web application integrating internet banking and UPI functionalities using Python (Flask) for the backend.</p>
-          <div class="tools-detail">
-            <div class="row"><span class="tkey">Framework & Languages:-</span> Flask &nbsp;|&nbsp; Postman &nbsp;|&nbsp;  Python, SQL, JavaScript, HTML, CSS.</div>
-          </div>
-        </div>
-
-        <div class="project">
-          <div class="project-header">
-            <span class="project-title">Bug Tracking System</span>
-            <span class="project-year">2026</span>
-          </div>
-          <p>Cross-functional bridge for Admin-Developer-Tester workflows featuring high-speed backend execution endpoints execute bulk CRUD operations up to 100+ tickets in under 3.5 seconds.</p>
-          <div class="tools-detail">
-            <div class="row"><span class="tkey">Framework & Languages:-</span>Flask &nbsp;|&nbsp; Bootstrap &nbsp;|&nbsp; Python, JavaScript, HTML, CSS.</div>
-          </div>
-        </div>
-
-      </div><!-- end projects -->
-
-      <!-- ══════════════ SKILL-SET ══════════════ -->
-      <div class="section">
-        <div class="section-title">Skill-Set</div>
-        <div class="skill-block">
-          <h4>Technical Skills</h4>
-          <ul class="skill-list">
-            <li><span class="key">Programming Language:-</span> Python, PostgreSQL, Java, C++.</li>
-            <li><span class="key">Backend & Technologies:-</span> Firebase, FastAPI, Flask, Render, Postman, MongoDB, XAMPP, React, Bootstrap.</li>
-            <li><span class="key">Design software Tools:-</span> DaVinci Resolve, Pixel Lab, Capcut, Canva.</li>
-          </ul>
-        </div>
-      </div><!-- end skill-set -->
-
-      <!-- ══════════════ CERTIFICATES ══════════════ -->
-      <div class="section">
-        <div class="section-title">Certificates</div>
-        <div class="cert-name">Joy of Computing using Python | NPTEL (by IIT Ropar)</div>
-        <div class="cert-desc"><span style="font-weight: bold;">Key Learnings:</span> Mastered core computational concepts and algorithmic thinking by translating real-world problems into Python code and Implemented unique case studies, including -</div>
-        <ul class="cert-list">
-          <li>Google PageRank</li>
-          <li>Cryptography</li>
-          <li>Game logic</li>
-        </ul>
-      </div><!-- end certificates -->
-
-      <!-- ══════════════ EDUCATION ══════════════ -->
-      <div class="section">
-        <div class="section-title">Education</div>
-        <div class="edu-block">
-          <div class="edu-row">
-            <div class="edu-info">
-              <div class="degree">BCA-Bachelor in Computer Application</div>
-              <div class="inst">CMR University-<span style="font-weight:400">Bengaluru, Karnataka.</span></div>
+          <div class="project">
+            <div class="project-header">
+              <span class="project-title">Software Engineering Intern &nbsp;|&nbsp; TechnGlobal — Bengaluru, Karnataka</span>
+              <span class="project-year">2026</span>
             </div>
-            <div class="edu-year">Year:- 2024-2027</div>
+            <p>-Developed an <span style="font-weight: bold;">All-in-One SDLC Banking System</span> combining internet banking and UPI features, focusing a responsive, user friendly interface and low-latency transaction workflows with:-</p>
+            <ul class="cert-list">
+                <li>ChatBot</li>
+                <li>Smart suggessions</li>
+                <li>Story Insights</li>
+            </ul>
+            <p>-Engineered a <span style="font-weight: bold;">Bug Tracking System</span> Cross-functional bridge for Admin-Developer-Tester workflows featuring CRUD operations, optimizing performance to handle 100+ operations efficiently within 3.5 seconds.</p>
+            <div class="tools-detail">
+              <div class="row"><span class="tkey">Key Tech Stack:-</span>Python, Flask, Postman, SQL, Git/GitHub, Bootstrap, Web Technologies.</div>
+            </div>
           </div>
-        </div>
-      </div><!-- end education -->
 
-    </div><!-- end resume -->
-  </div><!-- end back wrapper -->
+        </div><!-- end internship -->
+
+        <hr/>
+
+        <!-- ══════════════ PROJECTS ══════════════ -->
+        <div class="section">
+          <div class="section-title">Projects</div>
+
+          <div class="project">
+            <div class="project-header">
+              <span class="project-title">SDLC Banking System</span>
+              <span class="project-year">2026</span>
+            </div>
+            <p>Developed an All-in-One SDLC Banking System: Built a comprehensive web application integrating internet banking and UPI functionalities using Python (Flask) for the backend.</p>
+            <div class="tools-detail">
+              <div class="row"><span class="tkey">Framework & Languages:-</span> Flask &nbsp;|&nbsp; Postman &nbsp;|&nbsp;  Python, SQL, JavaScript, HTML, CSS.</div>
+            </div>
+          </div>
+
+          <div class="project">
+            <div class="project-header">
+              <span class="project-title">Bug Tracking System</span>
+              <span class="project-year">2026</span>
+            </div>
+            <p>Cross-functional bridge for Admin-Developer-Tester workflows featuring high-speed backend execution endpoints execute bulk CRUD operations up to 100+ tickets in under 3.5 seconds.</p>
+            <div class="tools-detail">
+              <div class="row"><span class="tkey">Framework & Languages:-</span>Flask &nbsp;|&nbsp; Bootstrap &nbsp;|&nbsp; Python, JavaScript, HTML, CSS.</div>
+            </div>
+          </div>
+
+        </div><!-- end projects -->
+
+        <!-- ══════════════ SKILL-SET ══════════════ -->
+        <div class="section">
+          <div class="section-title">Skill-Set</div>
+          <div class="skill-block">
+            <h4>Technical Skills</h4>
+            <ul class="skill-list">
+              <li><span class="key">Programming Language:-</span> Python, PostgreSQL, Java, C++.</li>
+              <li><span class="key">Backend & Technologies:-</span> Firebase, FastAPI, Flask, Render, Postman, MongoDB, XAMPP, React, Bootstrap.</li>
+              <li><span class="key">Design software Tools:-</span> DaVinci Resolve, Pixel Lab, Capcut, Canva.</li>
+            </ul>
+          </div>
+        </div><!-- end skill-set -->
+
+        <!-- ══════════════ CERTIFICATES ══════════════ -->
+        <div class="section">
+          <div class="section-title">Certificates</div>
+          <div class="cert-name">Joy of Computing using Python | NPTEL (by IIT Ropar)</div>
+          <div class="cert-desc"><span style="font-weight: bold;">Key Learnings:</span> Mastered core computational concepts and algorithmic thinking by translating real-world problems into Python code and Implemented unique case studies, including -</div>
+          <ul class="cert-list">
+            <li>Google PageRank</li>
+            <li>Cryptography</li>
+            <li>Game logic</li>
+          </ul>
+        </div><!-- end certificates -->
+
+        <!-- ══════════════ EDUCATION ══════════════ -->
+        <div class="section">
+          <div class="section-title">Education</div>
+          <div class="edu-block">
+            <div class="edu-row">
+              <div class="edu-info">
+                <div class="degree">BCA-Bachelor in Computer Application</div>
+                <div class="inst">CMR University-<span style="font-weight:400">Bengaluru, Karnataka.</span></div>
+              </div>
+              <div class="edu-year">Year:- 2024-2027</div>
+            </div>
+          </div>
+        </div><!-- end education -->
+
+      </div><!-- end resume -->
+    </div><!-- end back wrapper -->
+  </div><!-- end scaleContainer -->
 
   <script>
+    // Proportional downscaling so mobile matches laptop layout 1:1 without cutting off
+    function applyResponsiveScale() {
+      const wrapper = document.getElementById("pageWrapper");
+      const container = document.getElementById("scaleContainer");
+      const resume = document.getElementById("resumeContent");
+      
+      const baseWidth = 920;
+      const screenWidth = window.innerWidth;
+      const horizontalMargin = 20; // 10px breathing room on both sides
+
+      if (screenWidth < baseWidth + horizontalMargin) {
+        const scale = (screenWidth - horizontalMargin) / baseWidth;
+        wrapper.style.transform = `scale(${scale})`;
+        
+        // Match container bounds to scaled resume
+        const originalHeight = resume.offsetHeight;
+        container.style.width = `${baseWidth * scale}px`;
+        container.style.height = `${originalHeight * scale}px`;
+      } else {
+        wrapper.style.transform = "none";
+        container.style.width = `${baseWidth}px`;
+        container.style.height = "auto";
+      }
+    }
+
+    window.addEventListener("load", applyResponsiveScale);
+    window.addEventListener("resize", applyResponsiveScale);
+
     // Link transition with slide-out-left animation
     document.querySelectorAll("a").forEach(link => {
       link.addEventListener("click", function(e) {
@@ -465,7 +498,6 @@
         if (target && target.endsWith(".html")) {
           e.preventDefault();
 
-          // Slide the entire page/resume container to the left
           document.getElementById("pageWrapper").classList.add("slide-out-left");
 
           const overlay = document.getElementById("loadingOverlay");
@@ -482,7 +514,6 @@
     document.getElementById("downloadPdfBtn").addEventListener("click", function() {
       const resumeElement = document.getElementById("resumeContent");
       
-      // Generate random 2-digit number (01-99)
       const randomNum = String(Math.floor(Math.random() * 99) + 1).padStart(2, '0');
       const fileName = `Vignesh_P_Resume_SI_${randomNum}.pdf`;
 

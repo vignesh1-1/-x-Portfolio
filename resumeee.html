@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vignesh P – Resume</title>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;800&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- html2pdf bundle for downloading only the resume container -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #1565C0;
+      --text: #1a1a1a;
+      --muted: #444;
+      --border: #c8d6e8;
+    }
+
+    body {
+      font-family:'Poppins', sans-serif;
+      background: #dde3eb;
+      display: flex;
+      justify-content: center;
+      padding: 60px 16px 40px;
+      min-height: 100vh;
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    .back {
+      width: 100%;
+      max-width: 920px;
+      display: flex;
+      justify-content: center;
+      transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.45s ease;
+    }
+
+    .slide-out-left {
+      transform: translateX(-100vw);
+      opacity: 0;
+    }
+
+    .resume {
+      background: #fff;
+      width: 920px;
+      max-width: 100%;
+      padding: 38px 44px 48px;
+      box-shadow: 0 4px 40px rgba(0,0,0,0.13);
+    }
+
+    /* ─────────────────────────────
+       FIXED TOP-RIGHT ACTION BAR
+    ───────────────────────────── */
+    .top-actions {
+      position: fixed;
+      top: 18px;
+      right: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 1000;
+    }
+
+    .top-actions button {
+      background: linear-gradient(135deg, #7594fa, #9d75fa);
+      color: white;
+      border: none;
+      padding: 10px 22px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      border-radius: 4px;
+      font-family: 'Poppins', sans-serif;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: background 0.2s ease, transform 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .top-actions button:hover {
+      background: #0d47a1;
+      transform: translateY(-1px);
+    }
+
+    .top-actions a {
+      text-decoration: none;
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .arrow-icon {
+      transition: transform 0.2s ease;
+    }
+
+    .top-actions a:hover .arrow-icon {
+      transform: translateX(-3px);
+    }
+
+    /* ─────────────────────────────
+       HEADER
+    ───────────────────────────── */
+    .header { text-align: center; margin-bottom: 14px; }
+
+    .header h1 {
+      font-family: 'Raleway', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    /* ── Contact bar ── */
+    .contact-bar { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .contact-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 24px; font-size: 0.88rem; }
+    .contact-item { display: flex; align-items: center; gap: 5px; color: var(--muted); }
+    .contact-item .icon { width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .contact-item a { color: var(--blue); text-decoration: none; }
+    .contact-item a:hover { text-decoration: underline; }
+
+    /* ─────────────────────────────
+       DIVIDER
+    ───────────────────────────── */
+    hr { border: none; border-top: 1.5px solid var(--border); margin: 13px 0; }
+
+    /* ─────────────────────────────
+       SECTION TITLE
+    ───────────────────────────── */
+    .section-title {
+      font-family: 'Raleway', sans-serif;
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--blue);
+      border-bottom: 2px solid var(--blue);
+      padding-bottom: 3px;
+      margin-bottom: 12px;
+    }
+
+    /* ─────────────────────────────
+       OBJECTIVE & PROJECTS
+    ───────────────────────────── */
+    .section { margin-top: 16px; }
+    .objective p { font-size: 0.92rem; line-height: 1.65; color: var(--muted); }
+
+    .project { margin-bottom: 14px; }
+    .project-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+    .project-title {
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.97rem;
+      font-weight: 700;
+      color: var(--blue);
+      text-transform: uppercase;
+      text-decoration: underline;
+      letter-spacing: 0.4px;
+    }
+    .project-year { font-size: 0.85rem; color: var(--muted); white-space: nowrap; }
+    .project p { font-size: 0.9rem; line-height: 1.6; color: var(--muted); margin-bottom: 5px; }
+    .tools-detail { padding-left: 14px; font-size: 0.87rem; color: var(--muted); line-height: 1.75; }
+    .tools-detail .row { display: flex; gap: 4px; }
+    .tools-detail .tkey { font-weight: 600; color: var(--text); min-width: 135px; flex-shrink: 0; }
+
+    /* ─────────────────────────────
+       SKILLS, CERTIFICATES & EDUCATION (FULL-WIDTH)
+    ───────────────────────────── */
+    .skill-block { margin-bottom: 14px; }
+    .skill-block h4 {
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 700;
+      text-align: center;
+      border-bottom: 1.5px solid var(--border);
+      padding-bottom: 4px;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    .skill-list { 
+      list-style: disc; 
+      padding-left: 16px; 
+      font-size: 0.86rem; 
+      color: var(--muted); 
+      line-height: 1.85; 
+      width: 100%; 
+    }
+    .skill-list li .key { font-weight: 700; color: var(--text); }
+
+    /* Certificates */
+    .cert-name {
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .cert-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.55; margin-bottom: 7px; }
+    .cert-list { list-style: disc; padding-left: 16px; font-size: 0.86rem; color: var(--muted); line-height: 1.85; width: 100%; }
+
+    /* Education */
+    .edu-block { margin-bottom: 14px; }
+    .edu-row { display: flex; justify-content: space-between; align-items: flex-start; }
+    .edu-info .degree { font-size: 0.87rem; color: var(--muted); }
+    .edu-info .inst   { font-size: 0.87rem; font-weight: 700; color: var(--text); }
+    .edu-year { font-size: 0.82rem; color: var(--muted); white-space: nowrap; padding-top: 2px; }
+
+    /* ─────────────────────────────
+       RESPONSIVE
+    ───────────────────────────── */
+    @media (max-width: 660px) {
+      .resume { padding: 24px 18px 32px; }
+      .header h1 { font-size: 1.7rem; }
+      .project-header { flex-direction: column; gap: 2px; }
+      .top-actions {
+        top: 10px;
+        right: 10px;
+        gap: 6px;
+      }
+      .top-actions button {
+        padding: 8px 14px;
+        font-size: 0.85rem;
+      }
+    }
+
+    /* Overlay */
+    #loadingOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(12px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: 0.3s;
+      z-index: 9999;
+    }
+
+    #loadingOverlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .loader {
+      width: 60px;
+      height: 60px;
+      border: 5px solid rgba(255,255,255,0.2);
+      border-top: 5px solid #7594fa;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0%   { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Fixed Top-Right Action Bar -->
+  <div class="top-actions">
+    <button id="downloadPdfBtn" type="button">Download PDF</button>
+    <button type="button">
+      <a href="index.html">
+        <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Back
+      </a>
+    </button>
+  </div>
+
+  <div class="back" id="pageWrapper">
+    <div class="resume" id="resumeContent">
+
+      <!-- ══════════════ HEADER ══════════════ -->
+      <div class="header">
+        <h1>Vignesh P</h1>
+
+        <div class="contact-bar">
+
+          <!-- ROW 1: Email | LinkedIn -->
+          <div class="contact-row">
+
+            <span class="contact-item">
+              <span class="icon">
+                <svg width="15" height="15" fill="none" stroke="#1565C0" stroke-width="2" viewBox="0 0 24 24">
+                  <rect x="2" y="4" width="20" height="16" rx="2"/>
+                  <path d="m2 7 10 7 10-7"/>
+                </svg>
+              </span>
+              <a href="mailto:vigneshpremkumar1@gmail.com">vigneshpremkumar1@gmail.com</a>
+            </span>
+
+            <span class="contact-item">
+              <span class="icon">
+                <svg width="15" height="15" fill="#1565C0" viewBox="0 0 24 24">
+                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/>
+                  <rect x="2" y="9" width="4" height="12"/>
+                  <circle cx="4" cy="4" r="2"/>
+                </svg>
+              </span>
+              <a href="https://www.linkedin.com/in/vigneshp05" target="_blank">www.linkedin.com/in/vigneshp05</a>
+            </span>
+
+            <span class="contact-item">
+              <span class="icon">
+                <svg width="15" height="15" fill="#1565C0" viewBox="0 0 24 24">
+                  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                </svg>
+              </span>
+              <a href="https://github.com/vignesh1-1" target="_blank">https://github.com/in/vignesh1-1</a>
+            </span>
+
+          </div><!-- end row 1 -->
+
+          <!-- ROW 2: Phone | GitHub | City -->
+          <div class="contact-row">
+
+            <span class="contact-item">
+              <span class="icon">
+                <svg width="15" height="15" fill="none" stroke="#1565C0" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.38 2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                </svg>
+              </span>
+              +91 9380356694
+            </span>
+
+            <span class="contact-item">
+              <span class="icon">
+                <svg width="15" height="15" fill="none" stroke="#1565C0" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                  <circle cx="12" cy="10" r="3"/>
+                </svg>
+              </span>
+              Bangalore
+            </span>
+
+          </div><!-- end row 2 -->
+
+        </div><!-- end contact-bar -->
+      </div><!-- end header -->
+
+      <hr/>
+
+      <!-- ══════════════ OBJECTIVE ══════════════ -->
+      <div class="section objective">
+        <div class="section-title">EXECUTIVE SUMMARY</div>
+        <p>"Web Technology Specialist with experience in full-stack development, Skilled in building scalable FastAPI/Flask systems driving technical execution and scalability"</p>
+      </div>
+
+      <hr/>
+
+      <!-- ══════════════ INTERNSHIP ══════════════ -->
+      <div class="section">
+        <div class="section-title">Internship</div>
+
+        <div class="project">
+          <div class="project-header">
+            <span class="project-title">Software Engineering Intern &nbsp;|&nbsp; TechnGlobal — Bengaluru, Karnataka</span>
+            <span class="project-year">2026</span>
+          </div>
+          <p>-Developed an <span style="font-weight: bold;">All-in-One SDLC Banking System</span> combining internet banking and UPI features, focusing a responsive, user friendly interface and low-latency transaction workflows with:-</p>
+          <ul class="cert-list">
+              <li>ChatBot</li>
+              <li>Smart suggessions</li>
+              <li>Story Insights</li>
+          </ul>
+          <p>-Engineered a <span style="font-weight: bold;">Bug Tracking System</span> Cross-functional bridge for Admin-Developer-Tester workflows featuring CRUD operations, optimizing performance to handle 100+ operations efficiently within 3.5 seconds.</p>
+          <div class="tools-detail">
+            <div class="row"><span class="tkey">Key Tech Stack:-</span>Python, Flask, Postman, SQL, Git/GitHub, Bootstrap, Web Technologies.</div>
+          </div>
+        </div>
+
+      </div><!-- end internship -->
+
+      <hr/>
+
+      <!-- ══════════════ PROJECTS ══════════════ -->
+      <div class="section">
+        <div class="section-title">Projects</div>
+
+        <div class="project">
+          <div class="project-header">
+            <span class="project-title">SDLC Banking System</span>
+            <span class="project-year">2026</span>
+          </div>
+          <p>Developed an All-in-One SDLC Banking System: Built a comprehensive web application integrating internet banking and UPI functionalities using Python (Flask) for the backend.</p>
+          <div class="tools-detail">
+            <div class="row"><span class="tkey">Framework & Languages:-</span> Flask &nbsp;|&nbsp; Postman &nbsp;|&nbsp;  Python, SQL, JavaScript, HTML, CSS.</div>
+          </div>
+        </div>
+
+        <div class="project">
+          <div class="project-header">
+            <span class="project-title">Bug Tracking System</span>
+            <span class="project-year">2026</span>
+          </div>
+          <p>Cross-functional bridge for Admin-Developer-Tester workflows featuring high-speed backend execution endpoints execute bulk CRUD operations up to 100+ tickets in under 3.5 seconds.</p>
+          <div class="tools-detail">
+            <div class="row"><span class="tkey">Framework & Languages:-</span>Flask &nbsp;|&nbsp; Bootstrap &nbsp;|&nbsp; Python, JavaScript, HTML, CSS.</div>
+          </div>
+        </div>
+
+      </div><!-- end projects -->
+
+      <!-- ══════════════ SKILL-SET ══════════════ -->
+      <div class="section">
+        <div class="section-title">Skill-Set</div>
+        <div class="skill-block">
+          <h4>Technical Skills</h4>
+          <ul class="skill-list">
+            <li><span class="key">Programming Language:-</span> Python, PostgreSQL, Java, C++.</li>
+            <li><span class="key">Backend & Technologies:-</span> Firebase, FastAPI, Flask, Render, Postman, MongoDB, XAMPP, React, Bootstrap.</li>
+            <li><span class="key">Design software Tools:-</span> DaVinci Resolve, Pixel Lab, Capcut, Canva.</li>
+          </ul>
+        </div>
+      </div><!-- end skill-set -->
+
+      <!-- ══════════════ CERTIFICATES ══════════════ -->
+      <div class="section">
+        <div class="section-title">Certificates</div>
+        <div class="cert-name">Joy of Computing using Python | NPTEL (by IIT Ropar)</div>
+        <div class="cert-desc"><span style="font-weight: bold;">Key Learnings:</span> Mastered core computational concepts and algorithmic thinking by translating real-world problems into Python code and Implemented unique case studies, including -</div>
+        <ul class="cert-list">
+          <li>Google PageRank</li>
+          <li>Cryptography</li>
+          <li>Game logic</li>
+        </ul>
+      </div><!-- end certificates -->
+
+      <!-- ══════════════ EDUCATION ══════════════ -->
+      <div class="section">
+        <div class="section-title">Education</div>
+        <div class="edu-block">
+          <div class="edu-row">
+            <div class="edu-info">
+              <div class="degree">BCA-Bachelor in Computer Application</div>
+              <div class="inst">CMR University-<span style="font-weight:400">Bengaluru, Karnataka.</span></div>
+            </div>
+            <div class="edu-year">Year:- 2024-2027</div>
+          </div>
+        </div>
+      </div><!-- end education -->
+
+    </div><!-- end resume -->
+  </div><!-- end back wrapper -->
+
+  <script>
+    // Link transition with slide-out-left animation
+    document.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", function(e) {
+        const target = this.getAttribute("href");
+        if (target && target.endsWith(".html")) {
+          e.preventDefault();
+
+          // Slide the entire page/resume container to the left
+          document.getElementById("pageWrapper").classList.add("slide-out-left");
+
+          const overlay = document.getElementById("loadingOverlay");
+          overlay.classList.add("active");
+
+          setTimeout(() => {
+            window.location.href = target;
+          }, 450);
+        }
+      });
+    });
+
+    // PDF Download handler
+    document.getElementById("downloadPdfBtn").addEventListener("click", function() {
+      const resumeElement = document.getElementById("resumeContent");
+      
+      // Generate random 2-digit number (01-99)
+      const randomNum = String(Math.floor(Math.random() * 99) + 1).padStart(2, '0');
+      const fileName = `Vignesh_P_Resume_SI_${randomNum}.pdf`;
+
+      const opt = {
+        margin:       0,
+        filename:     fileName,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true },
+        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
+
+      html2pdf().set(opt).from(resumeElement).save();
+    });
+  </script>
+
+  <div id="loadingOverlay">
+    <div class="loader"></div>
+  </div>
+</body>
+</html>

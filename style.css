@@ -1025,18 +1025,18 @@ html {
   font-weight: 600;
 }
 
-/* Cytoscape Topology Simulator Canvas */
+/* Cytoscape Topology Simulator Canvas - PURE BLACK WITH CRISP WHITE ACCENTS */
 #archDiagramContainer {
   height: 310px;
   min-height: 280px;
   width: 100%;
   position: relative;
   overflow: hidden;
-  background: #090d16;
-  border: 1px solid rgba(56, 189, 248, 0.25);
+  background: #000000;
+  border: 1px solid #ffffff;
   border-radius: 16px;
   padding: 0;
-  box-shadow: inset 0 2px 14px rgba(0, 0, 0, 0.6);
+  box-shadow: inset 0 2px 14px rgba(0, 0, 0, 0.8);
   touch-action: none;
 }
 
@@ -1047,16 +1047,16 @@ html {
   border-radius: 20px;
   background: #000000;
   color: #ffffff;
-  border: 1px solid #334155;
+  border: 1px solid #ffffff;
   cursor: pointer;
   transition: all 0.25s ease;
 }
 
 @media (hover: hover) and (pointer: fine) {
   #simulatePacketBtn:hover {
-    background: #1e293b;
-    border-color: #38bdf8;
-    color: #38bdf8;
+    background: #18181b;
+    border-color: #ffffff;
+    color: #ffffff;
   }
 }
 
@@ -2769,15 +2769,15 @@ body.dark-mode {
 }
 
 .dark-mode #simulatePacketBtn {
-  background: #111827 !important;
-  border-color: #38bdf8 !important;
+  background: #000000 !important;
+  border-color: #ffffff !important;
   color: #ffffff !important;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .dark-mode #simulatePacketBtn:hover {
-    background: #1e293b !important;
-    color: #38bdf8 !important;
+    background: #18181b !important;
+    color: #ffffff !important;
   }
 }
 

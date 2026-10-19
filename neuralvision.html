@@ -1130,7 +1130,15 @@
       ];
 
       // ==========================================
-      // 2. STATE & THREE.JS HANDLES
+      // 2. THEME DETECTION & SYNCHRONIZATION
+      // ==========================================
+      function getSavedTheme() {
+        const saved = localStorage.getItem('cyanx_theme') || localStorage.getItem('theme') || localStorage.getItem('nv_theme');
+        return (saved === 'dark' || saved === 'obsidian' || !saved) ? 'obsidian' : 'minimal';
+      }
+
+      // ==========================================
+      // 3. STATE & THREE.JS HANDLES
       // ==========================================
       let projects = [];
       let selectedProject = null;
@@ -1139,7 +1147,7 @@
       let autoRotate = true;
       let popupTimer = null;
       let currentTopology = 'SPHERICAL';
-      let currentTheme = localStorage.getItem('nv_theme') || 'obsidian';
+      let currentTheme = getSavedTheme();
 
       let nodeVisuals = [];
       let edgeStructures = [];
@@ -1151,7 +1159,7 @@
       let laserTether = null;
 
       // ==========================================
-      // 3. SCI-FI PROCEDURAL WEB AUDIO
+      // 4. SCI-FI PROCEDURAL WEB AUDIO
       // ==========================================
       let audioCtx = null;
       let soundEnabled = true;
@@ -1272,7 +1280,7 @@
       }
 
       // ==========================================
-      // 4. THREE.JS INITIALIZATION
+      // 5. THREE.JS INITIALIZATION
       // ==========================================
       const container = document.getElementById('canvas-container');
       let width = window.innerWidth;
@@ -1342,8 +1350,13 @@
 
       function applyTheme(themeName) {
         currentTheme = themeName;
-        localStorage.setItem('nv_theme', themeName);
         const isDark = (themeName === 'obsidian');
+
+        try {
+          localStorage.setItem('cyanx_theme', isDark ? 'dark' : 'light');
+          localStorage.setItem('theme', isDark ? 'dark' : 'light');
+          localStorage.setItem('nv_theme', themeName);
+        } catch(e) {}
 
         if (isDark) {
           document.body.classList.add('theme-obsidian');
@@ -1357,7 +1370,7 @@
           renderer.setClearColor(0xffffff, 1);
         }
 
-        // WHITE BASE SQUARES IN DARK MODE
+        // Base Grid
         if (gridHelper) scene.remove(gridHelper);
         gridHelper = new THREE.GridHelper(440, 44, isDark ? 0xffffff : 0x8c8c8c, isDark ? 0xffffff : 0xb5b5b5);
         gridHelper.position.y = -100;
@@ -1365,7 +1378,7 @@
         gridHelper.material.opacity = isDark ? 0.65 : 0.85;
         scene.add(gridHelper);
 
-        // WHITE BASE ROUNDS (CONCENTRIC RINGS) IN DARK MODE
+        // Concentric Rings
         ringLines.forEach(l => scene.remove(l));
         ringLines = [];
         for (let r = 80; r <= 280; r += 60) {
@@ -1385,7 +1398,7 @@
           scene.add(ringLine);
         }
 
-        // Starfield Particles
+        // Dust Particle Stars
         if (dustParticles) scene.remove(dustParticles);
         const pCount = isMobileDevice ? 160 : 300;
         const pPositions = new Float32Array(pCount * 3);
@@ -1411,7 +1424,7 @@
       applyTheme(currentTheme);
 
       // ==========================================
-      // 5. DATA NORMALIZATION & LOADER
+      // 6. DATA NORMALIZATION & LOADER
       // ==========================================
       function normalizeProjects(rawList) {
         const n = rawList.length;
@@ -1516,20 +1529,16 @@
         const mobileDropdown = document.getElementById('mobile-filter-dropdown');
         const categories = Array.from(new Set(projects.map(p => p.category).filter(Boolean)));
         
-        // 1. Desktop Horizontal Filter Strip
         catContainer.innerHTML = '<button class="filter-pill active" data-cat="ALL">ALL NODES</button>';
-        // 2. Mobile Dropdown Options
         mobileDropdown.innerHTML = '<button class="mobile-filter-option active" data-cat="ALL">ALL NODES</button>';
 
         categories.forEach(cat => {
-          // Desktop pill
           const btn = document.createElement('button');
           btn.className = 'filter-pill';
           btn.setAttribute('data-cat', cat);
           btn.textContent = cat.toUpperCase();
           catContainer.appendChild(btn);
 
-          // Mobile option
           const mobBtn = document.createElement('button');
           mobBtn.className = 'mobile-filter-option';
           mobBtn.setAttribute('data-cat', cat);
@@ -1537,14 +1546,12 @@
           mobileDropdown.appendChild(mobBtn);
         });
 
-        // Set up desktop click events
         catContainer.querySelectorAll('.filter-pill').forEach(pill => {
           pill.addEventListener('click', () => {
             setCategoryFilter(pill.getAttribute('data-cat'));
           });
         });
 
-        // Set up mobile click events
         mobileDropdown.querySelectorAll('.mobile-filter-option').forEach(opt => {
           opt.addEventListener('click', () => {
             setCategoryFilter(opt.getAttribute('data-cat'));
@@ -1555,11 +1562,9 @@
 
       function setCategoryFilter(cat) {
         activeCategory = cat;
-        // Update Desktop UI
         document.querySelectorAll('.filter-pill').forEach(p => {
           p.classList.toggle('active', p.getAttribute('data-cat') === cat);
         });
-        // Update Mobile UI
         document.querySelectorAll('.mobile-filter-option').forEach(o => {
           o.classList.toggle('active', o.getAttribute('data-cat') === cat);
         });
@@ -1568,7 +1573,7 @@
       }
 
       // ==========================================
-      // 6. UI HANDLERS & NAVIGATION
+      // 7. UI HANDLERS & NAVIGATION
       // ==========================================
       const tooltip = document.getElementById('node-tooltip');
       const tooltipTitle = document.getElementById('tooltip-title');
@@ -1631,9 +1636,7 @@
         mobileFilterDropdown.classList.remove('open');
       });
 
-      // ==========================================
-      // PERIODIC POP-UP TIMING CYCLE (5s on, 10s off)
-      // ==========================================
+      // Periodic Gesture Popup Cycle
       const cameraGesturePopup = document.getElementById('camera-gesture-popup');
       let popupLoopTimer = null;
 
@@ -1642,7 +1645,6 @@
         cameraGesturePopup.classList.remove('slide-out');
         cameraGesturePopup.classList.add('slide-in');
 
-        // Visible for 5 seconds
         popupLoopTimer = setTimeout(() => {
           triggerPopupHide();
         }, 5000);
@@ -1652,7 +1654,6 @@
         cameraGesturePopup.classList.remove('slide-in');
         cameraGesturePopup.classList.add('slide-out');
 
-        // Hidden for 10 seconds, then reappear
         popupLoopTimer = setTimeout(() => {
           if (!spatialModeActive) {
             triggerPopupShow();
@@ -1660,7 +1661,6 @@
         }, 10000);
       }
 
-      // Start pop-up loop cycle
       setTimeout(triggerPopupShow, 600);
 
       cameraGesturePopup.addEventListener('click', () => {
@@ -1682,8 +1682,18 @@
         setBadgeState('cyan', nextTheme === 'obsidian' ? 'Pure Black Obsidian Active' : 'Architectural Minimal Active', 2500);
       });
 
+      // Synchronize theme across tabs/windows
+      function syncExternalTheme() {
+        const latestTheme = getSavedTheme();
+        if (latestTheme !== currentTheme) {
+          applyTheme(latestTheme);
+        }
+      }
+      window.addEventListener('storage', syncExternalTheme);
+      window.addEventListener('pageshow', syncExternalTheme);
+
       // ==========================================
-      // 7. MULTI-TOPOLOGY MORPHING ENGINE
+      // 8. MULTI-TOPOLOGY MORPHING ENGINE
       // ==========================================
       const camState = {
         distance: 260,
@@ -2248,7 +2258,7 @@
       });
 
       // ==========================================
-      // 8. SPATIAL GESTURE ENGINE
+      // 9. SPATIAL GESTURE ENGINE
       // ==========================================
       let spatialModeActive = false;
       let handsEngine = null;
@@ -2357,7 +2367,6 @@
           spatialFeedHud.classList.add('visible');
           gestureReticle.classList.add('active');
 
-          // Dismiss popup when active
           if (popupLoopTimer) clearTimeout(popupLoopTimer);
           cameraGesturePopup.classList.remove('slide-in');
           cameraGesturePopup.classList.add('slide-out');
@@ -2378,7 +2387,6 @@
         spatialFeedHud.classList.remove('visible');
         gestureReticle.classList.remove('active', 'pinching', 'orbiting', 'locked-node');
         
-        // Restart popup cycle
         triggerPopupHide();
 
         document.getElementById('footer-gesture-hint').textContent = `Topology: ${currentTopology}`;
@@ -2585,7 +2593,7 @@
       }
 
       // ==========================================
-      // 9. ANIMATION LOOP & BOOTSTRAP
+      // 10. ANIMATION LOOP & BOOTSTRAP
       // ==========================================
       const clock = new THREE.Clock();
 

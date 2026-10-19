@@ -519,33 +519,87 @@ let charIndex = 0;
 let isDeleting = false;
 const typingTextElement = document.querySelector(".typing-text");
 
-const keySound = new Audio("audiomass-output.mp3"); 
-keySound.volume = 0.5;
-
-let audioUnlocked = false;
-let isAudioEnabled = true; 
-let typingSoundTimer = null;
+// =============== CRISP LINEAR RED SWITCH SYNTHESIZER ===============
+let audioCtx = null;
+let isAudioEnabled = true;
 let lastTypingTime = 0;
+
+function getAudioContext() {
+  if (!audioCtx) {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    audioCtx = new AudioContextClass();
+  }
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+  return audioCtx;
+}
 
 function playTypingSound() {
   if (!isAudioEnabled) return;
+
   const now = performance.now();
-  if (now - lastTypingTime < 30) return;
+  if (now - lastTypingTime < 18) return; // Prevent audio clipping during fast typing
   lastTypingTime = now;
 
-  clearTimeout(typingSoundTimer);
-  try { keySound.currentTime = 0; } catch (e) {}
+  const ctx = getAudioContext();
+  const t = ctx.currentTime;
 
-  keySound.play().then(() => {
-    audioUnlocked = true;
-  }).catch(() => {});
+  // Natural pitch variation (+/- 6%) so each key stroke sounds distinct
+  const pitchVar = 1 + (Math.random() - 0.5) * 0.12;
 
-  typingSoundTimer = setTimeout(() => {
-    keySound.pause();
-    try { keySound.currentTime = 0; } catch (e) {}
-  }, 140);
+  // --- LAYER 1: Linear Stem Bottom-Out Clack (Plastic Impact) ---
+  const osc = ctx.createOscillator();
+  const oscGain = ctx.createGain();
+
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(580 * pitchVar, t);
+  osc.frequency.exponentialRampToValueAtTime(320 * pitchVar, t + 0.011);
+
+  oscGain.gain.setValueAtTime(0.18, t);
+  oscGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.012);
+
+  osc.connect(oscGain);
+  oscGain.connect(ctx.destination);
+  osc.start(t);
+  osc.stop(t + 0.014);
+
+  // --- LAYER 2: Crisp Surface Snap (High-Frequency Transient) ---
+  const bufferLen = Math.floor(ctx.sampleRate * 0.008); // Ultra-short 8ms snap
+  const noiseBuffer = ctx.createBuffer(1, bufferLen, ctx.sampleRate);
+  const channelData = noiseBuffer.getChannelData(0);
+
+  for (let i = 0; i < bufferLen; i++) {
+    channelData[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.0018));
+  }
+
+  const noise = ctx.createBufferSource();
+  noise.buffer = noiseBuffer;
+
+  const bandpass = ctx.createBiquadFilter();
+  bandpass.type = 'bandpass';
+  bandpass.frequency.setValueAtTime(1850 * pitchVar, t);
+  bandpass.Q.setValueAtTime(2.8, t);
+
+  const shelf = ctx.createBiquadFilter();
+  shelf.type = 'highshelf';
+  shelf.frequency.setValueAtTime(4200, t);
+  shelf.gain.setValueAtTime(-8, t);
+
+  const noiseGain = ctx.createGain();
+  noiseGain.gain.setValueAtTime(0.15, t);
+  noiseGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.008);
+
+  noise.connect(bandpass);
+  bandpass.connect(shelf);
+  shelf.connect(noiseGain);
+  noiseGain.connect(ctx.destination);
+
+  noise.start(t);
+  noise.stop(t + 0.01);
 }
 
+// Audio Toggle Button Controller
 const audioToggleBtn = document.getElementById("audioToggleBtn");
 if (audioToggleBtn) {
   audioToggleBtn.addEventListener("click", () => {
@@ -554,26 +608,18 @@ if (audioToggleBtn) {
     if (isAudioEnabled) {
       icon?.classList.remove("fa-volume-mute");
       icon?.classList.add("fa-volume-up");
+      getAudioContext();
     } else {
       icon?.classList.remove("fa-volume-up");
       icon?.classList.add("fa-volume-mute");
-      if (!keySound.paused) {
-        keySound.pause();
-        keySound.currentTime = 0;
-      }
     }
   });
 }
 
+// Unlock audio context on first user interaction (browser autoplay compliance)
 ['click', 'touchstart', 'keydown'].forEach(eventType => {
   document.body.addEventListener(eventType, () => {
-    if (!audioUnlocked) {
-      keySound.play().then(() => {
-        keySound.pause(); 
-        keySound.currentTime = 0;
-        audioUnlocked = true;
-      }).catch(() => {});
-    }
+    getAudioContext();
   }, { once: true });
 });
 
@@ -667,7 +713,6 @@ const mobileFilterSelect = document.getElementById('projectFilterSelect');
 const projectCardsGrid = document.querySelectorAll('.project-card[data-tags]');
 
 function applyProjectFilter(filterValue) {
-  // Synchronize button styling
   filterBtns.forEach(btn => {
     if (btn.getAttribute('data-filter') === filterValue) {
       btn.classList.add('active');
@@ -676,12 +721,10 @@ function applyProjectFilter(filterValue) {
     }
   });
 
-  // Synchronize mobile select if available
   if (mobileFilterSelect && mobileFilterSelect.value !== filterValue) {
     mobileFilterSelect.value = filterValue;
   }
 
-  // Filter project cards
   projectCardsGrid.forEach(card => {
     if (filterValue === 'all') {
       card.classList.remove('hidden-project');
@@ -709,7 +752,6 @@ if (mobileFilterSelect) {
   });
 }
 
-// Ensure default state is 'all'
 applyProjectFilter('all');
 
 // ==============================================================
@@ -881,7 +923,6 @@ async function sendChatMessage() {
     for (let i = 0; i < replyText.length; i++) {
       botMsg.textContent += replyText.charAt(i);
 
-      // Stick to bottom only if user is already near bottom
       const distanceFromBottom = chatWin.scrollHeight - chatWin.scrollTop - chatWin.clientHeight;
       if (distanceFromBottom <= 80) {
         chatWin.scrollTop = chatWin.scrollHeight;
@@ -1020,14 +1061,10 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ==========================================
-// DARK MODE TOGGLE & PERSISTENCE
+// DARK MODE TOGGLE & PERSISTENCE (CROSS-PAGE SYNC)
 // ==========================================
 const themeToggleCheckbox = document.getElementById('themeToggleCheckbox');
 const cookieTheme = document.getElementById('cookie-theme');
-
-function canStoreThemePref() {
-  return localStorage.getItem("cookieConsent") === "all" || localStorage.getItem("themeCookies") === "true";
-}
 
 function applyTheme(isDark) {
   if (isDark) {
@@ -1041,26 +1078,30 @@ function applyTheme(isDark) {
   }
 }
 
+function syncThemeState() {
+  const stored = localStorage.getItem("cyanx_theme") || localStorage.getItem("theme") || localStorage.getItem("nv_theme");
+  const isDark = (stored === "dark" || stored === "obsidian");
+  applyTheme(isDark);
+}
+
 if (themeToggleCheckbox) {
   themeToggleCheckbox.addEventListener('change', (e) => {
     const isDark = e.target.checked;
     applyTheme(isDark);
-    if (canStoreThemePref()) {
-      localStorage.setItem("cyanx_theme", isDark ? "dark" : "light");
-    }
+    localStorage.setItem("cyanx_theme", isDark ? "dark" : "light");
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+    localStorage.setItem("nv_theme", isDark ? "obsidian" : "minimal");
   });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  if (canStoreThemePref()) {
-    const storedTheme = localStorage.getItem("cyanx_theme");
-    if (storedTheme === "dark") {
-      applyTheme(true);
-    } else if (storedTheme === "light") {
-      applyTheme(false);
-    }
-  }
-});
+// 1. Initial Page Load
+document.addEventListener("DOMContentLoaded", syncThemeState);
+
+// 2. Back/Forward Navigation (Catches returns from Neural Vision without full reload)
+window.addEventListener("pageshow", syncThemeState);
+
+// 3. Multi-Tab / Multi-Window Sync
+window.addEventListener("storage", syncThemeState);
 
 if (cookieTheme) {
   cookieTheme.addEventListener('change', (e) => {
@@ -1797,12 +1838,16 @@ const architectureRegistry = {
     technologies: ["Firebase Auth", "Firestore DB", "Vanilla JavaScript", "HTML5 & CSS3", "WhatsApp API", "Netlify"],
     graphData: [
       { data: { id: 'client', label: 'Client UI' } },
+      { data: { id: 'cdn', label: 'Netlify Edge' } },
       { data: { id: 'auth', label: 'Firebase Auth' } },
-      { data: { id: 'db', label: 'Storage / DB' } },
+      { data: { id: 'db', label: 'Firestore DB' } },
+      { data: { id: 'order', label: 'Cart Engine' } },
       { data: { id: 'wa', label: 'WhatsApp API' } },
-      { data: { id: 'e1', source: 'client', target: 'auth' } },
-      { data: { id: 'e2', source: 'client', target: 'db' } },
-      { data: { id: 'e3', source: 'db', target: 'wa' } }
+      { data: { id: 'e1', source: 'client', target: 'cdn' } },
+      { data: { id: 'e2', source: 'cdn', target: 'auth' } },
+      { data: { id: 'e3', source: 'auth', target: 'db' } },
+      { data: { id: 'e4', source: 'db', target: 'order' } },
+      { data: { id: 'e5', source: 'order', target: 'wa' } }
     ],
     tradeoffs: [
       { heading: "Why Firebase over Custom Backend", desc: "Opted for Google Firebase to eliminate cold-start container delays and manage zero-cost database persistence for an exotic aquarium catalog." },
@@ -1813,19 +1858,23 @@ const architectureRegistry = {
       { method: "POST", path: "/auth/firebase-handshake", desc: "Client JWT token verification" }
     ],
     github: "https://github.com/vignesh1-1",
-    live: "https://exotic-gb-hub.netlify.app/"
+    live: "https://nandantechhub.github.io/EXOTIC-GB-HUB-PRO/"
   },
   "g-plus": {
     title: "G+ Bengaluru | Architecture",
     technologies: ["FastAPI", "Python 3", "GIS & Maps", "Gemini 1.5 API", "Spatial Postgres", "Leaflet.js"],
     graphData: [
-      { data: { id: 'ui', label: 'GIS / Leaflet' } },
+      { data: { id: 'ui', label: 'Leaflet GIS UI' } },
+      { data: { id: 'ingress', label: 'NGINX Ingress' } },
       { data: { id: 'api', label: 'FastAPI Async' } },
       { data: { id: 'llm', label: 'Gemini 1.5 LLM' } },
       { data: { id: 'db', label: 'Spatial Postgres' } },
-      { data: { id: 'e1', source: 'ui', target: 'api' } },
-      { data: { id: 'e2', source: 'api', target: 'llm' } },
-      { data: { id: 'e3', source: 'api', target: 'db' } }
+      { data: { id: 'dispatch', label: 'Civic Dispatch' } },
+      { data: { id: 'e1', source: 'ui', target: 'ingress' } },
+      { data: { id: 'e2', source: 'ingress', target: 'api' } },
+      { data: { id: 'e3', source: 'api', target: 'llm' } },
+      { data: { id: 'e4', source: 'llm', target: 'db' } },
+      { data: { id: 'e5', source: 'db', target: 'dispatch' } }
     ],
     tradeoffs: [
       { heading: "Asynchronous Python FastAPI Core", desc: "FastAPI with ASGI non-blocking event loops was selected over Django to stream high-density GeoJSON geospatial vectors with sub-20ms latency." },
@@ -1843,10 +1892,16 @@ const architectureRegistry = {
     technologies: ["Python", "Flask", "MySQL", "SQLite", "REST API", "Chart.JS", "Bootstrap 5", "Render"],
     graphData: [
       { data: { id: 'ui', label: 'Bootstrap UI' } },
-      { data: { id: 'api', label: 'Flask REST API' } },
-      { data: { id: 'db', label: 'SQLite/MySQL' } },
-      { data: { id: 'e1', source: 'ui', target: 'api' } },
-      { data: { id: 'e2', source: 'api', target: 'db' } }
+      { data: { id: 'ingress', label: 'Render Gateway' } },
+      { data: { id: 'api', label: 'Flask REST Core' } },
+      { data: { id: 'rbac', label: 'RBAC Guard' } },
+      { data: { id: 'db', label: 'SQLite / MySQL' } },
+      { data: { id: 'audit', label: 'Audit & Telemetry' } },
+      { data: { id: 'e1', source: 'ui', target: 'ingress' } },
+      { data: { id: 'e2', source: 'ingress', target: 'api' } },
+      { data: { id: 'e3', source: 'api', target: 'rbac' } },
+      { data: { id: 'e4', source: 'rbac', target: 'db' } },
+      { data: { id: 'e5', source: 'db', target: 'audit' } }
     ],
     tradeoffs: [
       { heading: "Why Python/Flask + SQLite / MySQL was chosen", desc: "For an agile bug and issue tracking system, Flask's lightweight micro-framework architecture eliminates redundant overhead found in heavier frameworks like Django." },
@@ -1865,10 +1920,16 @@ const architectureRegistry = {
     technologies: ["PHP 8", "MySQL", "Bootstrap", "Apache / XAMPP", "Admin Control Panel"],
     graphData: [
       { data: { id: 'ui', label: 'Citizen Portal' } },
-      { data: { id: 'php', label: 'PHP Core App' } },
+      { data: { id: 'apache', label: 'Apache Gateway' } },
+      { data: { id: 'php', label: 'PHP 8 Core' } },
+      { data: { id: 'state', label: 'State Validator' } },
+      { data: { id: 'sql', label: 'Prepared SQL' } },
       { data: { id: 'db', label: 'MySQL Database' } },
-      { data: { id: 'e1', source: 'ui', target: 'php' } },
-      { data: { id: 'e2', source: 'php', target: 'db' } }
+      { data: { id: 'e1', source: 'ui', target: 'apache' } },
+      { data: { id: 'e2', source: 'apache', target: 'php' } },
+      { data: { id: 'e3', source: 'php', target: 'state' } },
+      { data: { id: 'e4', source: 'state', target: 'sql' } },
+      { data: { id: 'e5', source: 'sql', target: 'db' } }
     ],
     tradeoffs: [
       { heading: "Prepared Statements for Citizen Data Protection", desc: "Implemented strict parameterized SQL queries across all verification routes to prevent SQL injection during citizen identity document verification." },
@@ -1893,77 +1954,107 @@ function renderCytoscape(graphData) {
   if (!container) return;
   if (cytoscapeInstance) cytoscapeInstance.destroy();
   
+  container.style.backgroundColor = '#000000';
+  container.style.borderColor = '#ffffff';
+
+  // Serpentine (S-Curve) 2x3 Grid Coordinates
+  // 1: Top-Left  -> 2: Top-Right
+  //                   | (down)
+  // 4: Mid-Left  <- 3: Mid-Right
+  //   | (down)
+  // 5: Bot-Left  -> 6: Bot-Right
+  const serpentineCoords = [
+    { x: 100, y: 55 },   // 1: Top-Left
+    { x: 340, y: 55 },   // 2: Top-Right
+    { x: 340, y: 155 },  // 3: Mid-Right
+    { x: 100, y: 155 },  // 4: Mid-Left
+    { x: 100, y: 255 },  // 5: Bot-Left
+    { x: 340, y: 255 }   // 6: Bot-Right
+  ];
+
+  let nodeIndex = 0;
+  const positionedElements = graphData.map(el => {
+    if (!el.data.source) {
+      const coord = serpentineCoords[nodeIndex] || { x: 100, y: 50 + nodeIndex * 40 };
+      nodeIndex++;
+      return {
+        ...el,
+        position: { x: coord.x, y: coord.y }
+      };
+    }
+    return el;
+  });
+
   cytoscapeInstance = cytoscape({
     container: container,
-    elements: graphData,
+    elements: positionedElements,
     boxSelectionEnabled: false,
     autoungrabify: false,
     style: [
       {
         selector: 'node',
         style: {
-          'background-color': '#111827',
+          'background-color': '#000000',
           'label': 'data(label)',
-          'color': '#f8fafc',
+          'color': '#ffffff',
           'text-valign': 'center',
           'text-halign': 'center',
-          'font-size': '11.5px',
+          'font-size': '12.5px',
           'font-family': 'Space Grotesk, Inter, sans-serif',
-          'font-weight': '600',
-          'width': 'label',
-          'height': '38px',
-          'padding': '14px',
+          'font-weight': '700',
+          'width': '145px',
+          'height': '44px',
           'shape': 'round-rectangle',
-          'border-width': 1.5,
-          'border-color': '#38bdf8',
-          'text-max-width': '110px',
+          'border-width': 1.8,
+          'border-color': '#ffffff',
+          'text-max-width': '130px',
           'text-wrap': 'wrap'
         }
       },
       {
         selector: 'edge',
         style: {
-          'width': 2.5,
-          'line-color': '#64748b',
-          'target-arrow-color': '#38bdf8',
+          'width': 2.2,
+          'line-color': '#71717a',
+          'target-arrow-color': '#ffffff',
           'target-arrow-shape': 'triangle',
           'curve-style': 'bezier',
-          'arrow-scale': 1.2
+          'arrow-scale': 1.1
         }
       },
       {
         selector: 'node.packet',
         style: {
-          'width': 10,
-          'height': 10,
-          'background-color': '#22c55e',
+          'width': 12,
+          'height': 12,
+          'background-color': '#ffffff',
           'border-width': 2,
-          'border-color': '#ffffff',
+          'border-color': '#cbd5e1',
           'shape': 'ellipse',
           'label': '',
-          'z-index': 9999
+          'z-index': 9999,
+          'shadow-blur': 16,
+          'shadow-color': '#ffffff',
+          'shadow-opacity': 1.0
         }
       }
     ],
     layout: {
-      name: 'breadthfirst',
-      directed: true,
-      padding: 30,
-      spacingFactor: 1.15,
+      name: 'preset',
+      padding: 24,
       fit: true
     }
   });
 
   cytoscapeInstance.ready(() => {
     cytoscapeInstance.resize();
-    cytoscapeInstance.fit(undefined, 25);
+    cytoscapeInstance.fit(undefined, 24);
   });
 }
 
 function simulatePacketHops() {
   if (!cytoscapeInstance) return;
   
-  // Clear any existing packets first to avoid hanging nodes
   cytoscapeInstance.nodes('.packet').remove();
   
   const edges = cytoscapeInstance.edges();
@@ -1983,7 +2074,7 @@ function simulatePacketHops() {
       
       packet.animate({
         position: { x: tgtPos.x, y: tgtPos.y },
-        duration: 700,
+        duration: 550,
         easing: 'ease-in-out'
       }).promise().then(() => {
         try {
@@ -1993,16 +2084,15 @@ function simulatePacketHops() {
         } catch (e) {}
       });
 
-      // Absolute fallback cleanup
       setTimeout(() => {
         try {
           if (cytoscapeInstance && cytoscapeInstance.hasElementWithId(packet.id())) {
             cytoscapeInstance.remove(packet);
           }
         } catch (err) {}
-      }, 900);
+      }, 750);
 
-    }, i * 450); 
+    }, i * 380); 
   });
 }
 
@@ -2054,7 +2144,6 @@ function openArchitectureDrawer(projectId) {
   archDrawer.setAttribute("aria-hidden", "false");
   document.body.style.overflow = "hidden";
 
-  // Wait for slide-in animation before initializing and fitting diagram
   setTimeout(() => {
     renderCytoscape(data.graphData);
   }, 460);

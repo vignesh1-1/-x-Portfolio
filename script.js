@@ -15,7 +15,7 @@ function triggerArcadeRedirect() {
   if (overlay) overlay.classList.add("active");
   setTimeout(() => {
     window.location.href = 'game.html';
-  }, 200); 
+  }, 100); 
 }
 
 // =============== MOBILE MENU TOGGLE FIX ===============
@@ -52,15 +52,16 @@ window.addEventListener('scroll', () => {
   }
 });
 
-// =============== FLOATING BUTTONS LOGIC ===============
+// =============== FLOATING BUTTONS & CYANX AI POPUP LOGIC ===============
 const scrollTopBtn = document.getElementById("scrollTopBtn");
 const aiNavBtn = document.getElementById("aiNavBtn");
 const aiSection = document.getElementById("ai-assistant");
+const aiFloatingPopup = document.getElementById("aiFloatingPopup");
 
 window.addEventListener("scroll", () => {
   const scrollY = window.scrollY;
   
-  if (scrollY > 500) {
+  if (scrollY > 400) {
     scrollTopBtn?.classList.add("show");
   } else {
     scrollTopBtn?.classList.remove("show");
@@ -70,6 +71,7 @@ window.addEventListener("scroll", () => {
     const aiRect = aiSection.getBoundingClientRect();
     if (aiRect.top < window.innerHeight * 0.7 && aiRect.bottom > window.innerHeight * 0.3) {
       aiNavBtn?.classList.remove("show");
+      aiFloatingPopup?.classList.remove("visible");
     } else {
       aiNavBtn?.classList.add("show");
     }
@@ -92,6 +94,48 @@ if (aiNavBtn && aiSection) {
   });
 }
 
+function initAiFloatingPopup() {
+  if (!aiFloatingPopup) return;
+
+  aiFloatingPopup.addEventListener("click", () => {
+    if (aiSection) {
+      aiSection.scrollIntoView({ behavior: "smooth" });
+      const chatInput = document.querySelector('.chat-input-area textarea');
+      if (chatInput) chatInput.focus();
+    }
+  });
+}
+
+// =============== SYNCHRONIZED POPUPS CYCLE (SCORE & AI POPUP) ===============
+let popupsCycleStarted = false;
+
+function startSyncedPopupsCycle() {
+  if (popupsCycleStarted) return;
+  popupsCycleStarted = true;
+
+  const navPopup = document.getElementById("navPointsPopup");
+  const aiPopup = document.getElementById("aiFloatingPopup");
+
+  function syncCycle() {
+    if (navPopup) {
+      navPopup.classList.add("visible");
+    }
+    if (aiPopup && aiNavBtn && aiNavBtn.classList.contains("show")) {
+      aiPopup.classList.add("visible");
+    } else if (aiPopup) {
+      aiPopup.classList.remove("visible");
+    }
+
+    setTimeout(() => {
+      if (navPopup) navPopup.classList.remove("visible");
+      if (aiPopup) aiPopup.classList.remove("visible");
+      setTimeout(syncCycle, 7000);
+    }, 4500);
+  }
+
+  setTimeout(syncCycle, 600);
+}
+
 // ==========================================
 // DYNAMIC BASE URL: LOCALHOST DETECTION & RENDER FALLBACK
 // ==========================================
@@ -111,7 +155,7 @@ async function resolveActiveBackend() {
 
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 700);
+    const timeoutId = setTimeout(() => controller.abort(), 600);
     
     const localRes = await fetch(`${LOCAL_API_URL}/`, {
       method: "GET",
@@ -174,16 +218,20 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
       overlay.classList.remove("active");
       document.body.classList.add("loaded"); 
-      setTimeout(typeEffect, 250);
+      setTimeout(typeEffect, 120);
       revealElements.forEach(el => revealObserver.observe(el));
       initPointsPopup();
+      initAiFloatingPopup();
+      startSyncedPopupsCycle();
       loadStoredChatHistory();
-    }, 250);
+    }, 100);
   } else {
     document.body.classList.add("loaded");
-    setTimeout(typeEffect, 250);
+    setTimeout(typeEffect, 120);
     revealElements.forEach(el => revealObserver.observe(el));
     initPointsPopup();
+    initAiFloatingPopup();
+    startSyncedPopupsCycle();
     loadStoredChatHistory();
   }
 
@@ -212,7 +260,7 @@ document.querySelectorAll("a").forEach(link => {
       } else {
         window.location.href = target; 
       }
-    }, 200);
+    }, 80);
   });
 });
 
@@ -222,7 +270,7 @@ document.querySelectorAll("a").forEach(link => {
 const sections = document.querySelectorAll("section");
 const navLinksList = document.querySelectorAll(".nav-links a");
 const chatContextChips = document.getElementById("chatContextChips");
-const observerOptions = { root: null, rootMargin: "-20% 0px -60% 0px", threshold: 0 }; 
+const observerOptions = { root: null, rootMargin: "-15% 0px -50% 0px", threshold: 0 }; 
 
 const sectionContextMap = {
   "home": ["What is your strongest AI project?", "How do you deploy models?"],
@@ -230,6 +278,7 @@ const sectionContextMap = {
   "experience": ["Tell me about the Technglobal internship", "What was your role in BITS RADAR?"],
   "projects": ["Explain BITS RADAR's RBAC", "How does G+ use Gemini AI?"],
   "ai-assistant": ["What embedding model do you use?", "How does this semantic search work?"],
+  "philosophy": ["What is your engineering core philosophy?", "How do you ensure system resilience?"],
   "contact": ["What kind of roles are you looking for?", "Are you open to contract work?"]
 };
 
@@ -254,7 +303,7 @@ function updateContextChips(sectionId) {
 const observer = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
     if (entry.isIntersecting) {
-      if (window.scrollY < 100 && entry.target.id !== "home") return;
+      if (window.scrollY < 80 && entry.target.id !== "home") return;
       navLinksList.forEach((link) => link.classList.remove("active"));
       const activeLink = document.querySelector(`.nav-links a[href="#${entry.target.id}"]`);
       if (activeLink) activeLink.classList.add("active");
@@ -265,9 +314,8 @@ const observer = new IntersectionObserver((entries) => {
 
 sections.forEach((section) => observer.observe(section));
 
-// Ensure Home link stays active when scrolled to top
 window.addEventListener("scroll", () => {
-  if (window.scrollY < 100) {
+  if (window.scrollY < 80) {
     navLinksList.forEach((link) => link.classList.remove("active"));
     const homeLink = document.querySelector('.nav-links a[href="#home"]');
     if (homeLink) homeLink.classList.add("active");
@@ -295,8 +343,8 @@ window.addEventListener("scroll", () => {
     constructor() {
       this.x = Math.random() * bgCanvas.width;
       this.y = Math.random() * bgCanvas.height;
-      this.vx = (Math.random() - 0.5) * (isMobile ? 0.4 : 0.7);
-      this.vy = (Math.random() - 0.5) * (isMobile ? 0.4 : 0.7);
+      this.vx = (Math.random() - 0.5) * (isMobile ? 0.5 : 0.8);
+      this.vy = (Math.random() - 0.5) * (isMobile ? 0.5 : 0.8);
       this.size = 2;
     }
     move() {
@@ -357,7 +405,7 @@ function showPopup(event) {
   if (popup) {
     popup.classList.add("show");
     popup.onclick = () => popup.classList.remove("show");
-    setTimeout(() => popup.classList.remove("show"), 4000);
+    setTimeout(() => popup.classList.remove("show"), 3500);
   }
 }
 
@@ -367,7 +415,7 @@ function showLivePopup(event) {
   if (popup) {
     popup.classList.add("show");
     popup.onclick = () => popup.classList.remove("show");
-    setTimeout(() => popup.classList.remove("show"), 4500);
+    setTimeout(() => popup.classList.remove("show"), 3500);
   }
 }
 
@@ -377,117 +425,9 @@ function showPopupp(event, popupId) {
   if (popup) {
     popup.classList.add("show");
     popup.onclick = () => popup.classList.remove("show");
-    setTimeout(() => popup.classList.remove("show"), 4500);
+    setTimeout(() => popup.classList.remove("show"), 3500);
   }
 }
-
-// =============== PROCESS CARDS LOGIC ===============
-const processData = {
-  planning: {
-    title: "Discover",
-    icon: '<i class="fa-solid fa-compass"></i>',
-    desc: "The foundation of any robust AI system. Here, I define the scope, identify the core problem the AI needs to solve, and establish clear technical requirements before writing any code.",
-    list: [
-      "Define project scope and business objectives.",
-      "Identify the best AI models and frameworks for the use case.",
-      "Assess technical feasibility and timeline constraints."
-    ]
-  },
-  analysis: {
-    title: "Analyze",
-    icon: '<i class="fa-solid fa-chart-line"></i>',
-    desc: "AI is only as good as the data it processes. During analysis, I collect necessary data, perform exploratory research, and decide on the metrics for success.",
-    list: [
-      "Data collection and system integrations mapping.",
-      "Exploratory data analysis and formatting.",
-      "Defining evaluation metrics (e.g., accuracy, latency)."
-    ]
-  },
-  designing: {
-    title: "Engineer",
-    icon: '<i class="fa-solid fa-microchip"></i>',
-    desc: "Drafting the blueprint. This involves mapping out the complete system architecture, choosing databases, and designing how the frontend, backend, and AI models communicate.",
-    list: [
-      "System architecture and API endpoint design.",
-      "Database schema structuring (e.g., Vector DBs).",
-      "Prompt engineering structures and UI wireframing."
-    ]
-  },
-  testing: {
-    title: "Prototype",
-    icon: '<i class="fa-solid fa-vial"></i>',
-    desc: "Ensuring the AI behaves consistently and safely. Testing includes evaluating edge cases, checking model hallucinations, and stress-testing the servers.",
-    list: [
-      "Model evaluation against baseline metrics.",
-      "Unit testing API endpoints and database queries.",
-      "User Acceptance Testing (UAT) and load testing."
-    ]
-  },
-  deployment: {
-    title: "Launch",
-    icon: '<i class="fa-solid fa-rocket"></i>',
-    desc: "Taking the system live. We containerize the application, set up cloud environments, and establish secure endpoints for users to interact with the model.",
-    list: [
-      "Containerizing applications using Docker.",
-      "Deploying secure APIs (FastAPI/Flask) to cloud servers.",
-      "Setting up CI/CD pipelines for automated updates."
-    ]
-  },
-  maintainance: {
-    title: "Maintain",
-    icon: '<i class="fa-solid fa-brain"></i>',
-    desc: "AI requires continuous oversight. I monitor system health, check for model drift, and scale infrastructure as the user base grows.",
-    list: [
-      "Monitoring API latency and server health.",
-      "Tracking model performance and mitigating drift.",
-      "Scaling infrastructure and regular database backups."
-    ]
-  }
-};
-
-const processCards = document.querySelectorAll('.process-card');
-const emptyState = document.getElementById('process-empty');
-const processContentView = document.getElementById('process-content');
-const processQuoteView = document.getElementById('process-quote');
-const processIcon = document.getElementById('process-icon');
-const processTitle = document.getElementById('process-title');
-const processDesc = document.getElementById('process-desc');
-const processList = document.getElementById('process-list');
-
-processCards.forEach(card => {
-  card.addEventListener('click', () => {
-    processCards.forEach(c => c.classList.remove('active'));
-    card.classList.add('active');
-
-    const phase = card.getAttribute('data-phase');
-
-    if (phase === 'quote') {
-      if (emptyState) emptyState.style.display = 'none';
-      processContentView?.classList.remove('visible');
-      processQuoteView?.classList.remove('visible');
-      if (processQuoteView) {
-        void processQuoteView.offsetWidth;
-        processQuoteView.classList.add('visible');
-      }
-    } else {
-      const data = processData[phase];
-      if (!data) return;
-
-      if (processIcon) processIcon.innerHTML = data.icon;
-      if (processTitle) processTitle.textContent = data.title;
-      if (processDesc) processDesc.textContent = data.desc;
-      if (processList) processList.innerHTML = data.list.map(item => `<li>${item}</li>`).join('');
-
-      if (emptyState) emptyState.style.display = 'none';
-      processQuoteView?.classList.remove('visible');
-      processContentView?.classList.remove('visible');
-      if (processContentView) {
-        void processContentView.offsetWidth;
-        processContentView.classList.add('visible');
-      }
-    }
-  });
-});
 
 // =============== TOOLBOX INFINITE SCROLLER ===============
 const scrollers = document.querySelectorAll(".scroller");
@@ -512,14 +452,13 @@ document.addEventListener('error', function(event) {
   }
 }, true); 
 
-// =============== TYPING SOUND CONTROLLER & HOME EFFECT ===============
+// =============== TYPING SOUND CONTROLLER & HOME EFFECT (SNAPPY) ===============
 const typingWords = ["AI that ships software products.", "reliable backend API's.", "LLM powered products."];
 let typingIndex = 0;
 let charIndex = 0;
 let isDeleting = false;
 const typingTextElement = document.querySelector(".typing-text");
 
-// =============== CRISP LINEAR RED SWITCH SYNTHESIZER ===============
 let audioCtx = null;
 let isAudioEnabled = true;
 let lastTypingTime = 0;
@@ -539,16 +478,13 @@ function playTypingSound() {
   if (!isAudioEnabled) return;
 
   const now = performance.now();
-  if (now - lastTypingTime < 18) return; // Prevent audio clipping during fast typing
+  if (now - lastTypingTime < 15) return;
   lastTypingTime = now;
 
   const ctx = getAudioContext();
   const t = ctx.currentTime;
-
-  // Natural pitch variation (+/- 6%) so each key stroke sounds distinct
   const pitchVar = 1 + (Math.random() - 0.5) * 0.12;
 
-  // --- LAYER 1: Linear Stem Bottom-Out Clack (Plastic Impact) ---
   const osc = ctx.createOscillator();
   const oscGain = ctx.createGain();
 
@@ -564,8 +500,7 @@ function playTypingSound() {
   osc.start(t);
   osc.stop(t + 0.014);
 
-  // --- LAYER 2: Crisp Surface Snap (High-Frequency Transient) ---
-  const bufferLen = Math.floor(ctx.sampleRate * 0.008); // Ultra-short 8ms snap
+  const bufferLen = Math.floor(ctx.sampleRate * 0.008);
   const noiseBuffer = ctx.createBuffer(1, bufferLen, ctx.sampleRate);
   const channelData = noiseBuffer.getChannelData(0);
 
@@ -599,7 +534,6 @@ function playTypingSound() {
   noise.stop(t + 0.01);
 }
 
-// Audio Toggle Button Controller
 const audioToggleBtn = document.getElementById("audioToggleBtn");
 if (audioToggleBtn) {
   audioToggleBtn.addEventListener("click", () => {
@@ -616,7 +550,6 @@ if (audioToggleBtn) {
   });
 }
 
-// Unlock audio context on first user interaction (browser autoplay compliance)
 ['click', 'touchstart', 'keydown'].forEach(eventType => {
   document.body.addEventListener(eventType, () => {
     getAudioContext();
@@ -645,25 +578,25 @@ function typeEffect() {
     charIndex++;
   }
 
-  let typingSpeed = isDeleting ? 40 : 100;
+  let typingSpeed = isDeleting ? 22 : 55;
   if (!isDeleting && pauseIndices.includes(charIndex)) {
-    typingSpeed += 250; 
+    typingSpeed += 120; 
   }
 
   if (!isDeleting && charIndex === currentWord.length) {
-    typingSpeed = 2000; 
+    typingSpeed = 1200; 
     isDeleting = true;
   } else if (isDeleting && charIndex === 0) {
     isDeleting = false;
     typingIndex = (typingIndex + 1) % typingWords.length;
-    typingSpeed = 500; 
+    typingSpeed = 260; 
     pauseIndices = []; 
   }
 
   setTimeout(typeEffect, typingSpeed);
 }
 
-// =============== SCROLL REVEAL ANIMATIONS ===============
+// =============== FAST SCROLL REVEAL ANIMATIONS ===============
 const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
 const revealObserver = new IntersectionObserver((entries, observer) => {
   entries.forEach(entry => {
@@ -672,9 +605,9 @@ const revealObserver = new IntersectionObserver((entries, observer) => {
       observer.unobserve(entry.target); 
     }
   });
-}, { threshold: 0.1 }); 
+}, { threshold: 0.05, rootMargin: "0px 0px -25px 0px" }); 
 
-// =============== NUMBER COUNTER ANIMATION ===============
+// =============== FAST NUMBER COUNTER ANIMATION ===============
 const counters = document.querySelectorAll('.counter');
 const counterObserver = new IntersectionObserver((entries, observer) => {
   entries.forEach(entry => {
@@ -683,7 +616,7 @@ const counterObserver = new IntersectionObserver((entries, observer) => {
       const target = +counter.getAttribute('data-target');
       const suffix = counter.getAttribute('data-suffix') || '';
       const prefix = counter.getAttribute('data-prefix') || '';
-      const duration = 2000; 
+      const duration = 850; 
       
       let startTimestamp = null;
       const step = (timestamp) => {
@@ -701,7 +634,7 @@ const counterObserver = new IntersectionObserver((entries, observer) => {
       observer.unobserve(counter); 
     }
   });
-}, { threshold: 0.5 }); 
+}, { threshold: 0.2 }); 
 
 counters.forEach(counter => counterObserver.observe(counter));
 
@@ -870,7 +803,7 @@ async function sendChatMessage() {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-    }, 1200);
+    }, 800);
     return; 
   }
 
@@ -927,7 +860,7 @@ async function sendChatMessage() {
       if (distanceFromBottom <= 80) {
         chatWin.scrollTop = chatWin.scrollHeight;
       }
-      await sleep(12); 
+      await sleep(6); 
     }
     
     const telemetry = document.createElement('div');
@@ -984,7 +917,7 @@ function showNextNotification() {
     setTimeout(() => {
       notif.classList.remove('slide-in');
       notif.classList.add('slide-out');
-    }, 5000);
+    }, 4000);
   }
 }
 
@@ -1004,7 +937,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (now - lastPromptTime > ONE_WEEK_MS) {
     setTimeout(() => {
       if (cookiePanel) cookiePanel.classList.add("show");
-    }, 1500);
+    }, 1000);
   }
 
   if (openCookiePreferencesLink) {
@@ -1094,13 +1027,8 @@ if (themeToggleCheckbox) {
   });
 }
 
-// 1. Initial Page Load
 document.addEventListener("DOMContentLoaded", syncThemeState);
-
-// 2. Back/Forward Navigation (Catches returns from Neural Vision without full reload)
 window.addEventListener("pageshow", syncThemeState);
-
-// 3. Multi-Tab / Multi-Window Sync
 window.addEventListener("storage", syncThemeState);
 
 if (cookieTheme) {
@@ -1189,16 +1117,6 @@ function initPointsPopup() {
       document.getElementById("arcadeModal")?.classList.remove("show");
     });
   }
-
-  function popupCycle() {
-    popup.classList.add("visible");
-    setTimeout(() => {
-      popup.classList.remove("visible");
-      setTimeout(popupCycle, 10000);
-    }, 5000);
-  }
-
-  setTimeout(popupCycle, 600);
 }
 
 // =============== TERMINAL UI ===============
@@ -1388,7 +1306,7 @@ if (terminalInput && terminalBody) {
         if (["bits-radar", "g-plus", "exotic-hub", "passport"].includes(proj)) {
           responseLine.innerHTML = `<span style="color:#0969da;">> Opening architecture drawer for ${proj}...</span>`;
           document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" });
-          setTimeout(() => openArchitectureDrawer(proj), 400);
+          setTimeout(() => openArchitectureDrawer(proj), 300);
         } else {
           responseLine.innerHTML = `Unknown project: ${proj}. Valid options: bits-radar, g-plus, exotic-hub, passport`;
           responseLine.style.color = "#ff5f56";
@@ -1431,20 +1349,18 @@ if (terminalInput && terminalBody) {
         window.open('resumeee.html', '_blank');
 
       } else if (lowerCmd === "quote") {
-        responseLine.innerHTML = `<span style="color:#0969da;">"Building dependable software means engineering systems that remain resilient when the unexpected happens."</span><br>— Vignesh P // Engineering Core Philosophy`;
-        const quoteBtn = document.querySelector('.card.process-card.quote-card');
-        if (quoteBtn) quoteBtn.click();
-        document.getElementById("about")?.scrollIntoView({ behavior: "smooth" });
+        responseLine.innerHTML = `<span style="color:#0969da;">"Building dependable software means engineering systems that remain resilient when the unexpected happens."</span><br>— Vignesh P`;
+        document.getElementById("philosophy")?.scrollIntoView({ behavior: "smooth" });
 
       } else if (lowerCmd === "matrix") {
         responseLine.innerHTML = `<span style="color:#27c93f;">[SEC-SCAN]: ACCESS GRANTED. OVERRIDE CODE: 0x9924. PROTOCOL VIGNESH-OS INITIALIZED.</span>`;
-        terminalBody.style.transition = "background-color 0.4s ease, color 0.4s ease";
+        terminalBody.style.transition = "background-color 0.3s ease, color 0.3s ease";
         terminalBody.style.backgroundColor = "#021a07";
         terminalBody.style.color = "#39ff14";
         setTimeout(() => {
           terminalBody.style.backgroundColor = "";
           terminalBody.style.color = "";
-        }, 1800);
+        }, 1400);
 
       } else if (lowerCmd === "date") {
         responseLine.innerHTML = `System Timestamp: ${new Date().toUTCString()} (Local: ${new Date().toLocaleString()})`;
@@ -1470,7 +1386,7 @@ if (terminalInput && terminalBody) {
         aiSec?.scrollIntoView({ behavior: "smooth" });
         if (chatInputArea) {
           chatInputArea.value = chatPrompt;
-          setTimeout(() => sendChatMessage(), 600);
+          setTimeout(() => sendChatMessage(), 400);
         }
 
       } else if (lowerCmd === "arcade" || lowerCmd === "play") {
@@ -1490,7 +1406,7 @@ if (terminalInput && terminalBody) {
         const termContainer = document.querySelector(".terminal-container");
         if (termContainer) {
           termContainer.classList.add("glitch-shake");
-          setTimeout(() => termContainer.classList.remove("glitch-shake"), 500);
+          setTimeout(() => termContainer.classList.remove("glitch-shake"), 400);
         }
 
       } else if (lowerCmd === "/sudo download_resume") {
@@ -1502,7 +1418,7 @@ if (terminalInput && terminalBody) {
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
-        }, 1200);
+        }, 800);
       
       } else if (lowerCmd === "clear") {
         const allLines = terminalBody.querySelectorAll(".terminal-line");
@@ -1532,7 +1448,7 @@ if (terminalInput && terminalBody) {
         responseLine.innerHTML = "Executing Neural Vision protocol... Redirecting...";
         const overlay = document.getElementById("loadingOverlay");
         if (overlay) overlay.classList.add("active");
-        setTimeout(() => window.location.href = 'rcb.html', 200);
+        setTimeout(() => window.location.href = 'rcb.html', 100);
 
       } else if (lowerCmd === "whoami") {
         responseLine.innerHTML = "guest_recruiter_looking_for_top_talent";
@@ -1640,7 +1556,7 @@ if (ffCanvas) {
             end: n2, 
             layerIndex: i,
             particleProgress: Math.random(), 
-            speed: 0.0025 + Math.random() * 0.0035 
+            speed: 0.0035 + Math.random() * 0.0045 
           });
         });
       });
@@ -1659,7 +1575,7 @@ if (ffCanvas) {
       activePulses.push({
         edge: edge,
         progress: 0,
-        speed: 0.024 + Math.random() * 0.009,
+        speed: 0.035 + Math.random() * 0.012,
         color: getPulseColor(edge.layerIndex)
       });
     });
@@ -1778,7 +1694,7 @@ if (ffCanvas) {
               activePulses.push({
                 edge: nEdge,
                 progress: 0,
-                speed: 0.026 + Math.random() * 0.009,
+                speed: 0.035 + Math.random() * 0.01,
                 color: getPulseColor(nEdge.layerIndex)
               });
             });
@@ -1957,19 +1873,13 @@ function renderCytoscape(graphData) {
   container.style.backgroundColor = '#000000';
   container.style.borderColor = '#ffffff';
 
-  // Serpentine (S-Curve) 2x3 Grid Coordinates
-  // 1: Top-Left  -> 2: Top-Right
-  //                   | (down)
-  // 4: Mid-Left  <- 3: Mid-Right
-  //   | (down)
-  // 5: Bot-Left  -> 6: Bot-Right
   const serpentineCoords = [
-    { x: 100, y: 55 },   // 1: Top-Left
-    { x: 340, y: 55 },   // 2: Top-Right
-    { x: 340, y: 155 },  // 3: Mid-Right
-    { x: 100, y: 155 },  // 4: Mid-Left
-    { x: 100, y: 255 },  // 5: Bot-Left
-    { x: 340, y: 255 }   // 6: Bot-Right
+    { x: 100, y: 55 },
+    { x: 340, y: 55 },
+    { x: 340, y: 155 },
+    { x: 100, y: 155 },
+    { x: 100, y: 255 },
+    { x: 340, y: 255 }
   ];
 
   let nodeIndex = 0;
@@ -2074,7 +1984,7 @@ function simulatePacketHops() {
       
       packet.animate({
         position: { x: tgtPos.x, y: tgtPos.y },
-        duration: 550,
+        duration: 420,
         easing: 'ease-in-out'
       }).promise().then(() => {
         try {
@@ -2090,9 +2000,9 @@ function simulatePacketHops() {
             cytoscapeInstance.remove(packet);
           }
         } catch (err) {}
-      }, 750);
+      }, 550);
 
-    }, i * 380); 
+    }, i * 280); 
   });
 }
 
@@ -2146,7 +2056,7 @@ function openArchitectureDrawer(projectId) {
 
   setTimeout(() => {
     renderCytoscape(data.graphData);
-  }, 460);
+  }, 250);
 }
 
 function closeArchitectureDrawer() {

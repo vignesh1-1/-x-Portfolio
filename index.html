@@ -192,92 +192,6 @@
         </ul>
       </div>
     </div>
-    
-    <div class="sectiondec">
-      <div class="approach-header reveal-left" style="margin-bottom: 35px;">
-        <div class="approach-badge" style="margin-bottom: 15px;">Approach</div>
-        <div class="title-row">
-          <h2 class="approach-heading">HOW I TAKE AI FROM IDEAS TO PRODUCTIONS</h2>
-          <div class="header-line"></div>
-        </div>
-      </div>
-
-      <div class="process-wrapper">
-        <div class="process-details-panel reveal-left">
-          <div id="process-empty" class="process-empty-state">
-            <i class="fa-solid fa-wand-magic-sparkles" style="font-size: 2.5rem; margin-bottom: 15px;" aria-hidden="true"></i>
-            <h3>Select a Phase</h3>
-            <p>Click on any card to explore my workflow and approach.</p>
-          </div>
-
-          <div id="process-content" class="process-content-view">
-            <div class="detail-header-ui">
-              <div class="icon-box" id="process-icon"></div>
-              <h3 id="process-title">Title</h3>
-            </div>
-            <div class="detail-body-ui">
-              <p id="process-desc">Description goes here.</p>
-              <h4>Key Deliverables</h4>
-              <ul id="process-list"></ul>
-            </div>
-          </div>
-
-          <div id="process-quote" class="process-quote-view">
-            <div class="bg-quote-mark" aria-hidden="true">&ldquo;</div>
-            <div class="quote-content">
-              <h2 class="shimmer-text" id="quoteTextDisplay">&ldquo;Building dependable software means engineering systems that remain resilient when the unexpected happens.&rdquo;</h2>
-              <div class="author-tag" id="quoteAuthorDisplay">Vignesh P // Engineering Core Philosophy</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="cards process-cards reveal-right" role="tablist">
-          <div class="card process-card" data-phase="planning" role="tab" tabindex="0">
-            <div class="card-title-row">
-              <div class="icon"><i class="fa-solid fa-compass" aria-hidden="true"></i></div>
-              <h3>Discover</h3>
-            </div>
-          </div>
-          <div class="card process-card" data-phase="analysis" role="tab" tabindex="0">
-            <div class="card-title-row">
-              <div class="icon"><i class="fa-solid fa-chart-line" aria-hidden="true"></i></div>
-              <h3>Analyze</h3>
-            </div>
-          </div>
-          <div class="card process-card" data-phase="designing" role="tab" tabindex="0">
-            <div class="card-title-row">
-              <div class="icon"><i class="fa-solid fa-microchip" aria-hidden="true"></i></div>
-              <h3>Engineer</h3>
-            </div>
-          </div>
-          <div class="card process-card" data-phase="testing" role="tab" tabindex="0">
-            <div class="card-title-row">
-              <div class="icon"><i class="fa-solid fa-vial" aria-hidden="true"></i></div>
-              <h3>Prototype</h3>
-            </div>
-          </div>
-          <div class="card process-card" data-phase="deployment" role="tab" tabindex="0">
-            <div class="card-title-row">
-              <div class="icon"><i class="fa-solid fa-rocket" aria-hidden="true"></i></div>
-              <h3>Launch</h3>
-            </div>
-          </div>
-          <div class="card process-card" data-phase="maintainance" role="tab" tabindex="0">
-            <div class="card-title-row">
-              <div class="icon"><i class="fa-solid fa-brain" aria-hidden="true"></i></div>
-              <h3>Maintain</h3>
-            </div>
-          </div>
-
-          <div class="card process-card quote-card" data-phase="quote" role="tab" tabindex="0">
-            <div class="card-title-row">
-              <div class="icon"><i class="fa-solid fa-quote-left" aria-hidden="true"></i></div>
-              <h3>Core Philosophy</h3>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </section>
 
   <!-- EXPERIENCE & EDUCATION SECTION -->
@@ -588,6 +502,22 @@
     </div>
   </section>
 
+  <!-- CORE PHILOSOPHY SECTION (MOVED BELOW AI CHAT) -->
+  <section id="philosophy" class="philosophy-section reveal">
+    <div class="philosophy-container">
+      <div class="process-details-panel philosophy-card">
+        <div class="process-quote-view visible" id="process-quote">
+          <div class="bg-quote-mark quote-mark-top" aria-hidden="true">&ldquo;</div>
+          <div class="quote-content">
+            <h2 class="shimmer-text" id="quoteTextDisplay">&ldquo;Building dependable software means engineering systems that remain resilient when the unexpected happens.&rdquo;</h2>
+            <div class="author-tag" id="quoteAuthorDisplay">Vignesh P</div>
+          </div>
+          <div class="bg-quote-mark quote-mark-bottom" aria-hidden="true">&rdquo;</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- CONTACT SECTION -->
   <section id="contact">
     <div class="conn"> 
@@ -722,11 +652,20 @@
     <div class="loader"></div>
   </div>
 
-  <!-- FLOATING ACTIONS CONTAINER -->
+  <!-- FLOATING ACTIONS CONTAINER WITH CYANX AI POPUP -->
   <div class="floating-action-container">
-    <button id="aiNavBtn" class="action-btn" aria-label="Scroll to AI Assistant" type="button">
-      <i class="fa-solid fa-robot" aria-hidden="true"></i>
-    </button>
+    <div class="ai-nav-wrapper">
+      <div id="aiFloatingPopup" class="nav-points-bubble ai-floating-bubble" role="status" tabindex="0" aria-label="CYANX AI popup notice">
+        <div class="bubble-tail"></div>
+        <div class="bubble-inner">
+          <i class="fa-solid fa-sparkles bubble-icon" aria-hidden="true"></i>
+          <span class="bubble-text">CYANX AI will answer you</span>
+        </div>
+      </div>
+      <button id="aiNavBtn" class="action-btn" aria-label="Scroll to AI Assistant" type="button">
+        <i class="fa-solid fa-robot" aria-hidden="true"></i>
+      </button>
+    </div>
     <button id="scrollTopBtn" class="action-btn" aria-label="Scroll to top of page" type="button">
       <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
     </button>
